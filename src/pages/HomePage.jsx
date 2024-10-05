@@ -66,6 +66,64 @@ const HomePage = () => {
           </div>
         </div>
       </section>
+
+      {/* Section - Service */}
+      <section className="font-raleway text-white tracking-wider">
+        <div className="bg-slate-900 flex flex-col gap-20 items-center justify-center px-3 py-20 w-full lg:px-7">
+          {/* About Benerin Motor */}
+          <div className="border border-orange-500 p-3 rounded-md space-y-1 text-justify">
+            <p className="font-bold text-2xl">
+              What is Benerin <span className="text-orange-500">Motor</span> ?
+            </p>
+            <p>
+              Layanan perbaikan dan pemeliharaan sepeda motor yang profesional dan terpercaya. Kami menyediakan servis cepat, kualitas terbaik, dan harga bersahabat. Dengan teknisi berpengalaman, kami siap menangani berbagai masalah motor
+              Anda, mulai dari perawatan rutin hingga perbaikan mendalam. Fokus kami adalah kepuasan pelanggan dan performa optimal kendaraan Anda. Percayakan motor Anda kepada Benerin Motor, dan nikmati perjalanan tanpa khawatir!
+            </p>
+          </div>
+
+          {/* Service */}
+          <div className="flex flex-col gap-4 items-center justify-center w-full">
+            <p className="font-bold text-2xl text-center">Our Services For Your Motorcycle</p>
+            <div className="flex flex-wrap gap-4 items-center justify-center w-full">
+              <div className="border border-orange-500 flex gap-3 p-3 rounded-md w-full lg:w-auto">
+                <img src="../icon-bengkelmotor.jpg" alt="" className="w-20" />
+                <div>
+                  <p>Service Besar</p>
+                  <p>Benerin Motor SB</p>
+                </div>
+              </div>
+              <div className="border border-orange-500 flex gap-3 p-3 rounded-md w-full lg:w-auto">
+                <img src="../icon-bengkelmotor.jpg" alt="" className="w-20" />
+                <div>
+                  <p>Service Kecil</p>
+                  <p>Benerin Motor SB</p>
+                </div>
+              </div>
+              <div className="border border-orange-500 flex gap-3 p-3 rounded-md w-full lg:w-auto">
+                <img src="../icon-bengkelmotor.jpg" alt="" className="w-20" />
+                <div>
+                  <p>Ganti Oli</p>
+                  <p>Benerin Motor SB</p>
+                </div>
+              </div>
+              <div className="border border-orange-500 flex gap-3 p-3 rounded-md w-full lg:w-auto">
+                <img src="../icon-bengkelmotor.jpg" alt="" className="w-20" />
+                <div>
+                  <p>Cat Motor</p>
+                  <p>Benerin Motor SB</p>
+                </div>
+              </div>
+              <div className="border border-orange-500 flex gap-3 p-3 rounded-md w-full lg:w-auto">
+                <img src="../icon-bengkelmotor.jpg" alt="" className="w-20" />
+                <div>
+                  <p>CVT</p>
+                  <p>Benerin Motor SB</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </Layout>
   );
 };
