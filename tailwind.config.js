@@ -4,7 +4,9 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        raleway: ["Raleway", "sans-serif"],
+        monserrat: ["Monserrat", "sans-serif"],
+        openSans: ["Open Sans", "sans-serif"],
+        poppins: ["Poppins", "sans-serif"],
       },
     },
   },

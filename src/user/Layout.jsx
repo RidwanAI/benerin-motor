@@ -1,8 +1,8 @@
 import React from "react";
-import FooterComponent from "../components/FooterComponent";
 import NavbarComponent from "../components/NavbarComponent";
+import FooterComponent from "../components/FooterComponent";
 
-const Layouts = ({ children }) => {
+const Layout = ({ children }) => {
   return (
     <React.Fragment>
       <NavbarComponent />
@@ -16,4 +16,4 @@ const Layouts = ({ children }) => {
   );
 };
 
-export default Layouts;
+export default Layout;
