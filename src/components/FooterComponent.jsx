@@ -61,7 +61,7 @@ const FooterComponent = () => {
 
         {/* Part Kanan */}
         <div className="flex items-center justify-center w-full lg:w-1/2">
-          <img src="../public/general/cartoonmontir.png" alt="cartoonmontir.png" width={250} />
+          <img src="../general/cartoonmontir.png" alt="cartoonmontir.png" width={250} />
         </div>
       </div>
       <div className="bg-slate-950 flex font-raleway items-center justify-center py-5 text-white tracking-wider">Copyright@Benerin Motor - 2024</div>

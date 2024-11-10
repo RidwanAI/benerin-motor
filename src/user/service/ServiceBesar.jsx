@@ -7,7 +7,7 @@ const ServiceBesar = () => {
   return (
     <div className="flex flex-col gap-5 items-start justify-center w-full md:flex-row">
       <div className="w-auto md:w-1/2">
-        <img src="../public/services/srb.png" alt="srb" className="rounded-md" />
+        <img src="../services/srb.png" alt="srb" className="rounded-md" />
       </div>
       <div className="flex flex-col gap-5 w-full md:w-1/2">
         {/* Description Service Rutin ~ Besar */}
