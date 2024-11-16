@@ -7,7 +7,7 @@ const Layout = ({ children }) => {
     <React.Fragment>
       <NavbarComponent />
       <div>
-        <div className="container items-center justify-center mx-auto max-w-screen-xl">
+        <div className="container items-center justify-center mx-auto min-w-full">
           <main>{children}</main>
         </div>
       </div>

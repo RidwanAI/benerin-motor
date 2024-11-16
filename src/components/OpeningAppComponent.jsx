@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-function OpeningApp() {
+function OpeningAppComponent() {
   const [showPopup, setShowPopup] = useState(true);
   const [fadeOut, setFadeOut] = useState(false);
 
@@ -29,4 +29,4 @@ function OpeningApp() {
   );
 }
 
-export default OpeningApp;
+export default OpeningAppComponent;
