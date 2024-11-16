@@ -15,7 +15,7 @@ import ServiceSparePart from "./service/ServiceSparePart";
 import ServiceTuneUp from "./service/ServiceTuneUp";
 
 const HomePage = () => {
-  // Set Active -> Service Benerin Motor
+  // Set Active => Service Benerin Motor
   const [services, setService] = useState("srb");
   const renderService = () => {
     if (services === "srb") {
@@ -31,6 +31,24 @@ const HomePage = () => {
     } else if (services === "sp") {
       return <ServiceSparePart />;
     }
+  };
+
+  // Add => Testimoni
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [testimoni, setTestimoni] = useState("");
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setTestimoni(""); // Reset input saat modal ditutup
+  };
+
+  const handleSubmitTestimoni = () => {
+    console.log("New Testimoni:", testimoni);
+    handleCloseModal();
   };
 
   return (
@@ -258,13 +276,40 @@ const HomePage = () => {
               {/* Testimonial */}
               <div className="flex flex-col gap-4 items-center justify-center w-full md:w-1/2">
                 <TestimoniComponent />
-                <Link to={"/"} className="border border-orange-500 bg-orange-500 duration-300 flex items-center gap-2 px-3 py-1 rounded-md md:px-5 md:py-1.5 hover:bg-orange-700">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
-                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
-                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
-                  </svg>
-                  Add Testimoni
-                </Link>
+                <div className="">
+                  {/* Button to Open Modal */}
+                  <Link onClick={handleOpenModal} className="border border-orange-500 bg-orange-500 duration-300 flex items-center gap-2 px-3 py-1 rounded-md md:px-5 md:py-1.5 hover:bg-orange-700 cursor-pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-plus-circle" viewBox="0 0 16 16">
+                      <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                      <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
+                    </svg>
+                    Add Testimoni
+                  </Link>
+
+                  {/* Modal Dialog */}
+                  {isModalOpen && (
+                    <div className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center px-3 z-50 md:px-7">
+                      <div className="bg-slate-800 rounded-lg p-5 w-full md:w-1/2">
+                        <h3 className="text-xl font-semibold mb-3">Add Testimoni</h3>
+                        <textarea
+                          value={testimoni}
+                          onChange={(e) => setTestimoni(e.target.value)}
+                          className="w-full border border-gray-300 rounded-lg p-2 mb-3 text-black focus:outline-none focus:ring-2 focus:ring-orange-500"
+                          rows="4"
+                          placeholder="Write your testimoni here..."
+                        ></textarea>
+                        <div className="flex justify-end space-x-3">
+                          <button onClick={handleCloseModal} className="bg-white duration-300 px-3 py-1 rounded-md text-black md:px-5 md:py-1.5 hover:bg-gray-200">
+                            Cancel
+                          </button>
+                          <button onClick={handleSubmitTestimoni} className="bg-orange-500 duration-300 px-3 py-1 rounded-md text-white md:px-5 md:py-1.5 hover:bg-orange-700">
+                            Submit
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
             {/* End - Review */}
