@@ -1,20 +1,23 @@
+// Library
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
+/* ========== [ Landing ] => Components ========== */
+import AutoScroll from "../components/generals/AutoScroll";
+import ConstPortfolio from "../components/generals/ConstPortfolio";
+import Testimoni from "../components/generals/Testimoni";
+import OpeningApp from "../components/generals/OpeningApp";
+
+import ServiceBesar from "../components/services/ServiceBesar";
+import ServiceGantiOli from "../components/services/ServiceGantiOli";
+import ServiceKecil from "../components/services/ServiceKecil";
+import ServiceSparePart from "../components/services/ServiceSparePart";
+import ServiceTuneUp from "../components/services/ServiceTuneUp";
+
+/* ========== [ Landing ] => Pages ========== */
 import Layout from "./Layout";
 
-import AutoScrollComponent from "../components/AutoScrollComponent";
-import ConstPortfolioComponent from "../components/ConstPortfolioComponent";
-import TestimoniComponent from "../components/TestimoniComponent";
-import OpeningAppComponent from "../components/OpeningAppComponent";
-
-import ServiceBesar from "./service/ServiceBesar";
-import ServiceGantiOli from "./service/ServiceGantiOli";
-import ServiceKecil from "./service/ServiceKecil";
-import ServiceSparePart from "./service/ServiceSparePart";
-import ServiceTuneUp from "./service/ServiceTuneUp";
-
-const HomePage = () => {
+const Home = () => {
   // Set Active => Service Benerin Motor
   const [services, setService] = useState("srb");
   const renderService = () => {
@@ -53,8 +56,8 @@ const HomePage = () => {
 
   return (
     <Layout>
-      <AutoScrollComponent />
-      <OpeningAppComponent />
+      <AutoScroll />
+      <OpeningApp />
       {/* Home */}
       <section id="home" className="font-poppins text-white ">
         <div className="bg-home">
@@ -108,11 +111,11 @@ const HomePage = () => {
 
             {/* Links Menu */}
             <div className="flex flex-wrap gap-2 items-center justify-center w-full">
-              <Link to={"/products"} className="border border-orange-500 flex items-center gap-2 duration-300 px-3 py-1 rounded-md text-sm md:px-5 md:py-1.5 hover:bg-orange-700 hover:translate-y-1">
+              <Link to={"/shop"} className="border border-orange-500 flex items-center gap-2 duration-300 px-3 py-1 rounded-md text-sm md:px-5 md:py-1.5 hover:bg-orange-700 hover:translate-y-1">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart3" viewBox="0 0 16 16">
                   <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .49.598l-1 5a.5.5 0 0 1-.465.401l-9.397.472L4.415 11H13a.5.5 0 0 1 0 1H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5M3.102 4l.84 4.479 9.144-.459L13.89 4zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4m7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4m-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2m7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2" />
                 </svg>
-                Product
+                Shop
               </Link>
               <Link to={"/"} className="border border-orange-500 flex items-center gap-2 duration-300 px-3 py-1 rounded-md text-sm md:px-5 md:py-1.5 hover:bg-orange-700 hover:translate-y-1">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-lines-fill" viewBox="0 0 16 16">
@@ -161,19 +164,19 @@ const HomePage = () => {
               <div className="bg-orange-500 flex items-center justify-between py-2 px-4 rounded-md w-full md:flex-col">
                 <p>Founded On The Date</p>
                 <p className="flex items-center gap-2">
-                  <ConstPortfolioComponent target={10} duration={1500} />
+                  <ConstPortfolio target={10} duration={1500} />
                 </p>
               </div>
               <div className="bg-orange-500 flex items-center justify-between py-2 px-4 rounded-md w-full md:flex-col">
                 <p>Founded On The Month</p>
                 <p className="flex items-center gap-2">
-                  <ConstPortfolioComponent target={6} duration={1500} />
+                  <ConstPortfolio target={6} duration={1500} />
                 </p>
               </div>
               <div className="bg-orange-500 flex items-center justify-between py-2 px-4 rounded-md w-full md:flex-col">
                 <p>Founded On The Year</p>
                 <p className="flex items-center gap-2">
-                  <ConstPortfolioComponent target={2021} duration={1500} />
+                  <ConstPortfolio target={2021} duration={1500} />
                 </p>
               </div>
             </div>
@@ -275,7 +278,7 @@ const HomePage = () => {
 
               {/* Testimonial */}
               <div className="flex flex-col gap-4 items-center justify-center w-full md:w-1/2">
-                <TestimoniComponent />
+                <Testimoni />
                 <div className="">
                   {/* Button to Open Modal */}
                   <Link onClick={handleOpenModal} className="border border-orange-500 bg-orange-500 duration-300 flex items-center gap-2 px-3 py-1 rounded-md md:px-5 md:py-1.5 hover:bg-orange-700 cursor-pointer">
@@ -321,4 +324,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default Home;

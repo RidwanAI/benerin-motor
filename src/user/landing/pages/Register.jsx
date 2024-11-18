@@ -1,10 +1,15 @@
+/* ========== Library ========== */
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
-import AutoScrollComponent from "../components/AutoScrollComponent";
+/* ========== User ========== */
+// Layout
 import Layout from "./Layout";
 
-const RegisterPage = () => {
+// Components
+import AutoScroll from "../components/generals/AutoScroll";
+
+const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -17,7 +22,7 @@ const RegisterPage = () => {
 
   return (
     <Layout>
-      <AutoScrollComponent />
+      <AutoScroll />
       <section id="register" className="font-poppins">
         <div className="bg-home">
           <div className="flex flex-col gap-4 items-center justify-center max-w-7xl min-h-screen mx-auto px-3 py-24 w-full md:px-7">
@@ -109,4 +114,4 @@ const RegisterPage = () => {
   );
 };
 
-export default RegisterPage;
+export default Register;

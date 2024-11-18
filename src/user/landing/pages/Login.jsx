@@ -1,10 +1,14 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
-import AutoScrollComponent from "../components/AutoScrollComponent";
+/* ========== User ========== */
+// Layout
 import Layout from "./Layout";
 
-const LoginPage = () => {
+// Components
+import AutoScroll from "../components/generals/AutoScroll";
+
+const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -16,7 +20,7 @@ const LoginPage = () => {
 
   return (
     <Layout>
-      <AutoScrollComponent />
+      <AutoScroll />
       <section id="login" className="font-poppins">
         <div className="bg-home">
           <div className="flex flex-col gap-4 items-center justify-center max-w-7xl min-h-screen mx-auto px-3 py-24 w-full md:px-7">
@@ -84,4 +88,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default Login;

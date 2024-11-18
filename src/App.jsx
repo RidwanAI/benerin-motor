@@ -1,19 +1,19 @@
+/* ========== Library ========== */
 import "./App.css";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 
-import HomePage from "./user/HomePage";
-import LoginPage from "./user/LoginPage";
-import RegisterPage from "./user/RegisterPage";
+/* ========== User ========== */
+// Landing
+import Home from "./user/landing/pages/Home";
+import Login from "./user/landing/pages/Login";
+import Register from "./user/landing/pages/Register";
 
-// Products
-import Landing from "./user/usercomponents/homes/Landing";
-import ProductsPage from "./user/ProductsPage";
-import Order from "./user/usercomponents/orders/Order";
-import SettingAccount from "./user/usercomponents/settings/SettingAccount";
-
-import BookingListPage from "./user/BookingListPage";
-import ContactPage from "./user/ContactPage";
+// Shop
+import Shop from "./user/shop/pages/Shop";
+import Product from "./user/shop/components/products/Product";
+import SettingAccount from "./user/shop/components/settings/SettingAccount";
+import Cart from "./user/shop/components/carts/Cart";
 
 function App() {
   return (
@@ -41,21 +41,17 @@ function AnimatedRoutes() {
       >
         <div className="page-content">
           <Routes location={location}>
-            {/* Admin */}
+            {/* ========== User ========== */}
+            {/* Landing */}
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
 
-            {/* User */}
-            <Route path="/" element={<HomePage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-
-            {/* Products */}
-            <Route path="/home" element={<Landing />} />
-            <Route path="/orders" element={<Order />} />
-            <Route path="/settings" element={<SettingAccount />} />
-
-            <Route path="/products" element={<ProductsPage />} />
-            <Route path="/bookingList" element={<BookingListPage />} />
-            <Route path="/contact" element={<ContactPage />} />
+            {/* Shop */}
+            <Route path="/shop" element={<Shop />} />
+            <Route path="/product" element={<Product />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/setting" element={<SettingAccount />} />
           </Routes>
         </div>
       </CSSTransition>

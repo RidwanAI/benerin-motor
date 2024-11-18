@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 
-const ConstPortfolioComponent = ({ target, duration }) => {
+const ConstPortfolio = ({ target, duration }) => {
   const [count, setCount] = useState(0);
   const [inView, setInView] = useState(false);
   const elementRef = useRef(null);
@@ -52,4 +52,4 @@ const ConstPortfolioComponent = ({ target, duration }) => {
   );
 };
 
-export default ConstPortfolioComponent;
+export default ConstPortfolio;

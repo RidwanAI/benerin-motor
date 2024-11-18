@@ -7,14 +7,22 @@ const ProductList = ({ searchTerm, category }) => {
     { id: 2, name: "Kampas Ganda Aerox", category: "new", description: "New product", image: "./product/new/kampasremganda-aerox.png" },
     { id: 3, name: "Shockbreaker Aerox", category: "new", description: "New product", image: "./product/new/shockbreaker-aerox.png" },
     { id: 4, name: "Velg Aerox", category: "new", description: "New product", image: "./product/new/velg-aerox.png" },
-    { id: 5, name: "Filter Aerox", category: "second", description: "Used product", image: "./product/second/filter-aerox.png" },
-    { id: 6, name: "Mangkok Ganda Aerox", category: "second", description: "Used product", image: "./product/second/mangkokganda-aerox.png" },
-    { id: 7, name: "Roller Aerox", category: "second", description: "Used product", image: "./product/second/roller-aerox.png" },
-    { id: 8, name: "Pulley Aerox", category: "second", description: "Used product", image: "./product/second/pulley-aerox.png" },
+    { id: 5, name: "Shock Aerox", category: "new", description: "New product", image: "./product/new/shock-aerox.png" },
+    { id: 6, name: "Kampas Ganda Aerox", category: "new", description: "New product", image: "./product/new/kampasremganda-aerox.png" },
+    { id: 7, name: "Shockbreaker Aerox", category: "new", description: "New product", image: "./product/new/shockbreaker-aerox.png" },
+    { id: 8, name: "Velg Aerox", category: "new", description: "New product", image: "./product/new/velg-aerox.png" },
+    { id: 9, name: "Filter Aerox", category: "second", description: "Used product", image: "./product/second/filter-aerox.png" },
+    { id: 10, name: "Mangkok Ganda Aerox", category: "second", description: "Used product", image: "./product/second/mangkokganda-aerox.png" },
+    { id: 11, name: "Roller Aerox", category: "second", description: "Used product", image: "./product/second/roller-aerox.png" },
+    { id: 12, name: "Pulley Aerox", category: "second", description: "Used product", image: "./product/second/pulley-aerox.png" },
+    { id: 13, name: "Filter Aerox", category: "second", description: "Used product", image: "./product/second/filter-aerox.png" },
+    { id: 14, name: "Mangkok Ganda Aerox", category: "second", description: "Used product", image: "./product/second/mangkokganda-aerox.png" },
+    { id: 15, name: "Roller Aerox", category: "second", description: "Used product", image: "./product/second/roller-aerox.png" },
+    { id: 16, name: "Pulley Aerox", category: "second", description: "Used product", image: "./product/second/pulley-aerox.png" },
   ];
 
   // Pagination setup
-  const productsPerPage = 3;
+  const productsPerPage = 8;
   const [currentPage, setCurrentPage] = useState(1);
 
   // Filter products based on search term and category
@@ -41,7 +49,7 @@ const ProductList = ({ searchTerm, category }) => {
       <h2 className="text-2xl font-bold text-slate-900 mb-4">{category === "new" ? "New Product" : "Second Product"}</h2>
 
       {/* Product Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 w-auto">
         {currentProducts.map((product) => (
           <div key={product.id} className="bg-white p-4 rounded-md shadow-md">
             <img src={product.image} alt={product.name} className="w-full h-48 object-cover rounded-md mb-4" />

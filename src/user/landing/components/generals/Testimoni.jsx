@@ -18,7 +18,7 @@ const testimonials = [
   },
 ];
 
-const TestimoniComponent = () => {
+const Testimoni = () => {
   const [currentTestimoniComponent, setCurrentTestimonial] = useState(0);
 
   useEffect(() => {
@@ -37,4 +37,4 @@ const TestimoniComponent = () => {
   );
 };
 
-export default TestimoniComponent;
+export default Testimoni;

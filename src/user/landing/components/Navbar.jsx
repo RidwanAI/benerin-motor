@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 
-const NavbarComponent = () => {
+const Navbar = () => {
   // State untuk melacak link aktif
   const [activeLink, setActiveLink] = useState("");
   const location = useLocation();
@@ -30,8 +30,8 @@ const NavbarComponent = () => {
             <Link to="/" className={`duration-300 hover:text-orange-500 ${activeLink === "/" ? "border-b-2 border-orange-500" : ""}`}>
               Home
             </Link>
-            <Link to="/products" className={`duration-300 hover:text-orange-500 ${activeLink === "/products" ? "border-b-2 border-orange-500" : ""}`}>
-              Product
+            <Link to="/shop" className={`duration-300 hover:text-orange-500 ${activeLink === "/products" ? "border-b-2 border-orange-500" : ""}`}>
+              Shop
             </Link>
             <Link to="/bookingList" className={`duration-300 hover:text-orange-500 ${activeLink === "/bookingList" ? "border-b-2 border-orange-500" : ""}`}>
               Booking List
@@ -69,13 +69,13 @@ const NavbarComponent = () => {
               <Link to="/" className={`block py-2 px-3 duration-300 hover:text-orange-500 ${activeLink === "/" ? "border-b-2 border-orange-500" : ""}`} onClick={toggleMenu}>
                 Home
               </Link>
-              <Link to="/products" className={`block py-2 px-3 duration-300 hover:text-orange-500 ${activeLink === "/products" ? "border-b-2 border-orange-500" : ""}`} onClick={toggleMenu}>
-                Product
+              <Link to="/shop" className={`block py-2 px-3 duration-300 hover:text-orange-500 ${activeLink === "/products" ? "border-b-2 border-orange-500" : ""}`} onClick={toggleMenu}>
+                Shop
               </Link>
-              <Link to="/bookingList" className={`block py-2 px-3 duration-300 hover:text-orange-500 ${activeLink === "/bookingList" ? "border-b-2 border-orange-500" : ""}`} onClick={toggleMenu}>
+              <Link to="/" className={`block py-2 px-3 duration-300 hover:text-orange-500 ${activeLink === "/bookingList" ? "border-b-2 border-orange-500" : ""}`} onClick={toggleMenu}>
                 Booking List
               </Link>
-              <Link to="/contact" className={`block py-2 px-3 duration-300 hover:text-orange-500 ${activeLink === "/contact" ? "border-b-2 border-orange-500" : ""}`} onClick={toggleMenu}>
+              <Link to="/" className={`block py-2 px-3 duration-300 hover:text-orange-500 ${activeLink === "/contact" ? "border-b-2 border-orange-500" : ""}`} onClick={toggleMenu}>
                 Contact
               </Link>
 
@@ -96,4 +96,4 @@ const NavbarComponent = () => {
   );
 };
 
-export default NavbarComponent;
+export default Navbar;
