@@ -61,12 +61,12 @@ const Sidebar = ({ onLinkClick, activePage, children }) => {
       <div className={`fixed top-0 left-0 h-screen bg-slate-900 text-white transform transition-transform duration-300 ${isOpen ? "translate-x-0" : "-translate-x-full"} w-60 md:w-72 z-50`}>
         <div>
           {/* Title => Benerin Motor */}
-          <h2 className="font-bold italic px-3 py-5 text-xl md:text-2xl">
+          <h2 className="font-bold italic p-3 text-xl md:text-2xl">
             Benerin <span className="text-orange-500">Motor</span>
           </h2>
 
           {/* Auth */}
-          <div className="bg-slate-800 flex flex-col items-start px-3 py-5 space-y-2 text-xs">
+          <div className="bg-slate-800 flex flex-col items-start p-3 space-y-2 text-xs">
             <div className="flex items-start justify-between w-full">
               <div className="flex gap-2 items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-fill-check" viewBox="0 0 16 16">
@@ -87,7 +87,7 @@ const Sidebar = ({ onLinkClick, activePage, children }) => {
           </div>
 
           {/* Sidebar => Links */}
-          <ul className="px-3 py-5 space-y-3">
+          <ul className="p-3 space-y-3">
             <li className={`cursor-pointer duration-300 flex gap-2 items-center hover:text-orange-700 hover:translate-x-2 ${isActive("home") ? "text-orange-500" : ""}`} onClick={() => handleLinkClick("home")}>
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-house" viewBox="0 0 16 16">
                 <path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293zM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5z" />
@@ -130,7 +130,7 @@ const Sidebar = ({ onLinkClick, activePage, children }) => {
       </div>
 
       {/* Button Open & Close Sidebar */}
-      <button onClick={toggleSidebar} className={`fixed top-1/2 transform -translate-y-1/2 z-20 text-orange-500 transition-all duration-300 hover:text-orange-700 ${isOpen ? "left-60 md:left-72" : "left-2"}`}>
+      <button onClick={toggleSidebar} className={`fixed top-1/2 transform -translate-y-1/2 z-20 text-orange-500 text-opacity-75 transition-all duration-300 hover:text-orange-700 ${isOpen ? "left-60 md:left-72" : "left-3"}`}>
         {isOpen ? (
           <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" className="bi bi-arrow-left-square-fill" viewBox="0 0 16 16">
             <path d="M2 16a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2zm8.096-10.803L6 9.293V6.525a.5.5 0 0 0-1 0V10.5a.5.5 0 0 0 .5.5h3.975a.5.5 0 0 0 0-1H6.707l4.096-4.096a.5.5 0 1 0-.707-.707" />
@@ -152,7 +152,7 @@ const Sidebar = ({ onLinkClick, activePage, children }) => {
           isOpen={isModalOpen}
           onClose={closeModal}
           onConfirm={confirmAction}
-          title={modalAction === "logout" ? "Logout?" : "Edit Profile?"}
+          title={modalAction === "logout" ? "Logout!" : "Edit Profile!"}
           message={modalAction === "logout" ? "Are you sure you want to log out?" : "Are you sure you want to edit your profile?"}
           isEditProfile={modalAction === "editProfile"}
           initialData={profileData}
