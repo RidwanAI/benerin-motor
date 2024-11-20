@@ -58,7 +58,7 @@ const Setting = () => {
       {/* Main Content */}
       <div className="flex flex-1 flex-col md:flex-row">
         {/* Links */}
-        <aside className={`bg-slate-200 w-auto md:w-52 md:bg-slate-100 md:min-h-full md:block ${isMenuOpen ? "block" : "hidden"}`}>
+        <aside className={`bg-slate-100 w-auto md:block md:min-h-full md:w-52 ${isMenuOpen ? "block" : "hidden"} sticky top-0`}>
           <nav className="text-md p-3 space-y-3">
             {/* Edit Profile */}
             <button

@@ -59,7 +59,7 @@ const FAQ = () => {
       <div className="space-y-3">
         {paginatedFAQs.map((faq) => (
           <div key={faq.id} className="border border-orange-500 p-4 rounded-sm shadow-sm space-y-2">
-            <button onClick={() => toggleFAQ(faq.id)} className="flex justify-between items-center text-start w-full">
+            <button onClick={() => toggleFAQ(faq.id)} className="flex font-semibold justify-between items-center text-start w-full">
               <span>{faq.question}</span>
             </button>
             {openFAQ === faq.id && <p className="text-slate-700">{faq.answer}</p>}
