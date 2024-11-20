@@ -6,7 +6,7 @@ import Sidebar from "../components/generals/Sidebar";
 import Home from "../components/homes/Home";
 import Product from "../components/products/Product";
 import Cart from "../components/carts/Cart";
-import SettingAccount from "../components/settings/SettingAccount";
+import Setting from "../components/settings/Setting";
 
 const Shop = () => {
   // State Active => Link Sidebar
@@ -20,7 +20,7 @@ const Shop = () => {
       case "cart":
         return <Cart />;
       case "setting":
-        return <SettingAccount />;
+        return <Setting />;
     }
   };
 

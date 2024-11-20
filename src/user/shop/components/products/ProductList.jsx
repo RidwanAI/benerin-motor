@@ -150,9 +150,9 @@ const ProductList = ({ searchTerm, category }) => {
       </div>
 
       {/* Product Grid */}
-      <div className="gap-6 grid grid-cols-1 w-auto md:grid-cols-2 lg:grid-cols-3">
+      <div className="gap-6 grid grid-cols-1 w-auto md:grid-cols-3">
         {currentProducts.map((product) => (
-          <div key={product.id} className="bg-white p-4 rounded-md shadow-sm space-y-3 ">
+          <div key={product.id} className="bg-white p-4 rounded-md shadow-sm space-y-3">
             <img src={product.image} alt={product.name} className="h-48 object-cover rounded-md w-full" />
             <p className="text-md md:text-xl font-semibold">{product.name}</p>
             <div className="flex items-center justify-between">
