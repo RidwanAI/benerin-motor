@@ -160,7 +160,7 @@ const ProductList = ({ searchTerm, category }) => {
               <p className="bg-orange-500 px-3 py-1 text-white">{product.price}</p>
             </div>
             <hr className="border-2 w-full" />
-            <button onClick={() => setSelectedProduct(product)} className="bg-slate-900 duration-300 px-3 py-1 rounded-md text-sm text-white hover:bg-slate-700 md:px-5 md:py-1.5">
+            <button onClick={() => setSelectedProduct(product)} className="bg-slate-900 duration-300 px-3 py-1.5 rounded-md text-sm text-white hover:bg-slate-700 md:px-5 md:py-1.5">
               View Details
             </button>
           </div>

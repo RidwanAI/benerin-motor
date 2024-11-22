@@ -1,12 +1,10 @@
-/* ========== Library ========== */
 import React, { useState } from "react";
 
-/* ========== [ Shop ] => Components ========== */
 import Sidebar from "../components/generals/Sidebar";
 import Home from "../components/homes/Home";
-import Product from "../components/products/Product";
+import Products from "../components/products/Products";
 import Cart from "../components/carts/Cart";
-import Setting from "../components/settings/Setting";
+import Settings from "../components/settings/Settings";
 
 const Shop = () => {
   // State Active => Link Sidebar
@@ -15,19 +13,19 @@ const Shop = () => {
     switch (activePage) {
       case "home":
         return <Home />;
-      case "product":
-        return <Product />;
+      case "products":
+        return <Products />;
       case "cart":
         return <Cart />;
-      case "setting":
-        return <Setting />;
+      case "settings":
+        return <Settings />;
     }
   };
 
   return (
     <div className="bg-slate-900 flex flex-col md:flex-row">
       <div className="relative z-40">
-        <Sidebar onLinkClick={setActivePage} />
+        <Sidebar onLinkClick={setActivePage} activePage={activePage} />
       </div>
 
       {/* Content */}

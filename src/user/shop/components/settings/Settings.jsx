@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-// Component Settings
+// Component => Settings
 import EditProfile from "./EditProfile";
 import StatusAccount from "./StatusAccount";
 import FAQ from "./FAQ";
@@ -9,7 +9,7 @@ import Default from "./Default";
 import Language from "./Language";
 
 const Setting = () => {
-  // Dropdown
+  // Dropdown => Links
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   // Render Page => Content
@@ -35,7 +35,16 @@ const Setting = () => {
     <div className="flex flex-col font-poppins min-h-screen">
       {/* Header */}
       <header className="bg-slate-100 flex items-center justify-between p-3 shadow-sm sticky top-0">
-        <h1 className="font-semibold text-xl md:text-2xl">Settings</h1>
+        <h1 className="font-semibold text-xl md:text-2xl">
+          <button
+            onClick={() => {
+              setActiveTab("default");
+              setIsMenuOpen(false);
+            }}
+          >
+            Settings
+          </button>
+        </h1>
         <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="duration-300 transition-all hover:text-orange-700 md:hidden focus:outline-none">
           {isMenuOpen ? (
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-arrows-fullscreen" viewBox="0 0 16 16">
@@ -66,7 +75,7 @@ const Setting = () => {
                 setActiveTab("editProfile");
                 setIsMenuOpen(false);
               }}
-              className={`flex gap-2 items-center ${activeTab === "editProfile" ? "text-orange-700" : "duration-300 hover:text-orange-700"}`}
+              className={`flex gap-2 items-center ${activeTab === "editProfile" ? "font-semibold text-orange-700" : "duration-300 hover:text-orange-700"}`}
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
                 <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
@@ -81,7 +90,7 @@ const Setting = () => {
                 setActiveTab("language");
                 setIsMenuOpen(false);
               }}
-              className={`flex gap-2 items-center ${activeTab === "language" ? "text-orange-700" : "duration-300 hover:text-orange-700"}`}
+              className={`flex gap-2 items-center ${activeTab === "language" ? "font-semibold text-orange-700" : "duration-300 hover:text-orange-700"}`}
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-translate" viewBox="0 0 16 16">
                 <path d="M4.545 6.714 4.11 8H3l1.862-5h1.284L8 8H6.833l-.435-1.286zm1.634-.736L5.5 3.956h-.049l-.679 2.022z" />
@@ -96,7 +105,7 @@ const Setting = () => {
                 setActiveTab("statusAccount");
                 setIsMenuOpen(false);
               }}
-              className={`flex gap-2 items-center ${activeTab === "statusAccount" ? "text-orange-700" : "duration-300 hover:text-orange-700"}`}
+              className={`flex gap-2 items-center ${activeTab === "statusAccount" ? "font-semibold text-orange-700" : "duration-300 hover:text-orange-700"}`}
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person" viewBox="0 0 16 16">
                 <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z" />
@@ -110,7 +119,7 @@ const Setting = () => {
                 setActiveTab("FAQ");
                 setIsMenuOpen(false);
               }}
-              className={`flex gap-2 items-center ${activeTab === "FAQ" ? "text-orange-700" : "duration-300 hover:text-orange-700"}`}
+              className={`flex gap-2 items-center ${activeTab === "FAQ" ? "font-semibold text-orange-700" : "duration-300 hover:text-orange-700"}`}
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
                 <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
@@ -125,7 +134,7 @@ const Setting = () => {
                 setActiveTab("deleteAccount");
                 setIsMenuOpen(false);
               }}
-              className={`flex gap-2 items-center ${activeTab === "deleteAccount" ? "text-orange-700" : "duration-300 hover:text-orange-700"}`}
+              className={`flex gap-2 items-center ${activeTab === "deleteAccount" ? "font-semibold text-orange-700" : "duration-300 hover:text-orange-700"}`}
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-x-fill" viewBox="0 0 16 16">
                 <path
