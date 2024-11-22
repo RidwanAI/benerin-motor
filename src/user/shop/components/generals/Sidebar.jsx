@@ -145,7 +145,7 @@ const Sidebar = ({ onLinkClick, activePage, children }) => {
 
         {/* Logout Button */}
         <div className="mt-auto p-3">
-          <button onClick={handleLogout} className="bg-red-500 duration-300 flex gap-2 items-center justify-center px-3 py-1.5 rounded-sm w-full hover:bg-red-700 md:px-5 md:py-1.5">
+          <button onClick={handleLogout} className="bg-red-500 duration-300 flex gap-2 items-center justify-center px-3 py-1.5 rounded-md w-full hover:bg-red-700 md:px-5 md:py-1.5">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-box-arrow-right" viewBox="0 0 16 16">
               <path fillRule="evenodd" d="M10.828 8l-3.182 3.182a.5.5 0 0 1-.708-.708L9.293 8.5H1.5a.5.5 0 0 1 0-1h7.793L6.938 5.526a.5.5 0 0 1 .707-.708L10.828 8zm3.643-.5a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1 0-1h7a.5.5 0 0 1 .5.5z" />
               <path fillRule="evenodd" d="M15 1.5a.5.5 0 0 1-.5.5H9.707l-1.1 1.1a.5.5 0 0 1-.707-.707l1.5-1.5A.5.5 0 0 1 10.5 1h4A1.5 1.5 0 0 1 16 2.5v11A1.5 1.5 0 0 1 14.5 15h-4a.5.5 0 0 1 0-1h4a.5.5 0 0 0 .5-.5v-11a.5.5 0 0 0-.5-.5z" />

@@ -100,7 +100,7 @@ const Cart = () => {
         </div>
 
         {/* Category Selection */}
-        <div className="flex space-x-4 p-4 bg-white shadow-md">
+        <div className="bg-white flex gap-2 p-3 sticky top-0 z-10">
           <button onClick={() => setSelectedCategory("new")} className={`px-4 py-2 rounded-md ${selectedCategory === "new" ? "bg-blue-500 text-white" : "bg-gray-200"}`}>
             New Products
           </button>
@@ -144,12 +144,11 @@ const Cart = () => {
                 </div>
               </div>
             ))}
-        </div>
-
-        <div className="flex w-full">
-          <button onClick={proceedToPayment} className="bg-blue-500 text-white px-3 py-1.5 rounded-md w-full md:px-5 md:py-1.5">
-            Proceed to Checkout
-          </button>
+          <div className="flex w-full">
+            <button onClick={proceedToPayment} className="bg-blue-500 text-white px-3 py-1.5 rounded-md w-full md:px-5 md:py-1.5">
+              Proceed to Checkout
+            </button>
+          </div>
         </div>
       </div>
 
