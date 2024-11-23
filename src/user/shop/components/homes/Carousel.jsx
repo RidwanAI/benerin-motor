@@ -1,3 +1,5 @@
+/* Carousel => Done */
+
 import React, { useEffect, useRef } from "react";
 
 const Carousel = () => {
@@ -36,7 +38,7 @@ const Carousel = () => {
   ];
 
   return (
-    <section className="p-3">
+    <section>
       <div ref={carouselRef} className="carousel flex gap-2 overflow-x-hidden snap-x scrollbar-hide">
         {listCarousel.map((promo, index) => (
           <div
@@ -46,7 +48,7 @@ const Carousel = () => {
               backgroundSize: "cover",
               backgroundPosition: "center",
             }}
-            className="h-44 flex flex-shrink-0 items-center justify-center p-4 rounded-md shadow-sm snap-center text-center w-full md:h-[600px] xl:h-[900px]"
+            className="flex flex-shrink-0 h-48 items-center justify-center p-4 shadow-sm snap-center text-center w-full md:h-72"
           ></div>
         ))}
       </div>
