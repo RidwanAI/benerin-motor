@@ -1,7 +1,8 @@
+/* Footer => Done */
+
 import { useState } from "react";
 
 const Footer = () => {
-  // State untuk mengatur dropdown
   const [isKategoriOpen, setIsKategoriOpen] = useState(false);
   const [isLayananOpen, setIsLayananOpen] = useState(false);
   const [isInformasiOpen, setIsInformasiOpen] = useState(false);
@@ -15,7 +16,6 @@ const Footer = () => {
         </p>
         <p className="italic text-md">Produk Sparepart Motor Terpecaya!</p>
       </div>
-      <hr className="border-2" />
 
       {/* Dropdown Mobile */}
       <div className="space-y-3 md:hidden">
@@ -263,7 +263,7 @@ const Footer = () => {
       </div>
 
       {/* Divider and Copywriting */}
-      <hr className="border-2" />
+      <hr />
       <div className="flex flex-col items-center text-xs text-slate-500 md:flex-row md:justify-between md:space-y-0">
         <p>&copy; 2024 Benerin Motor. All Rights Reserved.</p>
         <p>Made by Benerin Motor Team</p>

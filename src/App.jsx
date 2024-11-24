@@ -11,6 +11,7 @@ import Register from "./user/landing/pages/Register";
 // Shop
 import Shop from "./user/shop/pages/Shop";
 import Products from "./user/shop/components/products/Products";
+import ProductDetail from "./user/shop/components/products/ProductDetail";
 import Cart from "./user/shop/components/carts/Cart";
 import Settings from "./user/shop/components/settings/Settings";
 
@@ -49,6 +50,7 @@ function AnimatedRoutes() {
             {/* Shop */}
             <Route path="/shop" element={<Shop />} />
             <Route path="/products" element={<Products />} />
+            <Route path="/product/:id" element={<ProductDetail />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/settings" element={<Settings />} />
           </Routes>

@@ -121,11 +121,6 @@ const NewProduct = () => {
                 <Link to={`/product/${product.id}`} className="bg-orange-500 duration-300 px-3 py-1.5 rounded-md transition text-sm text-white hover:bg-orange-600 md:px-5 md:py-1.5">
                   View Details
                 </Link>
-                <button className="border border-orange-500 duration-300 transition p-2 rounded-full text-orange-500 hover:text-orange-700 hover:border-orange-700 ">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-cart-fill" viewBox="0 0 16 16">
-                    <path d="M0 1.5A.5.5 0 0 1 .5 1h1.11l.401-1.007A.5.5 0 0 1 2.5 0h10a.5.5 0 0 1 .485.379l1.5 6A.5.5 0 0 1 14 7H4.21l-.2.5H14.5a.5.5 0 0 1 0 1H4.02a.5.5 0 0 1-.491-.408L1.61 2H.5a.5.5 0 0 1-.5-.5zM5.5 12a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0zm6 0a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0zm1.5-5H4.9L6 4h6.21l-1.21 3z" />
-                  </svg>
-                </button>
               </div>
             </div>
           ))}
