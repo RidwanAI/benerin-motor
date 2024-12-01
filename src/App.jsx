@@ -12,8 +12,9 @@ import Register from "./user/landing/pages/Register";
 import Shop from "./user/shop/pages/Shop";
 import Products from "./user/shop/components/products/Products";
 import ProductDetail from "./user/shop/components/products/ProductDetail";
-import Cart from "./user/shop/components/carts/Cart";
+import Carts from "./user/shop/components/carts/Carts";
 import Settings from "./user/shop/components/settings/Settings";
+import Orders from "./user/shop/components/orders/Orders";
 
 function App() {
   return (
@@ -49,9 +50,13 @@ function AnimatedRoutes() {
 
             {/* Shop */}
             <Route path="/shop" element={<Shop />} />
+
             <Route path="/products" element={<Products />} />
             <Route path="/product/:id" element={<ProductDetail />} />
-            <Route path="/cart" element={<Cart />} />
+
+            <Route path="/carts" element={<Carts />} />
+
+            <Route path="/orders" element={<Orders />} />
             <Route path="/settings" element={<Settings />} />
           </Routes>
         </div>

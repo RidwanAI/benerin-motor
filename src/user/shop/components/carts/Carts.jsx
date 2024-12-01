@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const Cart = () => {
+const Carts = () => {
   // List => Cart Products
   const [cartItems, setCartItems] = useState([
     { id: 1, name: "Honda Product 1", price: "Rp.100.000", description: "Description product", category: "Honda", quantity: 1, image: "./product/new/shockdbs-aerox.png" },
@@ -57,6 +57,7 @@ const Cart = () => {
   };
 
   // Function => Modal / Pop Up
+  // Pop Up Product Detail
   const [popupItem, setPopupItem] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
   const openPopup = (item) => {
@@ -69,6 +70,7 @@ const Cart = () => {
   };
 
   // Function => Proceed Payment
+  // Pop Up Payment Detail
   const [showPaymentPopup, setShowPaymentPopup] = useState(false);
   const proceedToPayment = () => {
     setShowPopup(false);
@@ -91,13 +93,24 @@ const Cart = () => {
       .filter((item) => selectedItems.includes(item.id))
       .map((item) => ({
         ...item,
-        virtualAccount: `VA${Math.floor(1000000000 + Math.random() * 9000000000)}`, // Generate nomor VA
+        virtualAccount: `VA${Math.floor(1000000000 + Math.random() * 9000000000)}`,
         status: "Waiting Payment",
       }));
 
-    setOrderStatus(orderDetails);
-    setShowOrderPopup(true);
     setShowPaymentPopup(false);
+    setShowOrderPopup(true);
+    setOrderStatus(orderDetails);
+    handleOrderNow(true);
+  };
+
+  // Function => Alert Order Successful
+  const [showAlert, setShowAlert] = useState(false);
+  const handleOrderNow = () => {
+    setShowAlert(true);
+    setTimeout(() => {
+      setShowAlert(false);
+    }, 3000);
+    setShowOrderPopup(true);
   };
 
   return (
@@ -213,34 +226,45 @@ const Cart = () => {
           <div className="h-96 overflow-hidden overflow-y-auto w-full md:w-2/4">
             <div className="bg-white p-3 rounded-md space-y-3">
               <p className="font-semibold text-xl md:text-2xl">Payment</p>
+
               <hr className="w-full" />
-              {/* Part => Payment Method */}
+
+              {/* Item => Payment Method */}
               <div className="space-y-2">
                 <label className="block font-semibold text-md">Payment Method</label>
-                <select value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)} className="w-full p-2 border rounded-md">
-                  <option value="">Select Payment Method</option>
-                  <option value="Bank Transfer">Bank Transfer</option>
-                  <option value="Credit Card">Credit Card</option>
+                <select value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)} className="border p-2 rounded-sm w-full">
+                  <option value="">None</option>
+                  <option value="BCA">BCA</option>
+                  <option value="BNI">BNI</option>
+                  <option value="BRI">BRI</option>
+                  <option value="Mandiri">Mandiri</option>
+                  <option value="Dana">Dana</option>
+                  <option value="Gopay">Gopay</option>
+                  <option value="Shopeepay">Shopeepay</option>
                 </select>
               </div>
 
-              {/* Part => Delivery Method */}
+              {/* Item => Delivery Method */}
               <div className="space-y-2">
                 <label className="block font-semibold text-md">Delivery Method</label>
-                <select value={deliveryMethod} onChange={(e) => setDeliveryMethod(e.target.value)} className="w-full p-2 border rounded-md">
-                  <option value="">Select Delivery Method</option>
-                  <option value="Standard">Standard</option>
-                  <option value="Express">Express</option>
+                <select value={deliveryMethod} onChange={(e) => setDeliveryMethod(e.target.value)} className="border p-2 rounded-sm w-full">
+                  <option value="">None</option>
+                  <option value="COD">COD</option>
+                  <option value="Tiki">Tiki</option>
+                  <option value="JNT">JNT</option>
+                  <option value="JNE">JNE</option>
+                  <option value="Shopee Express">Shopee Express</option>
+                  <option value="Anteraja">Anteraja</option>
                 </select>
               </div>
 
-              {/* Part => Address */}
+              {/* Item => Address */}
               <div className="space-y-2">
                 <label className="block font-semibold text-md">Customer Address</label>
-                <textarea value={customerAddress} onChange={(e) => setCustomerAddress(e.target.value)} className="w-full p-2 border rounded-md" placeholder="Enter your address" />
+                <textarea value={customerAddress} onChange={(e) => setCustomerAddress(e.target.value)} className="border p-2 rounded-sm w-full" placeholder="Enter your address" />
               </div>
 
-              {/* Part => Cart Item */}
+              {/* Item => Payment Item Product */}
               <p className="text-sm text-slate-500">Select the items you want to pay for:</p>
               <div>
                 {cartItems
@@ -257,13 +281,13 @@ const Cart = () => {
                   ))}
               </div>
 
-              {/* Part => Price Total Item */}
+              {/* Item => Price Total Item */}
               <div className="flex items-center justify-between font-semibold text-md">
                 <span>Total :</span>
                 <span>Rp. {calculateTotal().toLocaleString()}</span>
               </div>
 
-              {/* Button => Cancel & Pay Now */}
+              {/* Item => Button Cancel & Order Now */}
               <div className="flex items-center space-x-2">
                 <button onClick={closePaymentPopup} className="bg-slate-300 duration-300 px-3 py-1.5 rounded-md w-full hover:bg-slate-500 md:px-5 md:py-1.5">
                   Cancel
@@ -284,6 +308,13 @@ const Cart = () => {
             <div className="bg-white p-3 rounded-md space-y-3">
               {/* Header */}
               <p className="font-semibold text-xl md:text-2xl">Orders</p>
+
+              {/* Alert */}
+              {showAlert && (
+                <div className="bg-green-500 p-2 text-white rounded-sm">
+                  <p className="text-center font-semibold">Order Successful!</p>
+                </div>
+              )}
 
               {/* Order Items */}
               <div className="space-y-3">
@@ -314,7 +345,7 @@ const Cart = () => {
                 <button onClick={() => setShowOrderPopup(false)} className="bg-slate-300 duration-300 py-1.5 rounded-md w-full hover:bg-slate-500">
                   Close
                 </button>
-                <button onClick={() => (window.location.href = "/orderDetails")} className="bg-orange-500 duration-300 py-1.5 text-white rounded-md w-full hover:bg-orange-700">
+                <button onClick={() => (window.location.href = "/orders")} className="bg-orange-500 duration-300 py-1.5 text-white rounded-md w-full hover:bg-orange-700">
                   Order Details
                 </button>
               </div>
@@ -326,4 +357,4 @@ const Cart = () => {
   );
 };
 
-export default Cart;
+export default Carts;

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Carousel from "./Carousel";
-import Cart from "../carts/Cart";
+import Carts from "../carts/Carts";
 import CategoryProduct from "./CategoryProduct";
 import NewProduct from "./NewProduct";
 import RecommendedProduct from "./RecommendedProduct";
@@ -11,7 +11,7 @@ const Home = () => {
   const [activePage, setActivePage] = useState("home");
 
   const handleCartClick = () => {
-    setActivePage("cart");
+    setActivePage("carts");
   };
 
   const renderPageContent = () => {
@@ -48,8 +48,8 @@ const Home = () => {
           <Footer />
         </div>
       );
-    } else if (activePage === "cart") {
-      return <Cart />;
+    } else if (activePage === "carts") {
+      return <Carts />;
     }
   };
 

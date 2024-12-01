@@ -1,28 +1,26 @@
 const Default = () => {
   return (
-    <section className="bg-white p-4 rounded-sm shadow-sm space-y-3">
-      {/* Header */}
-      <div className="flex items-center space-x-4">
-        <div>
-          <p className="font-semibold text-xl md:text-2xl">
-            Welcome, <span className="text-blue-500">Achmad Rizky</span>
-          </p>
-          <p className="text-slate-700 text-md">We're glad to have you back! Select an option from the sidebar to modify your settings.</p>
-        </div>
+    <section className="bg-white font-poppins p-3 rounded-sm shadow-sm space-y-3">
+      {/* Part => Header */}
+      <div className="flex flex-col items-start space-y-1">
+        <p className="font-semibold text-xl">
+          Welcome, <span className="text-orange-500">Achmad Rizky</span>
+        </p>
+        <p className="text-slate-500 text-sm">We're glad to have you back! Select an option from the sidebar to modify your settings.</p>
       </div>
 
-      {/* Links */}
-      <div className="bg-slate-100 p-4 rounded-sm shadow-sm space-y-3">
-        <h4 className="font-semibold text-lg">Quick Actions</h4>
-        <ul className="space-y-2 text-md">
+      {/* Part => Link Quick Action */}
+      <div className="bg-slate-100 flex flex-col items-start p-3 rounded-sm space-y-1">
+        <p className="font-semibold text-xl">Quick Actions</p>
+        <ul className="space-y-1 text-sm">
           <li>
-            <button className="text-blue-500 hover:underline focus:outline-none">Edit your profile</button>
+            <button className="duration-300 text-blue-500 hover:underline focus:outline-none">Edit your profile</button>
           </li>
           <li>
-            <button className="text-blue-500 hover:underline focus:outline-none">Change your password</button>
+            <button className="duration-300 text-blue-500 hover:underline focus:outline-none">Change your password</button>
           </li>
           <li>
-            <button className="text-blue-500 hover:underline focus:outline-none">Manage account settings</button>
+            <button className="duration-300 text-blue-500 hover:underline focus:outline-none">Manage account settings</button>
           </li>
         </ul>
       </div>
