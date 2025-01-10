@@ -1,0 +1,28 @@
+GET http://localhost:5000/users
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsIm5hbWUiOiJrb250b2xvZG9uIiwiZW1haWwiOiJwYW50ZWtAZ21haWwuY29tIiwiaWF0IjoxNzM2NDc1Nzc2LCJleHAiOjE3MzY0NzU4MzZ9.SSPqdZjJ3yS0UEPMPDYfemP9iq92oZ83QyVAOTPfcno
+
+###
+POST http://localhost:5000/register
+Content-Type: application/json
+
+{
+    "name": "kontolodon",
+    "email": "pantek@gmail.com",
+    "password": "dahlah",
+    "cpassword": "dahlah"
+}
+
+###
+POST  http://localhost:5000/login
+Content-Type: application/json
+
+{
+    "email": "pantek@gmail.com",
+    "password": "dahlah"
+}
+
+###
+GET http://localhost:5000/token
+
+###
+DELETE http://localhost:5000/logout
