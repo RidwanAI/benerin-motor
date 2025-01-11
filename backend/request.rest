@@ -1,5 +1,5 @@
 GET http://localhost:5000/users
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsIm5hbWUiOiJrb250b2xvZG9uIiwiZW1haWwiOiJwYW50ZWtAZ21haWwuY29tIiwiaWF0IjoxNzM2NDc1Nzc2LCJleHAiOjE3MzY0NzU4MzZ9.SSPqdZjJ3yS0UEPMPDYfemP9iq92oZ83QyVAOTPfcno
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsIm5hbWUiOiJNdWhhbW1hZCBSaWR3YW4iLCJlbWFpbCI6InJpZHdhbnNtcGwzNkBnbWFpbC5jb20iLCJpYXQiOjE3MzY2MDM2MjMsImV4cCI6MTczNjYwMzY4M30.6WkADL2Emh5PRHsMA9FjP8rq_3vElrkR1pCvd02zlLc
 
 ###
 POST http://localhost:5000/register
@@ -17,8 +17,8 @@ POST  http://localhost:5000/login
 Content-Type: application/json
 
 {
-    "email": "pantek@gmail.com",
-    "password": "dahlah"
+    "email": "ridwansmpl36@gmail.com",
+    "password": "elektron1928"
 }
 
 ###
