@@ -13,6 +13,26 @@ export const getUsers = async (req, res) => {
   }
 };
 
+export const getMe = async (req, res) => {
+  try {
+    const user = await Users.findOne({
+      where: {
+        email: req.email,
+      },
+      attributes: ["id", "name", "email"],
+    });
+
+    if (!user) {
+      return res.status(404).json({ msg: "User tidak ditemukan" });
+    }
+
+    res.json(user);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ msg: "Server Error" });
+  }
+};
+
 export const Register = async (req, res) => {
   const { name, email, password, cpassword } = req.body;
   if (password != cpassword)
@@ -49,7 +69,7 @@ export const Login = async (req, res) => {
       { userId, name, email },
       process.env.ACCESS_TOKEN_SECRET,
       {
-        expiresIn: "1m",
+        expiresIn: "1d",
       }
     );
     const refreshToken = jwt.sign(

@@ -4,6 +4,7 @@ import {
   Login,
   Logout,
   Register,
+  getMe,
 } from "../controllers/userController.js";
 import { verifyToken } from "../middleware/verifyToken.js";
 import { refreshToken } from "../controllers/refreshToken.js";
@@ -15,5 +16,6 @@ router.post("/register", Register);
 router.post("/login", Login);
 router.get("/token", refreshToken);
 router.delete("/logout", Logout);
+router.get("/me", verifyToken, getMe);
 
 export default router;

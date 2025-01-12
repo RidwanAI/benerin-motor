@@ -7,21 +7,30 @@ const axiosInstance = axios.create({
   withCredentials: true, // Important for handling cookies
 });
 
+axiosInstance.interceptors.request.use((config) => {
+  const token = localStorage.getItem("accessToken");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
 export const authService = {
   register: async (userData) => {
     try {
       const response = await axiosInstance.post("/register", userData);
       return response.data;
     } catch (error) {
-      throw (
-        error.response?.data || { msg: "An error occurred during registration" }
-      );
+      throw error.response?.data || { msg: "An error occurred during registration" };
     }
   },
 
   login: async (credentials) => {
     try {
       const response = await axiosInstance.post("/login", credentials);
+      if (response.data.accessToken) {
+        localStorage.setItem("accessToken", response.data.accessToken);
+      }
       return response.data;
     } catch (error) {
       throw error.response?.data || { msg: "An error occurred during login" };
@@ -31,8 +40,18 @@ export const authService = {
   logout: async () => {
     try {
       await axiosInstance.delete("/logout");
+      localStorage.removeItem("accessToken");
     } catch (error) {
       throw error.response?.data || { msg: "An error occurred during logout" };
+    }
+  },
+
+  getCurrentUser: async () => {
+    try {
+      const response = await axiosInstance.get("/me"); // Endpoint untuk mendapatkan data user saat ini
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { msg: "Error fetching user data" };
     }
   },
 
@@ -41,11 +60,8 @@ export const authService = {
       const response = await axiosInstance.get("/token");
       return response.data;
     } catch (error) {
-      throw (
-        error.response?.data || {
-          msg: "An error occurred while refreshing token",
-        }
-      );
+      localStorage.removeItem("accessToken");
+      throw error.response?.data || { msg: "An error occurred while refreshing token" };
     }
   },
 };
