@@ -40,7 +40,7 @@ const Login = () => {
       }
 
       // Redirect ke halaman utama setelah login berhasil
-      navigate("/");
+      navigate("/shop");
     } catch (err) {
       setError(err.msg || "Email atau password salah");
     } finally {
