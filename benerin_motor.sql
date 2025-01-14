@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 6.0.0-dev+20230625.8e3615eca8
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 14, 2025 at 12:57 PM
--- Server version: 10.4.28-MariaDB
--- PHP Version: 8.2.4
+-- Generation Time: Jan 14, 2025 at 07:21 PM
+-- Server version: 10.4.24-MariaDB
+-- PHP Version: 8.1.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -33,15 +33,16 @@ CREATE TABLE `carts` (
   `quantity` int(11) NOT NULL DEFAULT 1,
   `userId` int(11) NOT NULL,
   `totalPrice` decimal(10,2) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `carts`
 --
 
 INSERT INTO `carts` (`id`, `productId`, `quantity`, `userId`, `totalPrice`) VALUES
-(1, 11, 41, 6, 410000.00),
-(45, 2, 1, 7, 10000.00);
+(1, 2, 41, 6, 410000.00),
+(45, 1, 1, 7, 10000.00),
+(61, 1, 1, 3, 0.00);
 
 -- --------------------------------------------------------
 
@@ -59,18 +60,23 @@ CREATE TABLE `orders` (
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL,
   `paymentProof` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `orders`
 --
 
 INSERT INTO `orders` (`id`, `userId`, `productId`, `quantity`, `totalPrice`, `status`, `createdAt`, `updatedAt`, `paymentProof`) VALUES
-(5, 7, 11, 1, 10000.00, 'Paid', '2025-01-14 10:16:50', '2025-01-14 17:44:28', NULL),
-(8, 7, 12, 1, 10000.00, 'Completed', '2025-01-14 10:19:40', '2025-01-14 17:45:13', NULL),
-(9, 7, 2, 1, 10000.00, 'Shipped', '2025-01-14 10:34:23', '2025-01-14 17:45:08', NULL),
-(10, 7, 11, 1, 10000.00, 'Pending', '2025-01-14 10:58:12', '2025-01-14 11:28:34', '/uploads/1736854114432-Ge_vw1za4AAKsQk.jpg'),
-(11, 7, 17, 1, 20000.00, 'Pending', '2025-01-14 11:40:50', '2025-01-14 11:40:59', '/uploads/1736854859926-dc215a4754a190b83dccf88275f93345.jpg');
+(5, 2, 2, 1, 10000.00, 'Paid', '2025-01-14 10:16:50', '2025-01-14 17:44:28', NULL),
+(8, 2, 3, 1, 10000.00, 'Completed', '2025-01-14 10:19:40', '2025-01-14 17:45:13', NULL),
+(9, 2, 1, 1, 10000.00, 'Shipped', '2025-01-14 10:34:23', '2025-01-14 17:45:08', NULL),
+(10, 2, 2, 1, 10000.00, 'Pending', '2025-01-14 10:58:12', '2025-01-14 11:28:34', '/uploads/1736854114432-Ge_vw1za4AAKsQk.jpg'),
+(11, 2, 8, 1, 20000.00, 'Pending', '2025-01-14 11:40:50', '2025-01-14 11:40:59', '/uploads/1736854859926-dc215a4754a190b83dccf88275f93345.jpg'),
+(13, 3, 3, 1, 10000.00, 'Pending', '2025-01-14 15:38:09', '2025-01-14 15:38:09', NULL),
+(14, 3, 3, 8, 80000.00, 'Pending', '2025-01-14 15:44:22', '2025-01-14 15:44:22', NULL),
+(15, 3, 2, 1, 10000.00, 'Pending', '2025-01-14 15:57:43', '2025-01-14 15:57:43', NULL),
+(16, 3, 10, 2, 0.00, 'Pending', '2025-01-14 17:15:02', '2025-01-14 17:15:02', NULL),
+(17, 3, 6, 2, 0.00, 'Pending', '2025-01-14 17:27:00', '2025-01-14 17:27:00', NULL);
 
 -- --------------------------------------------------------
 
@@ -88,28 +94,28 @@ CREATE TABLE `products` (
   `stock` int(11) NOT NULL,
   `sold` int(11) NOT NULL,
   `rating` decimal(3,1) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `products`
 --
 
 INSERT INTO `products` (`id`, `name`, `image`, `price`, `specs`, `label`, `stock`, `sold`, `rating`) VALUES
-(2, 'Ban motor baru', 'https://xmxpc86yeg.otospector.co.id/wp-content/uploads/2021/04/Ban-Bridgestone.jpg', '10000', 'Example specifications', 'New', 100, 0, 4.5),
-(11, 'Freya lucu bat es', 'https://static.promediateknologi.id/crop/0x0:0x0/0x0/webp/photo/p2/45/2024/06/01/sadgadgag-1142963797.jpg', '10000', 'Example specifications', 'New', 100, 0, 4.5),
-(12, 'Ella', 'https://i.pinimg.com/736x/19/a0/55/19a055f7665502a23c11f6590d966111.jpg', '10000', 'Example specifications', 'New', 100, 0, 4.5),
-(13, 'cakep jir', 'https://i.pinimg.com/736x/43/5d/a1/435da1b8e7e03d4b9d200180cbca6fe0.jpg', '20000', 'spek idol', 'Rec', 100, 0, 4.5),
-(14, 'cakep jir', 'https://i.pinimg.com/736x/43/5d/a1/435da1b8e7e03d4b9d200180cbca6fe0.jpg', '20000', 'spek idol', 'second', 100, 0, 4.5),
-(15, 'cakep jir', 'https://i.pinimg.com/736x/43/5d/a1/435da1b8e7e03d4b9d200180cbca6fe0.jpg', '20000', 'spek idol', 'second', 100, 0, 4.5),
-(16, 'asli cakep', 'https://i.pinimg.com/736x/43/5d/a1/435da1b8e7e03d4b9d200180cbca6fe0.jpg', '20000', 'spek idol', 'second', 100, 0, 4.5),
-(17, 'baru nih', 'https://i.pinimg.com/736x/43/5d/a1/435da1b8e7e03d4b9d200180cbca6fe0.jpg', '20000', 'spek idol', 'new', 100, 0, 4.5),
-(18, 'baru nih', 'https://i.pinimg.com/736x/43/5d/a1/435da1b8e7e03d4b9d200180cbca6fe0.jpg', '20000', 'spek idol', 'new', 100, 0, 4.5),
-(19, 'baru nih', 'https://i.pinimg.com/736x/43/5d/a1/435da1b8e7e03d4b9d200180cbca6fe0.jpg', '20000', 'spek idol', 'new', 100, 0, 4.5),
-(20, 'recomend 1', 'https://i.pinimg.com/736x/43/5d/a1/435da1b8e7e03d4b9d200180cbca6fe0.jpg', '20000', 'spek idol', 'rec', 100, 0, 4.5),
-(21, 'recomend 2', 'https://i.pinimg.com/736x/43/5d/a1/435da1b8e7e03d4b9d200180cbca6fe0.jpg', '20000', 'spek idol', 'rec', 100, 0, 4.5),
-(22, 'recomend 3', 'https://i.pinimg.com/736x/43/5d/a1/435da1b8e7e03d4b9d200180cbca6fe0.jpg', '20000', 'spek idol', 'rec', 100, 0, 4.5),
-(23, 'recomend 4', 'https://i.pinimg.com/736x/43/5d/a1/435da1b8e7e03d4b9d200180cbca6fe0.jpg', '20000', 'spek idol', 'rec', 100, 0, 4.5),
-(24, 'recomend 5', 'https://i.pinimg.com/736x/43/5d/a1/435da1b8e7e03d4b9d200180cbca6fe0.jpg', '20000', 'spek idol', 'rec', 100, 0, 4.5);
+(1, 'Shock Depan - Aerox/Nmax/PCX/ADV', 'https://down-id.img.susercontent.com/file/id-11134207-7r98p-llrct51uz1cc53', 'Rp.450.000', 'Shock depan untuk motor Yamaha Aerox, Nmax, Honda PCX, dan ADV dirancang untuk memberikan kenyamanan dan performa terbaik dalam setiap perjalanan. Dengan kualitas bahan yang kuat dan desain yang modern, shock depan ini membantu mengurangi guncangan dan menjaga kestabilan motor saat berkendara, membuat pengalaman berkendara Anda lebih nyaman dan aman.', 'New', 10, 3, 4.5),
+(2, 'Velg - Aerox/Nmax Tromol Jari-Jari', 'https://down-id.img.susercontent.com/file/086482af3e9e9080fe93b6d259f54961', 'Rp.1.200.000', 'Velg tromol jari-jari untuk motor Yamaha Aerox dan Nmax dirancang untuk memberikan performa tinggi dan tampilan stylish. Dengan konstruksi kokoh dan desain aerodinamis, velg ini memberikan keseimbangan yang sempurna antara kekuatan dan keindahan. Dirancang untuk penggunaan motor matic, cocok untuk Anda yang mencari velg berkualitas untuk meningkatkan penampilan serta kenyamanan berkendara.', 'New', 3, 1, 4.5),
+(3, 'Kampas Ganda - Beat/Vino/Mio', 'https://down-id.img.susercontent.com/file/id-11134201-7qul8-lk0rjkxwujpfb7', 'Rp.95.000', 'Kampas ganda belakang untuk motor Yamaha Beat, Vino, dan Mio dirancang untuk memberikan performa pengereman yang lebih baik dan aman. Dengan bahan yang berkualitas dan daya tahan tinggi, kampas ganda ini memberikan keseimbangan antara kekuatan dan kenyamanan dalam setiap pengereman. Cocok untuk penggantian atau upgrade sistem pengereman motor Anda.', 'New', 5, 2, 4.5),
+(4, 'Bearing Ban Depan - Mio/Scoopy/Vega R', 'https://filebroker-cdn.lazada.co.id/kf/S3860d2c7fce94a2ea41eef19f0f82375H.jpg', 'Rp.55.000', 'Bearing ban depan untuk motor Yamaha Mio, Scoopy, dan sejenisnya, dirancang untuk memberikan kenyamanan dan performa terbaik saat berkendara. Bearing ini memiliki kualitas tinggi yang membuat sistem roda depan motor Anda bekerja dengan lancar dan stabil.\r\n\r\n', 'New', 7, 2, 4.8),
+(5, 'Rantai Motor - Jupiter MX/Jupiter Z', 'https://tse4.mm.bing.net/th?id=OIP.g5_XRN1udg7hhYqd4JWXdQHaH3&rs=1&pid=ImgDetMain', 'Rp.35.000', 'Rantai motor untuk Yamaha Jupiter MX dan Z dirancang untuk memberikan performa terbaik dalam mendukung kelancaran pergerakan mesin dan transmisi motor. Dengan kualitas tinggi dan daya tahan yang luar biasa, rantai ini memastikan kenyamanan dan keselamatan berkendara Anda.', 'New', 4, 3, 4.6),
+(6, 'Soket Spull - Aerox/Nmax/PCX/ADV', 'https://filebroker-cdn.lazada.co.id/kf/Sa885be4a9a49445485b3ab32817128deO.jpg', 'Rp.20.000', 'Soket spull adalah komponen penting yang menghubungkan sistem kelistrikan motor, terutama pada sistem pengapian dan pengisian daya aki. Soket spull untuk Yamaha Aerox, Nmax, PCX, dan ADV dirancang untuk memberikan sambungan yang kuat dan stabil antara spull dan sistem kelistrikan lainnya. Komponen ini sangat penting untuk memastikan performa mesin yang optimal dan pengisian daya aki yang efisien.', 'Second', 11, 8, 4.7),
+(7, 'CVT - Nmax/Aerox/PCX', 'https://a.cdn-myedisi.com/z_article/otoplus-599a6b2a04dee.jpg', 'Rp.1.500.000', 'CVT (Continuous Variable Transmission) adalah sistem transmisi otomatis yang memberikan kenyamanan berkendara dengan perubahan gigi yang halus dan tanpa hentakan. CVT untuk Yamaha Nmax, Aerox, dan PCX ini dirancang untuk menggantikan komponen transmisi yang sudah aus, serta meningkatkan performa motor dalam hal akselerasi dan efisiensi bahan bakar. CVT ini dapat meningkatkan kenyamanan dan pengalaman berkendara Anda, terutama pada motor-motor Yamaha dengan transmisi otomatis.', 'Second', 14, 9, 4.9),
+(8, 'Roller 9/10/11/12g TDR - Beat/Zenio/Aerox/Nmax', 'https://oneteamstore.com/image/cache/data/product/TDR/Clutch%20and%20Transmission%20Systems/roller/new-pcx-150-1080x1080.jpg', 'Rp.47.000', 'Roller TDR adalah komponen penting pada sistem CVT motor yang berfungsi untuk mengatur perubahan rasio gigi dan meningkatkan akselerasi. Roller 9/10/11/12g TDR dirancang untuk motor Yamaha seperti Beat, Zenio, Aerox, dan Nmax. Penggantian roller ini akan memberikan dampak langsung pada performa motor, meningkatkan respons gas, akselerasi yang lebih baik, dan penghematan bahan bakar. TDR adalah merek yang terkenal dengan kualitas dan ketahanan tinggi.', 'Second', 13, 8, 4.8),
+(9, 'Cover Air Radiator - Aerox/Nmax', 'https://lzd-img-global.slatic.net/g/p/68df2370fd4e31657e0b3a3246faf011.jpg_720x720q80.jpg', 'Rp.40.000', 'Cover Air Radiator adalah komponen yang melindungi sistem pendinginan pada motor dari debu, kotoran, dan benda asing yang bisa mengganggu aliran udara dan pendinginan mesin. Cover ini dirancang untuk Yamaha Aerox dan Nmax, memberikan perlindungan lebih terhadap radiator serta memberikan tampilan yang lebih menarik dan sporty. Dapatkan performa mesin yang optimal dengan penggunaan Cover Air Radiator yang tepat.\r\n\r\n', 'Second', 9, 8, 4.7),
+(10, 'Lampu Depan LED - Aerox/Nmax/Vario', 'https://cf.shopee.co.id/file/398ec6a0013ffdc5f7328e0c3d534c3e', 'Rp.250.000', 'Lampu depan LED ini memberikan penerangan yang lebih terang dan efisien untuk Yamaha Aerox, Nmax, dan Vario. Dengan desain modern dan teknologi LED, lampu ini memberikan tampilan motor yang lebih stylish serta meningkatkan visibilitas berkendara di malam hari.', 'Second', 3, 1, 4.3),
+(11, 'Spion Motor - Mio/Fino/Nmax', 'https://down-id.img.susercontent.com/file/5694516553df151ea37aab653bf40f98', 'Rp.150.000', 'Spion motor dengan desain elegan dan fungsi tinggi ini cocok untuk Yamaha Mio, Fino, dan Nmax. Terbuat dari material kokoh dan tahan lama, spion ini memberikan visibilitas optimal untuk keselamatan berkendara.', 'Rec', 11, 3, 4.6),
+(12, 'Filter Udara - Aerox/Nmax/R15', 'https://cf.shopee.co.id/file/sg-11134201-23010-gkyissyws9lvdf', 'Rp.100.000', 'Filter udara untuk Yamaha Aerox, Nmax, dan R15 ini memiliki daya saring tinggi, menjaga mesin tetap bersih dari kotoran dan debu. Penggunaan filter udara berkualitas ini meningkatkan performa mesin, efisiensi bahan bakar, dan umur motor secara keseluruhan.', 'Rec', 10, 5, 4.4),
+(13, 'Kabel Rem - Mio/Nmax/Aerox', 'https://lzd-img-global.slatic.net/g/p/c82b9d68f7cd303abf571401c8e1fde8.jpg_720x720q80.jpg', 'Rp.55.000', 'Kabel rem berkualitas tinggi untuk Yamaha Mio, Nmax, dan Aerox ini menjamin kinerja pengereman yang responsif dan kuat. Dengan bahan kabel yang tahan lama dan anti-korosi, kabel rem ini menjadi pilihan tepat untuk penggantian atau perawatan motor.', 'Rec', 6, 2, 4.7),
+(14, 'Filter Oli - Nmax/Aerox/PCX', 'https://id-test-11.slatic.net/p/b2eb2ed5435c884cc7c549913465c0cb.jpg', 'Rp.75.000', 'Filter oli untuk Yamaha Nmax, Aerox, dan PCX berfungsi menyaring kotoran dan partikel dari oli mesin, menjaga agar oli tetap bersih dan mesin tetap bekerja optimal. Penggantian filter oli secara rutin meningkatkan umur mesin dan kinerja motor.', 'Rec', 2, 1, 4.2),
+(15, 'Karet Handle Grip - Nmax/Aerox/PCX', 'https://down-id.img.susercontent.com/file/17a675b3de05b178b45ca0c96e3a4759', 'Rp.44.000', 'Karet handle grip ini memberikan kenyamanan ekstra saat berkendara dengan Yamaha Nmax, Aerox, dan PCX. Terbuat dari bahan karet berkualitas tinggi, grip ini memberikan pegangan yang mantap dan anti-slip, sehingga Anda bisa berkendara lebih aman dan nyaman.', 'Rec', 18, 11, 4.8);
 
 -- --------------------------------------------------------
 
@@ -125,15 +131,16 @@ CREATE TABLE `users` (
   `refresh_token` text DEFAULT NULL,
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `users`
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `password`, `refresh_token`, `createdAt`, `updatedAt`) VALUES
-(6, 'Muhammad Ridwan', 'ridwansmpl36@gmail.com', '$2b$10$wOZQd.Jg1I1jH.O7xmw5OOkWUJ9WRz4wd9Ja7aBglxcOoaln8b8NK', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsIm5hbWUiOiJNdWhhbW1hZCBSaWR3YW4iLCJlbWFpbCI6InJpZHdhbnNtcGwzNkBnbWFpbC5jb20iLCJpYXQiOjE3MzY4MTE4MDksImV4cCI6MTczNjg5ODIwOX0.1E5T9RJ6mESo4TFzBURAtBxFoiKfJOYx03ma1GmbPu4', '2025-01-10 03:54:15', '2025-01-13 23:43:29'),
-(7, 'FADILANO ABRAHAM', 'fadilanoa@gmail.com', '$2b$10$/.LAp9tDi5ekDdompVjN7.sY7T9QoJvx/Zj7OJBdW.Wbvyt6h1X0W', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjcsIm5hbWUiOiJGQURJTEFOTyBBQlJBSEFNIiwiZW1haWwiOiJmYWRpbGFub2FAZ21haWwuY29tIiwiaWF0IjoxNzM2ODUzNjc1LCJleHAiOjE3MzY5NDAwNzV9.3aTYOvPcMHOZ0Zy70cNSvmodRF6felPAr0AyotOmZMY', '2025-01-13 01:57:01', '2025-01-14 11:21:15');
+(1, 'Muhammad Ridwan', 'ridwansmpl36@gmail.com', '$2b$10$wOZQd.Jg1I1jH.O7xmw5OOkWUJ9WRz4wd9Ja7aBglxcOoaln8b8NK', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsIm5hbWUiOiJNdWhhbW1hZCBSaWR3YW4iLCJlbWFpbCI6InJpZHdhbnNtcGwzNkBnbWFpbC5jb20iLCJpYXQiOjE3MzY4MTE4MDksImV4cCI6MTczNjg5ODIwOX0.1E5T9RJ6mESo4TFzBURAtBxFoiKfJOYx03ma1GmbPu4', '2025-01-10 03:54:15', '2025-01-13 23:43:29'),
+(2, 'Fadilano Abraham', 'fadilanoa@gmail.com', '$2b$10$/.LAp9tDi5ekDdompVjN7.sY7T9QoJvx/Zj7OJBdW.Wbvyt6h1X0W', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjcsIm5hbWUiOiJGQURJTEFOTyBBQlJBSEFNIiwiZW1haWwiOiJmYWRpbGFub2FAZ21haWwuY29tIiwiaWF0IjoxNzM2ODUzNjc1LCJleHAiOjE3MzY5NDAwNzV9.3aTYOvPcMHOZ0Zy70cNSvmodRF6felPAr0AyotOmZMY', '2025-01-13 01:57:01', '2025-01-14 11:21:15'),
+(3, 'Achmad Rizky', 'achmadrizky@gmail.com', '$2b$10$vQLU8hcyqs2XQuDxxSnaEenq2joXgNPaKqFmMTkszl0HXCXCg0jgG', NULL, '2025-01-14 15:35:38', '2025-01-14 18:16:02');
 
 --
 -- Indexes for dumped tables
@@ -174,13 +181,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `carts`
 --
 ALTER TABLE `carts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
 
 --
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `products`
@@ -192,7 +199,7 @@ ALTER TABLE `products`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- Constraints for dumped tables
@@ -208,8 +215,8 @@ ALTER TABLE `carts`
 -- Constraints for table `orders`
 --
 ALTER TABLE `orders`
-  ADD CONSTRAINT `orders_ibfk_17` FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `orders_ibfk_18` FOREIGN KEY (`productId`) REFERENCES `products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `orders_ibfk_21` FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `orders_ibfk_22` FOREIGN KEY (`productId`) REFERENCES `products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
