@@ -1,358 +1,202 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 const Carts = () => {
-  // List => Cart Products
-  const [cartItems, setCartItems] = useState([
-    { id: 1, name: "Honda Product 1", price: "Rp.100.000", description: "Description product", category: "Honda", quantity: 1, image: "./product/new/shockdbs-aerox.png" },
-    { id: 2, name: "Honda Product 2", price: "Rp.200.000", description: "Description product", category: "Honda", quantity: 1, image: "./product/new/kampasganda-aerox.png" },
-    { id: 3, name: "Honda Product 3", price: "Rp.300.000", description: "Description product", category: "Honda", quantity: 1, image: "./product/new/shockbreaker-aerox.png" },
-    { id: 4, name: "Honda Product 4", price: "Rp.400.000", description: "Description product", category: "Honda", quantity: 1, image: "./product/new/velgvnd-aerox.png" },
-    { id: 5, name: "Yamaha Product 5", price: "Rp.500.000", description: "Description product", category: "Yamaha", quantity: 1, image: "./product/new/filtertdr-aerox.png" },
-    { id: 6, name: "Yamaha Product 6", price: "Rp.600.000", description: "Description product", category: "Yamaha", quantity: 1, image: "./product/second/shockfushimaya-beat.png" },
-    { id: 7, name: "Yamaha Product 7", price: "Rp.700.000", description: "Description product", category: "Yamaha", quantity: 1, image: "./product/second/shockfushimaya-beat.png" },
-    { id: 8, name: "Yamaha Product 8", price: "Rp.800.000", description: "Description product", category: "Yamaha", quantity: 1, image: "./product/new/velgvnd-aerox.png" },
-    { id: 9, name: "Suzuki Product 9", price: "Rp.900.000", description: "Description product", category: "Suzuki", quantity: 1, image: "./product/new/filtertdr-aerox.png" },
-    { id: 10, name: "Suzuki Product 10", price: "Rp.1.000.000", description: "Description product", category: "Suzuki", quantity: 1, image: "./product/second/shockfushimaya-beat.png" },
-    { id: 11, name: "Suzuki Product 11", price: "Rp.1.100.000", description: "Description product", category: "Suzuki", quantity: 1, image: "./product/second/shockfushimaya-beat.png" },
-    { id: 12, name: "Suzuki Product 12", price: "Rp.1.200.000", description: "Description product", category: "Suzuki", quantity: 1, image: "./product/second/shockfushimaya-beat.png" },
-  ]);
-
-  // Function => Select Product
-  const handleSelectItem = (id) => {
-    setSelectedItems((prev) => {
-      if (prev.includes(id)) {
-        return prev.filter((itemId) => itemId !== id);
-      } else {
-        return [...prev, id];
-      }
-    });
-  };
-
-  // Function => Calculate Total
+  const [cartItems, setCartItems] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchCartItems = async () => {
+      try {
+        setLoading(true);
+    
+        // Mengambil data pengguna dari endpoint /me
+        const userResponse = await axios.get("http://localhost:5000/me", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        });
+    
+        const userId = userResponse.data.id;
+    
+        // Ambil data cart items milik pengguna dari /carts/user/:userId
+        const response = await axios.get(`http://localhost:5000/carts/user/${userId}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        });
+    
+        setCartItems(response.data); // Set data ke state cartItems
+      } catch (err) {
+        console.error(err);
+        setError(err.response?.data?.message || "Failed to fetch cart items. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+
+    fetchCartItems();
+  }, []);
+
+  const handleSelectItem = (id) => {
+    setSelectedItems((prev) =>
+      prev.includes(id) ? prev.filter((itemId) => itemId !== id) : [...prev, id]
+    );
+  };
+
   const calculateTotal = () => {
-    return cartItems
-      .filter((item) => selectedItems.includes(item.id))
-      .reduce((total, item) => {
-        const priceValue = parseInt(item.price.replace(/[^\d]/g, ""));
-        return total + priceValue * item.quantity;
-      }, 0);
+    return cartItems.reduce((total, item) => {
+      const priceValue = parseFloat(item.product.price.replace(/[^\d]/g, ""));
+      return total + priceValue * item.quantity;
+    }, 0);
   };
 
-  // Function => Category Product
-  const [selectedCategory, setSelectedCategory] = useState("Honda");
+  const increaseQuantity = async (id) => {
+    try {
+      const item = cartItems.find((item) => item.id === id);
+      const newQuantity = item.quantity + 1;
+  
+      // Update quantity di backend
+      const response = await axios.put(
+        `http://localhost:5000/carts/${id}`,
+        { quantity: newQuantity },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        }
+      );
+  
+      // Update state setelah berhasil di backend
+      setCartItems((prev) =>
+        prev.map((item) =>
+          item.id === id ? { ...item, quantity: response.data.quantity } : item
+        )
+      );
+    } catch (err) {
+      console.error("Failed to increase quantity.", err);
+      setError("Failed to update quantity. Please try again later.");
+    }
+  };
+  
+  const decreaseQuantity = async (id) => {
+    try {
+      const item = cartItems.find((item) => item.id === id);
+      if (item.quantity <= 1) return;
+  
+      const newQuantity = item.quantity - 1;
+  
+      // Update quantity di backend
+      const response = await axios.put(
+        `http://localhost:5000/carts/${id}`,
+        { quantity: newQuantity },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        }
+      );
+  
+      // Update state setelah berhasil di backend
+      setCartItems((prev) =>
+        prev.map((item) =>
+          item.id === id ? { ...item, quantity: response.data.quantity } : item
+        )
+      );
+    } catch (err) {
+      console.error("Failed to decrease quantity.", err);
+      setError("Failed to update quantity. Please try again later.");
+    }
+  };
+  
 
-  // Function => Quantity Product
-  const increaseQuantity = (id) => {
-    setCartItems((prev) => prev.map((item) => (item.id === id ? { ...item, quantity: item.quantity + 1 } : item)));
+  const removeItem = async (id) => {
+    try {
+      await axios.delete(`http://localhost:5000/carts/${id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      });
+
+      setCartItems((prev) => prev.filter((item) => item.id !== id));
+    } catch (err) {
+      console.error("Failed to remove item from cart.", err);
+      setError("Failed to remove item. Please try again later.");
+    }
   };
 
-  const decreaseQuantity = (id) => {
-    setCartItems((prev) => prev.map((item) => (item.id === id && item.quantity > 1 ? { ...item, quantity: item.quantity - 1 } : item)));
-  };
-
-  // Function => Delete Product
-  const removeItem = (id) => {
-    setCartItems((prev) => prev.filter((item) => item.id !== id));
-  };
-
-  // Function => Modal / Pop Up
-  // Pop Up Product Detail
-  const [popupItem, setPopupItem] = useState(null);
-  const [showPopup, setShowPopup] = useState(false);
-  const openPopup = (item) => {
-    setPopupItem(item);
-    setShowPopup(true);
-  };
-
-  const closePopup = () => {
-    setShowPopup(false);
-  };
-
-  // Function => Proceed Payment
-  // Pop Up Payment Detail
-  const [showPaymentPopup, setShowPaymentPopup] = useState(false);
-  const proceedToPayment = () => {
-    setShowPopup(false);
-    setShowPaymentPopup(true);
-  };
-
-  const closePaymentPopup = () => {
-    setShowPaymentPopup(false);
-  };
-
-  // Function => Status Order Detail Product
-  const [showOrderPopup, setShowOrderPopup] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState("");
-  const [deliveryMethod, setDeliveryMethod] = useState("");
-  const [customerAddress, setCustomerAddress] = useState("");
-  const [orderStatus, setOrderStatus] = useState([]);
-
-  const handlePlaceOrder = () => {
-    const orderDetails = cartItems
-      .filter((item) => selectedItems.includes(item.id))
-      .map((item) => ({
-        ...item,
-        virtualAccount: `VA${Math.floor(1000000000 + Math.random() * 9000000000)}`,
-        status: "Waiting Payment",
-      }));
-
-    setShowPaymentPopup(false);
-    setShowOrderPopup(true);
-    setOrderStatus(orderDetails);
-    handleOrderNow(true);
-  };
-
-  // Function => Alert Order Successful
-  const [showAlert, setShowAlert] = useState(false);
-  const handleOrderNow = () => {
-    setShowAlert(true);
-    setTimeout(() => {
-      setShowAlert(false);
-    }, 3000);
-    setShowOrderPopup(true);
-  };
+  if (loading) return <p>Loading cart items...</p>;
+  if (error) return <p className="text-red-500">{error}</p>;
 
   return (
     <div className="flex flex-col font-poppins">
-      {/* Part => Cart */}
       <div className="flex-1">
-        {/* Part => Header */}
         <div className="bg-white flex items-center justify-between p-3 sticky top-0 z-10">
           <p className="font-semibold text-xl md:text-2xl">Cart</p>
         </div>
-
-        {/* Part => Category Product */}
-        <div className="bg-white flex gap-2 overflow-x-auto p-3 sticky top-0 whitespace-nowrap z-10">
-          <button onClick={() => setSelectedCategory("Honda")} className={`px-3 py-1.5 rounded-md md:px-5 md:py-1.5 ${selectedCategory === "Honda" ? "bg-orange-500 text-white underline" : "bg-slate-100"}`}>
-            Honda
-          </button>
-          <button onClick={() => setSelectedCategory("Yamaha")} className={`px-3 py-1.5 rounded-md md:px-5 md:py-1.5 ${selectedCategory === "Yamaha" ? "bg-orange-500 text-white underline" : "bg-slate-100"}`}>
-            Yamaha
-          </button>
-          <button onClick={() => setSelectedCategory("Suzuki")} className={`px-3 py-1.5 rounded-md md:px-5 md:py-1.5 ${selectedCategory === "Suzuki" ? "bg-orange-500 text-white underline" : "bg-slate-100"}`}>
-            Suzuki
-          </button>
-        </div>
-
-        {/* Part => Cart Items */}
         <div className="p-3 space-y-3">
-          {cartItems
-            .filter((item) => item.category === selectedCategory)
-            .map((item) => (
-              <div key={item.id} className="bg-white flex flex-col gap-2 p-3">
-                {/* Cart Item */}
-                <div className="flex items-center space-x-2">
-                  {/* Part 1 */}
-                  <div className="flex gap-2 items-center">
-                    <input type="checkbox" checked={selectedItems.includes(item.id)} onChange={() => handleSelectItem(item.id)} className="ml-4" />
-                    <img src={item.image} alt={item.name} className="cursor-pointer h-24 object-cover rounded-sm w-24" onClick={() => openPopup(item)} />
+          {cartItems.map((item) => (
+            <div key={item.id} className="bg-white flex flex-col gap-2 p-3">
+              <div className="flex items-center space-x-2">
+                <div className="flex gap-2 items-center">
+                  <input
+                    type="checkbox"
+                    checked={selectedItems.includes(item.id)}
+                    onChange={() => handleSelectItem(item.id)}
+                    className="ml-4"
+                  />
+                  <img
+                    src={item.product.image}
+                    alt={item.product.name}
+                    className="cursor-pointer h-24 object-cover rounded-sm w-24"
+                  />
+                </div>
+                <div className="flex flex-col space-y-3 w-1/2">
+                  <div className="flex flex-col truncate w-auto">
+                    <p className="font-semibold text-md">{item.product.name}</p>
+                    <p className="text-xs md:text-sm text-slate-500">{item.product.price}</p>
                   </div>
-
-                  {/* Part 2 */}
-                  <div className="flex flex-col space-y-3 w-1/2">
-                    <div className="flex flex-col truncate w-auto">
-                      <p className="font-semibold text-md">{item.name}</p>
-                      <p className="text-xs md:text-sm text-slate-500">{item.price}</p>
-                      <p className="text-xs md:text-sm text-slate-500">{item.description}</p>
-                    </div>
-                    <div className="flex gap-2 items-center">
-                      <button onClick={() => decreaseQuantity(item.id)} className="flex gap-2 items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart-dash-fill" viewBox="0 0 16 16">
-                          <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0m7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0M6.5 7h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1 0-1" />
-                        </svg>
-                      </button>
-                      <span>{item.quantity}</span>
-                      <button onClick={() => increaseQuantity(item.id)} className="flex gap-2 items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart-plus-fill" viewBox="0 0 16 16">
-                          <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0m7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0M9 5.5V7h1.5a.5.5 0 0 1 0 1H9v1.5a.5.5 0 0 1-1 0V8H6.5a.5.5 0 0 1 0-1H8V5.5a.5.5 0 0 1 1 0" />
-                        </svg>
-                      </button>
-                    </div>
+                  <div className="flex gap-2 items-center">
+                    <button
+                      onClick={() => decreaseQuantity(item.id)}
+                      className="flex gap-2 items-center"
+                    >
+                      -
+                    </button>
+                    <span>{item.quantity}</span>
+                    <button
+                      onClick={() => increaseQuantity(item.id)}
+                      className="flex gap-2 items-center"
+                    >
+                      +
+                    </button>
                   </div>
                 </div>
-
-                {/* Button => Remove Cart Item */}
-                <button onClick={() => removeItem(item.id)} className="duration-300 flex items-center justify-center text-red-500 hover:text-red-700">
-                  Remove
-                </button>
               </div>
-            ))}
-
-          {/* Button => Checkout */}
+              <button
+                onClick={() => removeItem(item.id)}
+                className="duration-300 flex items-center justify-center text-red-500 hover:text-red-700"
+              >
+                Remove
+              </button>
+            </div>
+          ))}
           <div className="bg-white flex items-center justify-between p-3 rounded-sm">
-            <p className="font-semibold text-md md:text-xl">Total : Rp.{calculateTotal().toLocaleString()}</p>
-            <button onClick={proceedToPayment} className="bg-orange-500 duration-300 px-3 py-1.5 rounded-md text-white hover:bg-orange-700 md:px-5 md:py-1.5">
+            <p className="font-semibold text-md md:text-xl">
+              Total : Rp.{calculateTotal().toLocaleString()}
+            </p>
+            <button
+              onClick={() => alert("Proceed to payment!")}
+              className="bg-orange-500 duration-300 px-3 py-1.5 rounded-md text-white hover:bg-orange-700 md:px-5 md:py-1.5"
+            >
               Checkout
             </button>
           </div>
         </div>
       </div>
-
-      {/* Part => Pop Up Detail Product */}
-      {showPopup && popupItem && (
-        <div className="bg-black bg-opacity-50 fixed flex inset-0 items-center justify-center px-3 z-10">
-          <div className="bg-white p-3 rounded-md space-y-3 w-full md:w-2/4">
-            <img src={popupItem.image} alt={popupItem.name} className="h-40 object-cover rounded-md w-full" />
-
-            {/* Description */}
-            <div className="bg-slate-100 p-3 rounded-sm text-slate-500">
-              <p className="font-semibold text-xl md:text-2xl">{popupItem.name}</p>
-              <p className="font-semibold text-md">{popupItem.price}</p>
-              <p className="text-sm">{popupItem.description}</p>
-            </div>
-
-            <div className="flex space-x-2">
-              <button onClick={closePopup} className="bg-slate-300 duration-300 px-3 py-1.5 rounded-md w-full hover:bg-slate-500 md:px-5 md:py-1.5">
-                Close
-              </button>
-              <button
-                onClick={() => {
-                  setSelectedItems([popupItem.id]);
-                  proceedToPayment();
-                }}
-                className="bg-orange-500 duration-300 px-3 py-1.5 rounded-md text-white w-full hover:bg-orange-700 md:px-5 md:py-1.5"
-              >
-                Proceed To Pay
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Part => Pop Up Detail Payment */}
-      {showPaymentPopup && (
-        <div className="bg-black bg-opacity-50 fixed flex inset-0 items-center justify-center px-3 z-10">
-          <div className="h-96 overflow-hidden overflow-y-auto w-full md:w-2/4">
-            <div className="bg-white p-3 rounded-md space-y-3">
-              <p className="font-semibold text-xl md:text-2xl">Payment</p>
-
-              <hr className="w-full" />
-
-              {/* Item => Payment Method */}
-              <div className="space-y-2">
-                <label className="block font-semibold text-md">Payment Method</label>
-                <select value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)} className="border p-2 rounded-sm w-full">
-                  <option value="">None</option>
-                  <option value="BCA">BCA</option>
-                  <option value="BNI">BNI</option>
-                  <option value="BRI">BRI</option>
-                  <option value="Mandiri">Mandiri</option>
-                  <option value="Dana">Dana</option>
-                  <option value="Gopay">Gopay</option>
-                  <option value="Shopeepay">Shopeepay</option>
-                </select>
-              </div>
-
-              {/* Item => Delivery Method */}
-              <div className="space-y-2">
-                <label className="block font-semibold text-md">Delivery Method</label>
-                <select value={deliveryMethod} onChange={(e) => setDeliveryMethod(e.target.value)} className="border p-2 rounded-sm w-full">
-                  <option value="">None</option>
-                  <option value="COD">COD</option>
-                  <option value="Tiki">Tiki</option>
-                  <option value="JNT">JNT</option>
-                  <option value="JNE">JNE</option>
-                  <option value="Shopee Express">Shopee Express</option>
-                  <option value="Anteraja">Anteraja</option>
-                </select>
-              </div>
-
-              {/* Item => Address */}
-              <div className="space-y-2">
-                <label className="block font-semibold text-md">Customer Address</label>
-                <textarea value={customerAddress} onChange={(e) => setCustomerAddress(e.target.value)} className="border p-2 rounded-sm w-full" placeholder="Enter your address" />
-              </div>
-
-              {/* Item => Payment Item Product */}
-              <p className="text-sm text-slate-500">Select the items you want to pay for:</p>
-              <div>
-                {cartItems
-                  .filter((item) => selectedItems.includes(item.id))
-                  .map((item) => (
-                    <li key={item.id} className="flex flex-col space-y-3 mt-3">
-                      <span className="font-semibold text-md">{item.name}</span>
-                      <div className="bg-slate-100 p-3 flex items-center justify-between text-md">
-                        <span>{item.price}</span>
-                        <span>Qty : {item.quantity}</span>
-                        <span>Rp.{parseInt(item.price.replace(/[^\d]/g, "")) * item.quantity}</span>
-                      </div>
-                    </li>
-                  ))}
-              </div>
-
-              {/* Item => Price Total Item */}
-              <div className="flex items-center justify-between font-semibold text-md">
-                <span>Total :</span>
-                <span>Rp. {calculateTotal().toLocaleString()}</span>
-              </div>
-
-              {/* Item => Button Cancel & Order Now */}
-              <div className="flex items-center space-x-2">
-                <button onClick={closePaymentPopup} className="bg-slate-300 duration-300 px-3 py-1.5 rounded-md w-full hover:bg-slate-500 md:px-5 md:py-1.5">
-                  Cancel
-                </button>
-                <button onClick={handlePlaceOrder} className="bg-orange-500 duration-300 px-3 py-1.5 rounded-md text-white w-full hover:bg-orange-700 md:px-5 md:py-1.5">
-                  Order Now
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Part => Pop Up Order Status */}
-      {showOrderPopup && (
-        <div className="bg-black bg-opacity-50 fixed flex inset-0 items-center justify-center px-3 z-10">
-          <div className="h-96 overflow-y-auto w-full md:w-2/4">
-            <div className="bg-white p-3 rounded-md space-y-3">
-              {/* Header */}
-              <p className="font-semibold text-xl md:text-2xl">Orders</p>
-
-              {/* Alert */}
-              {showAlert && (
-                <div className="bg-green-500 p-2 text-white rounded-sm">
-                  <p className="text-center font-semibold">Order Successful!</p>
-                </div>
-              )}
-
-              {/* Order Items */}
-              <div className="space-y-3">
-                {orderStatus.map((item) => (
-                  <div key={item.id} className="bg-slate-100 flex flex-col items-start p-3 rounded-sm space-y-3">
-                    <p className="font-semibold text-md">{item.name}</p>
-                    <div className="flex font-semibold items-start justify-between w-full">
-                      <p className="text-sm text-slate-500">Qty : {item.quantity}</p>
-                      <p className="text-sm text-slate-500">{item.price}</p>
-                    </div>
-
-                    <hr className="border-2 w-full" />
-
-                    <div className="text-start">
-                      <p className="font-semibold text-sm text-slate-500">
-                        Virtual Account : <span className="text-slate-700">{item.virtualAccount}</span>
-                      </p>
-                      <p className="font-semibold text-sm text-slate-500">
-                        Status : <span className="text-orange-500">{item.status}</span>
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Buttons */}
-              <div className="flex items-center space-x-2">
-                <button onClick={() => setShowOrderPopup(false)} className="bg-slate-300 duration-300 py-1.5 rounded-md w-full hover:bg-slate-500">
-                  Close
-                </button>
-                <button onClick={() => (window.location.href = "/orders")} className="bg-orange-500 duration-300 py-1.5 text-white rounded-md w-full hover:bg-orange-700">
-                  Order Details
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

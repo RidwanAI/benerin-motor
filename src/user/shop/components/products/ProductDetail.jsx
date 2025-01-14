@@ -1,10 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
+import axios from "axios";
+import { authService } from "../../../../services/authService.js";
+
 
 const ProductDetail = () => {
   const { id } = useParams();
+  const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
-  const [cart, setCart] = useState([]);
   const [isModalVisible, setModalVisible] = useState(false);
   const [isModalPayment, setModalPayment] = useState(false);
   const [messageCart, setMessageCart] = useState("");
@@ -12,160 +15,104 @@ const ProductDetail = () => {
   const [virtualAccount, setVirtualAccount] = useState(null);
   const [selectedShippingMethod, setSelectedShippingMethod] = useState("");
   const [paymentSuccess, setPaymentSuccess] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const listProducts = [
-    {
-      id: 1,
-      name: "Shockbreaker DBS Aerox Old",
-      image: "/product/new/shockdbs-aerox.png",
-      price: "Rp.1.100.000",
-      specs: "Enhanced durability for smoother rides",
-      label: "Discount 50%",
-      stock: 10,
-      sold: 3,
-      rating: 4.5,
-    },
-    {
-      id: 2,
-      name: "Kampas Ganda Aerox",
-      image: "/product/new/kampasganda-aerox.png",
-      price: "Rp.250.000",
-      specs: "Efficient and long-lasting clutch pads",
-      label: "Discount 7%",
-      stock: 17,
-      sold: 12,
-      rating: 4.3,
-    },
-    {
-      id: 3,
-      name: "Kampas Ganda Aerox",
-      image: "/product/new/kampasganda-aerox.png",
-      price: "Rp.250.000",
-      specs: "Efficient and long-lasting clutch pads",
-      label: "Discount 25%",
-      stock: 9,
-      sold: 7,
-      rating: 4.9,
-    },
-    {
-      id: 4,
-      name: "Kampas Ganda Aerox",
-      image: "/product/new/kampasganda-aerox.png",
-      price: "Rp.250.000",
-      specs: "Efficient and long-lasting clutch pads",
-      label: "Discount 10%",
-      stock: 10,
-      sold: 18,
-      rating: 4.7,
-    },
-    {
-      id: 5,
-      name: "Kampas Ganda Aerox",
-      image: "/product/new/kampasganda-aerox.png",
-      price: "Rp.250.000",
-      specs: "Efficient and long-lasting clutch pads",
-      label: "Discount 10%",
-      stock: 1,
-      sold: 2,
-      rating: 4.5,
-    },
-    {
-      id: 6,
-      name: "Kampas Ganda Aerox",
-      image: "/product/new/kampasganda-aerox.png",
-      price: "Rp.250.000",
-      specs: "Efficient and long-lasting clutch pads",
-      label: "Discount 15%",
-      stock: 3,
-      sold: 4,
-      rating: 4.6,
-    },
-    {
-      id: 7,
-      name: "Shockbreaker DBS Aerox Old",
-      image: "/product/new/shockdbs-aerox.png",
-      price: "Rp.1.100.000",
-      specs: "Enhanced durability for smoother rides",
-      label: "Discount 10%",
-      stock: 10,
-      sold: 4,
-      rating: 4.6,
-    },
-    {
-      id: 8,
-      name: "Kampas Ganda Aerox",
-      image: "/product/new/kampasganda-aerox.png",
-      price: "Rp.250.000",
-      specs: "Efficient and long-lasting clutch pads",
-      label: "Discount 5%",
-      stock: 6,
-      sold: 7,
-      rating: 4.7,
-    },
-    {
-      id: 9,
-      name: "Kampas Ganda Aerox",
-      image: "/product/new/kampasganda-aerox.png",
-      price: "Rp.250.000",
-      specs: "Efficient and long-lasting clutch pads",
-      label: "Discount 17%",
-      stock: 20,
-      sold: 9,
-      rating: 4.8,
-    },
-    {
-      id: 10,
-      name: "Kampas Ganda Aerox",
-      image: "/product/new/kampasganda-aerox.png",
-      price: "Rp.250.000",
-      specs: "Efficient and long-lasting clutch pads",
-      label: "Discount 40%",
-      stock: 3,
-      sold: 10,
-      rating: 4.9,
-    },
-    {
-      id: 11,
-      name: "Kampas Ganda Aerox",
-      image: "/product/new/kampasganda-aerox.png",
-      price: "Rp.250.000",
-      specs: "Efficient and long-lasting clutch pads",
-      label: "Discount 4%",
-      stock: 8,
-      sold: 8,
-      rating: 5,
-    },
-    {
-      id: 12,
-      name: "Kampas Ganda Aerox",
-      image: "/product/new/kampasganda-aerox.png",
-      price: "Rp.250.000",
-      specs: "Efficient and long-lasting clutch pads",
-      label: "Discount 10%",
-      stock: 17,
-      sold: 11,
-      rating: 4.3,
-    },
-  ];
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get(`http://localhost:5000/products/${id}`);
+        setProduct(response.data);
+        setError(null);
+      } catch (err) {
+        setError("Product not found");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const product = listProducts.find((item) => item.id === parseInt(id));
-  if (!product) {
-    return (
-      <div className="bg-orange-200 flex flex-col font-poppins gap-2 h-screen items-center justify-center p-3 text-center">
-        <p className="font-bold text-red-500 text-xl md:text-2xl">Product not found!</p>
-        <Link to="/shop" className="text-orange-500 hover:underline">
-          Go Back
-        </Link>
-      </div>
-    );
-  }
+    if (id) {
+      fetchProduct();
+    } else {
+      setError("Invalid product ID");
+      setLoading(false);
+    }
+  }, [id]);
 
-  const addToCart = () => {
-    const item = { ...product, quantity };
-    setCart((prevCart) => [...prevCart, item]);
-    setMessageCart(`${product.name} has been successfully added to the cart!`);
-    setTimeout(() => setMessageCart(""), 3000);
+  const addToCart = async () => {
+    try {
+      // Get the current user
+      const currentUser = await authService.getCurrentUser();
+  
+      if (!currentUser || !currentUser.id) {
+        setMessageCart("Please log in to add items to the cart.");
+        setTimeout(() => setMessageCart(""), 3000);
+        return;
+      }
+  
+      const userId = currentUser.id;
+  
+      // Fetch all cart items for this user
+      const { data: cartItems } = await axios.get(`http://localhost:5000/carts`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      });
+  
+      // Log all cart items for debugging
+      console.log("All cart items:", cartItems);
+  
+      // Find the cart item matching userId and productId
+      const existingCartItem = cartItems.find(
+        (item) => item.userId === userId && item.productId === product.id
+      );
+  
+      console.log("Matched cart item:", existingCartItem);
+  
+      if (existingCartItem) {
+        // Update the quantity of the existing item
+        const updatedQuantity = existingCartItem.quantity + quantity;
+  
+        const response = await axios.put(
+          `http://localhost:5000/carts/${existingCartItem.id}`,
+          { quantity: updatedQuantity },
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            },
+          }
+        );
+  
+        console.log("Updated cart item response:", response.data);
+        setMessageCart(`Updated quantity of ${product.name} to ${updatedQuantity}.`);
+      } else {
+        // Add a new item to the cart
+        const payload = {
+          productId: product.id,
+          userId,
+          quantity,
+        };
+  
+        const response = await axios.post("http://localhost:5000/carts", payload, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        });
+  
+        console.log("Added new cart item response:", response.data);
+        setMessageCart(`${product.name} has been successfully added to the cart!`);
+      }
+  
+      setTimeout(() => setMessageCart(""), 3000);
+    } catch (error) {
+      console.error("Error adding/updating cart:", error.response?.data || error.message);
+      setMessageCart("Failed to update the cart. Please try again.");
+      setTimeout(() => setMessageCart(""), 3000);
+    }
   };
+  
+  
 
   const buyNow = () => {
     setModalVisible(true);
@@ -202,19 +149,33 @@ const ProductDetail = () => {
     }
   };
 
-  const [paymentProof, setPaymentProof] = useState(null);
-
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setPaymentProof(file);
+      setVirtualAccount(file);
     }
   };
 
+  if (loading) {
+    return <p className="text-center text-xl">Loading...</p>;
+  }
+
+  if (error) {
+    return (
+      <div className="bg-orange-200 flex flex-col font-poppins gap-2 h-screen items-center justify-center p-3 text-center">
+        <p className="font-bold text-red-500 text-xl md:text-2xl">{error}</p>
+        <Link to="/shop" className="text-orange-500 hover:underline">
+          Go Back
+        </Link>
+      </div>
+    );
+  }
+
   return (
     <section className="flex font-poppins h-screen items-center justify-center p-3">
-      {/* Card */}
-      <div className="bg-white max-w-3xl mx-auto rounded-md shadow-md overflow-hidden">
+      {/* Remaining UI Code */}
+            {/* Card */}
+            <div className="bg-white max-w-3xl mx-auto rounded-md shadow-md overflow-hidden">
         <div className="grid grid-cols-1 md:grid-cols-2">
           {/* Image */}
           <div className="relative">
@@ -396,6 +357,7 @@ const ProductDetail = () => {
           </div>
         </div>
       )}
+      {/* Keep all other elements unchanged */}
     </section>
   );
 };
