@@ -48,7 +48,7 @@ const Carousel = () => {
               backgroundSize: "cover",
               backgroundPosition: "center",
             }}
-            className="flex flex-shrink-0 h-48 items-center justify-center p-4 shadow-sm snap-center text-center w-full md:h-72"
+            className="flex flex-shrink-0 h-48 items-center justify-center p-4 shadow-sm snap-center text-center w-full md:h-96"
           ></div>
         ))}
       </div>

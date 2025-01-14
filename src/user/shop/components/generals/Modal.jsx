@@ -1,6 +1,6 @@
 import React from "react";
 
-const Modal = ({ isOpen, onClose, onConfirm, title, message, isEditProfile, initialData, onInputChange }) => {
+const Modal = ({ isOpen, onClose, onConfirm, title, message }) => {
   if (!isOpen) return null;
 
   return (
@@ -8,29 +8,9 @@ const Modal = ({ isOpen, onClose, onConfirm, title, message, isEditProfile, init
       <div className="bg-white mx-3 p-3 rounded-sm shadow-sm space-y-3 w-full md:max-w-md">
         {/* Header */}
         <div className="flex flex-col items-start space-y-1">
-          <p className="font-semibold text-xl">{title}</p>
+          <p className="font-semibold text-black text-xl">{title}</p>
           <p className="text-slate-500 text-sm">{message}</p>
         </div>
-
-        {isEditProfile && (
-          <div className="space-y-3 text-sm">
-            {/* Name */}
-            <div className="flex flex-col space-y-2">
-              <label htmlFor="name" className="font-medium block">
-                Name
-              </label>
-              <input type="text" id="name" placeholder="Enter your name" className="border p-2 rounded-sm text-black w-full focus:outline-orange-700" value={initialData.name} onChange={(e) => onInputChange("name", e.target.value)} />
-            </div>
-
-            {/* Email */}
-            <div className="flex flex-col space-y-2">
-              <label htmlFor="email" className="font-medium block">
-                Email
-              </label>
-              <input type="email" id="email" placeholder="Enter your email" className="border p-2 rounded-sm text-black w-full focus:outline-orange-700" value={initialData.email} onChange={(e) => onInputChange("email", e.target.value)} />
-            </div>
-          </div>
-        )}
 
         {/* Button => Cancel & Confirm */}
         <div className="flex justify-end space-x-2">

@@ -98,13 +98,7 @@ const Orders = () => {
         {/* Part => Category Orders */}
         <div className="bg-white flex gap-2 overflow-x-auto p-3 sticky top-0 whitespace-nowrap z-10">
           {["Pending", "Paid", "Shipped", "Completed"].map((category) => (
-            <button
-              key={category}
-              onClick={() => setSelectedCategory(category)}
-              className={`px-3 py-1.5 rounded-md md:px-5 md:py-1.5 ${
-                selectedCategory === category ? "bg-orange-500 text-white underline" : "bg-slate-100"
-              }`}
-            >
+            <button key={category} onClick={() => setSelectedCategory(category)} className={`px-3 py-1.5 rounded-md md:px-5 md:py-1.5 ${selectedCategory === category ? "bg-orange-500 text-white underline" : "bg-slate-100"}`}>
               {category}
             </button>
           ))}
@@ -124,16 +118,10 @@ const Orders = () => {
               .map((item) => (
                 <div key={item.id} className="bg-white flex flex-col items-start gap-2 p-3">
                   <div className="flex gap-2 w-full">
-                    <img
-                      src={item.orderedProduct?.image || "/placeholder-image.png"}
-                      alt={item.orderedProduct?.name || "Unknown Product"}
-                      className="h-24 w-24 object-cover rounded-md"
-                    />
+                    <img src={item.orderedProduct?.image || "/placeholder-image.png"} alt={item.orderedProduct?.name || "Unknown Product"} className="h-24 w-24 object-cover rounded-md" />
                     <div>
                       <p className="font-semibold text-md truncate">{item.orderedProduct?.name || "Unknown Product"}</p>
-                      <p className="font-semibold text-sm">
-                        Rp.{item.totalPrice?.toLocaleString() || "0"}
-                      </p>
+                      <p className="font-semibold text-sm">Rp.{item.totalPrice?.toLocaleString() || "0"}</p>
                       <p className="text-sm">Quantity: {item.quantity || "N/A"}</p>
                     </div>
                   </div>
@@ -141,36 +129,21 @@ const Orders = () => {
                   {/* Extra Buttons */}
                   {selectedCategory === "Pending" && (
                     <div className="bg-slate-100 flex flex-col p-3 w-full">
-                      <label
-                        htmlFor={`upload-proof-${item.id}`}
-                        className="bg-orange-500 cursor-pointer duration-300 flex gap-2 items-center justify-center px-3 py-1.5 rounded-md text-white hover:bg-orange-700"
-                      >
+                      <label htmlFor={`upload-proof-${item.id}`} className="bg-orange-500 cursor-pointer duration-300 flex gap-2 items-center justify-center px-3 py-1.5 rounded-md text-white hover:bg-orange-700">
                         Upload Payment Proof
                       </label>
-                      <input
-                        type="file"
-                        id={`upload-proof-${item.id}`}
-                        accept="image/*"
-                        className="hidden"
-                        onChange={(e) => handleFileUpload(e, item.id)}
-                      />
+                      <input type="file" id={`upload-proof-${item.id}`} accept="image/*" className="hidden" onChange={(e) => handleFileUpload(e, item.id)} />
                     </div>
                   )}
 
                   {selectedCategory === "Shipped" && (
-                    <button
-                      onClick={handleArrival}
-                      className="bg-orange-500 duration-300 flex gap-2 items-center justify-center mt-2 px-3 py-1.5 rounded-md text-white hover:bg-orange-700 md:px-5 md:py-1.5"
-                    >
+                    <button onClick={handleArrival} className="bg-orange-500 duration-300 flex gap-2 items-center justify-center mt-2 px-3 py-1.5 rounded-md text-white hover:bg-orange-700 md:px-5 md:py-1.5">
                       Item Delivered
                     </button>
                   )}
 
                   {selectedCategory === "Completed" && (
-                    <button
-                      onClick={() => handleOpenReviewPopup(item.id)}
-                      className="bg-orange-500 duration-300 flex gap-2 items-center justify-center mt-2 px-3 py-1.5 rounded-md text-white hover:bg-orange-700 md:px-5 md:py-1.5"
-                    >
+                    <button onClick={() => handleOpenReviewPopup(item.id)} className="bg-orange-500 duration-300 flex gap-2 items-center justify-center mt-2 px-3 py-1.5 rounded-md text-white hover:bg-orange-700 md:px-5 md:py-1.5">
                       Feedback
                     </button>
                   )}

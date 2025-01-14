@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import axios from "axios";
 
 const ProductList = ({ searchTerm, category }) => {
@@ -8,7 +9,7 @@ const ProductList = ({ searchTerm, category }) => {
   const [error, setError] = useState(null);
 
   // Pagination
-  const productsPerPage = 6;
+  const productsPerPage = 8;
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [cart, setCart] = useState([]);
@@ -31,16 +32,9 @@ const ProductList = ({ searchTerm, category }) => {
   }, [category]);
 
   // Filter products by search term
-  const filteredProducts = products.filter((product) =>
-    product.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
+  const filteredProducts = products.filter((product) => product.name.toLowerCase().includes(searchTerm.toLowerCase()));
   const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
-  const currentProducts = filteredProducts.slice(
-    (currentPage - 1) * productsPerPage,
-    currentPage * productsPerPage
-  );
-
+  const currentProducts = filteredProducts.slice((currentPage - 1) * productsPerPage, currentPage * productsPerPage);
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);
@@ -73,9 +67,9 @@ const ProductList = ({ searchTerm, category }) => {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
       });
-  
+
       const userId = userResponse.data.id;
-  
+
       // Kirim permintaan ke backend untuk menambahkan produk ke keranjang
       const response = await axios.post(
         "http://localhost:5000/carts",
@@ -90,10 +84,10 @@ const ProductList = ({ searchTerm, category }) => {
           },
         }
       );
-  
+
       // Tambahkan produk ke state cart lokal untuk memperbarui UI
       setCart((prevCart) => [...prevCart, response.data]);
-  
+
       // Tampilkan notifikasi
       setShowAlert(true);
       setTimeout(() => {
@@ -104,7 +98,6 @@ const ProductList = ({ searchTerm, category }) => {
       setError("Failed to add product to cart. Please try again.");
     }
   };
-  
 
   const navigate = useNavigate();
   const handleViewCart = () => {
@@ -133,18 +126,35 @@ const ProductList = ({ searchTerm, category }) => {
       </div>
 
       {/* Product Grid */}
-      <div className="gap-6 grid grid-cols-1 w-auto md:grid-cols-3">
+      <div className="gap-3 grid grid-cols-2 w-auto md:grid-cols-4">
         {currentProducts.map((product) => (
-          <div key={product.id} className="bg-white p-4 rounded-md shadow-sm space-y-3">
-            <img src={product.image} alt={product.name} className="h-48 object-cover rounded-md w-full" />
-            <p className="text-md md:text-xl font-semibold">{product.name}</p>
-            <div className="flex items-center justify-between">
-              <p>{product.specs}</p>
-              <p className="bg-orange-500 px-3 py-1 text-white">{product.price}</p>
+          <div key={product.id} className="bg-white duration-300 flex flex-col group justify-between overflow-hidden relative rounded-md shadow-md transform hover:-translate-y-1">
+            {/* Image Product */}
+            <div className="relative h-40 w-full">
+              <img src={product.image} alt={product.name} className="duration-300 h-full object-cover transition-transform w-full group-hover:scale-110" />
+              <span className="absolute bg-orange-500 bg-opacity-75 p-2 text-white text-xs top-0">{product.label}</span>
             </div>
-            <button onClick={() => handleAddToCart(product, quantity)} className="bg-slate-900 px-3 py-1.5 text-sm text-white hover:bg-slate-700 rounded-md">
-              Add to Cart
-            </button>
+
+            {/* Detail Product */}
+            <div className="p-3 space-y-2">
+              <p className="font-semibold text-md truncate">{product.name}</p>
+              <p className="text-slate-500 text-xs truncate">{product.specs}</p>
+              <p className="font-semibold text-orange-500 text-md">{product.price}</p>
+              <div className="flex items-center justify-between text-xs text-slate-500">
+                <p>{product.sold} Sold</p>
+                <div className="flex gap-2 items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-star-fill text-yellow-500" viewBox="0 0 16 16">
+                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                  </svg>
+                  <p>{product.rating}</p>
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center justify-between p-3">
+              <Link to={`/product/${product.id}`} className="bg-orange-500 duration-300 px-3 py-1.5 rounded-md transition text-sm text-white hover:bg-orange-600 md:px-5 md:py-1.5">
+                View Details
+              </Link>
+            </div>
           </div>
         ))}
       </div>

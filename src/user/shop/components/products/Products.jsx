@@ -1,3 +1,5 @@
+// Product.jsx -> Done
+
 import React, { useState } from "react";
 import ProductList from "./ProductList";
 
@@ -24,12 +26,14 @@ const Product = () => {
   return (
     <div className="flex flex-col font-poppins h-screen overflow-y-auto md:flex-row">
       <div className="bg-slate-100 flex-1">
+        {/* Header -> Product */}
         <div className="flex items-center p-3 bg-slate-100 shadow-md sticky top-0">
           <p className="text-2xl font-bold">Product</p>
         </div>
 
-        <div className="bg-slate-100 p-3 flex flex-col items-center shadow-sm space-y-4 sticky top-0 md:flex-row md:space-y-0 md:space-x-4">
-          {/* Button New Product & Second Product */}
+        {/* Button -> New Product & Second Product || Fitur Searching */}
+        <div className="bg-slate-100 p-3 flex flex-col items-center shadow-sm space-y-4 sticky top-0 z-30 md:flex-row md:space-y-0 md:space-x-4">
+          {/* Button -> New Product & Second Product */}
           <div className="relative w-full md:w-auto">
             <button onClick={toggleDropdown} className="flex items-center space-x-2 text-white bg-orange-500 hover:bg-orange-700 px-4 py-2 rounded-md focus:outline-none w-full md:w-auto">
               <span className="font-medium text-white">{buttonLabel}</span>
@@ -39,7 +43,7 @@ const Product = () => {
             </button>
 
             {isDropdownOpen && (
-              <div className="absolute left-0 mt-2 w-48 bg-white border border-gray-300 rounded-md shadow-lg" onClick={handleDropdownClick}>
+              <div className="absolute left-0 mt-2 w-48 bg-white border border-gray-300 rounded-md shadow-lg z-50" onClick={handleDropdownClick}>
                 <ul className="py-2 z-20">
                   <li onClick={() => handleCategoryChange("new", "New Product")} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
                     New Product

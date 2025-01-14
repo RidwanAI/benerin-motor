@@ -27,15 +27,9 @@ const Default = () => {
       {/* Part => Header */}
       <div className="flex flex-col items-start space-y-1">
         <p className="font-semibold text-xl">
-          Welcome,{" "}
-          <span className="text-orange-500">
-            {user ? user.name : "Loading..."}
-          </span>
+          Welcome, <span className="text-orange-500">{user ? user.name : "Guest Account"}</span>
         </p>
-        <p className="text-slate-500 text-sm">
-          We're glad to have you back! Select an option from the sidebar to
-          modify your settings.
-        </p>
+        <p className="text-slate-500 text-sm">We're glad to have you back! Select an option from the sidebar to modify your settings.</p>
       </div>
 
       {/* Part => Link Quick Action */}
@@ -43,19 +37,13 @@ const Default = () => {
         <p className="font-semibold text-xl">Quick Actions</p>
         <ul className="space-y-1 text-sm">
           <li>
-            <button className="duration-300 text-blue-500 hover:underline focus:outline-none">
-              Edit your profile
-            </button>
+            <button className="duration-300 text-blue-500 hover:underline focus:outline-none">Edit your profile</button>
           </li>
           <li>
-            <button className="duration-300 text-blue-500 hover:underline focus:outline-none">
-              Change your password
-            </button>
+            <button className="duration-300 text-blue-500 hover:underline focus:outline-none">Change your password</button>
           </li>
           <li>
-            <button className="duration-300 text-blue-500 hover:underline focus:outline-none">
-              Manage account settings
-            </button>
+            <button className="duration-300 text-blue-500 hover:underline focus:outline-none">Manage account settings</button>
           </li>
         </ul>
       </div>
