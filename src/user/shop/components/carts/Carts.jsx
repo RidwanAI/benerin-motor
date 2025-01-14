@@ -47,12 +47,48 @@ const Carts = () => {
     );
   };
 
+  const handleCheckout = async () => {
+    try {
+      const userResponse = await axios.get("http://localhost:5000/me", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      });
+  
+      const userId = userResponse.data.id;
+  
+      // Kirim data userId dan selectedCartItemIds ke backend
+      await axios.post(
+        "http://localhost:5000/checkout",
+        { userId, selectedCartItemIds: selectedItems },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        }
+      );
+  
+      alert("Checkout successful!");
+      setCartItems((prev) => prev.filter((item) => !selectedItems.includes(item.id))); // Hapus item yang sudah di-checkout dari UI
+      setSelectedItems([]); // Kosongkan selectedItems setelah checkout
+    } catch (error) {
+      console.error("Error during checkout", error);
+      alert("Checkout failed, please try again.");
+    }
+  };
+  
+
   const calculateTotal = () => {
     return cartItems.reduce((total, item) => {
-      const priceValue = parseFloat(item.product.price.replace(/[^\d]/g, ""));
-      return total + priceValue * item.quantity;
+      if (selectedItems.includes(item.id)) {
+        const priceValue = parseFloat(item.product.price.replace(/[^\d]/g, ""));
+        return total + priceValue * item.quantity;
+      }
+      return total;
     }, 0);
   };
+  
+  
 
   const increaseQuantity = async (id) => {
     try {
@@ -189,7 +225,10 @@ const Carts = () => {
               Total : Rp.{calculateTotal().toLocaleString()}
             </p>
             <button
-              onClick={() => alert("Proceed to payment!")}
+              onClick={() => {
+                alert("Proceed to payment!"); // Munculkan alert
+                handleCheckout(); // Panggil fungsi checkout
+              }}
               className="bg-orange-500 duration-300 px-3 py-1.5 rounded-md text-white hover:bg-orange-700 md:px-5 md:py-1.5"
             >
               Checkout
