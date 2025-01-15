@@ -31,16 +31,18 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const response = await authService.login(formData);
-      console.log("Login successful:", response);
-
-      // Simpan access token jika diperlukan
-      if (response.accessToken) {
-        localStorage.setItem("accessToken", response.accessToken);
+      let response;
+      if (formData.email.includes("admin")) {
+        // Login sebagai admin
+        response = await authService.adminLogin(formData);
+        navigate("/dashboard");
+      } else {
+        // Login sebagai user
+        response = await authService.login(formData);
+        navigate("/shop");
       }
 
-      // Redirect ke halaman utama setelah login berhasil
-      navigate("/shop");
+      console.log("Login successful:", response);
     } catch (err) {
       setError(err.msg || "Email atau password salah");
     } finally {

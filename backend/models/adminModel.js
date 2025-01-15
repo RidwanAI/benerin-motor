@@ -3,8 +3,8 @@ import db from "../config/database.js";
 
 const { DataTypes } = Sequelize;
 
-const Users = db.define(
-  "users",
+const Admin = db.define(
+  "admin",
   {
     name: {
       type: DataTypes.STRING,
@@ -28,4 +28,4 @@ const Users = db.define(
   }
 );
 
-export default Users;
+export default Admin;

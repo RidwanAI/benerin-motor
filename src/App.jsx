@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 
 /* Admin */
-// import Dashboard from "./components/dashboard";
+import Dashboard from "./admin/components/Dashboard";
 // import Products from "./pages/Products";
 // import Customers from "./pages/Customers";
 // import Payments from "./pages/Payments";
@@ -50,12 +50,11 @@ function AnimatedRoutes() {
         <div className="page-content">
           <Routes location={location}>
             {/* ========== Admin ========== */}
-            {/* <Route path="/" element={<Dashboard />} />
-    <Route path="/products" element={<Products />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            {/* <Route path="/products" element={<Products />} />
     <Route path="/customers" element={<Customers />} />
     <Route path="/payments" element={<Payments />} />
     <Route path="/settings" element={<Settings />} /> */}
-
 
             {/* ========== User ========== */}
             {/* Landing */}

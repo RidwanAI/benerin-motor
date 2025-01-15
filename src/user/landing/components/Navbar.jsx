@@ -113,12 +113,12 @@ const Navbar = () => {
           >
             Profile
           </Link>
-          <button
+          <Link
             onClick={handleLogout}
-            className="block w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-slate-700"
+            className="block px-4 py-2 text-sm hover:bg-slate-700"
           >
             Logout
-          </button>
+          </Link>
         </div>
       )}
     </div>
@@ -208,22 +208,24 @@ const Navbar = () => {
                     <Link className="block py-1 hover:text-orange-500">
                       Hello, {user.name || "User"}
                     </Link>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className={`h-4 w-4 text-orange-500 transition-transform duration-200 ${
-                        isMobileUserMenuOpen ? "rotate-90" : ""
-                      }`}
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 5l7 7-7 7"
-                      />
-                    </svg>
+                    <Link>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className={`h-4 w-4 text-orange-500 transition-transform duration-200 ${
+                          isMobileUserMenuOpen ? "rotate-90" : ""
+                        }`}
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 5l7 7-7 7"
+                        />
+                      </svg>
+                    </Link>
                   </div>
                   <div
                     className={`mt-2 space-y-1 ${
@@ -240,12 +242,12 @@ const Navbar = () => {
                     >
                       Profile
                     </Link>
-                    <button
+                    <Link
                       onClick={handleLogout}
                       className="block py-1 hover:text-orange-500"
                     >
                       Logout
-                    </button>
+                    </Link>
                   </div>
                 </div>
               ) : (
