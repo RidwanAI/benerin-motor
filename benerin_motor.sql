@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 6.0.0-dev+20230625.8e3615eca8
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 14, 2025 at 07:21 PM
--- Server version: 10.4.24-MariaDB
--- PHP Version: 8.1.4
+-- Waktu pembuatan: 15 Jan 2025 pada 17.43
+-- Versi server: 10.4.32-MariaDB
+-- Versi PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -24,7 +24,30 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `carts`
+-- Struktur dari tabel `admin`
+--
+
+CREATE TABLE `admin` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `refresh_token` text DEFAULT NULL,
+  `createdAt` datetime NOT NULL,
+  `updatedAt` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data untuk tabel `admin`
+--
+
+INSERT INTO `admin` (`id`, `name`, `email`, `password`, `refresh_token`, `createdAt`, `updatedAt`) VALUES
+(1, 'Muhammad Ridwan', 'admin123@gmail.com', '$2a$12$LReeMdCDNZKomh4SjB7speIPgvcaiGkWUVRFQd1KPHs4.EkymT62G', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjoxLCJuYW1lIjoiTXVoYW1tYWQgUmlkd2FuIiwiZW1haWwiOiJhZG1pbjEyM0BnbWFpbC5jb20iLCJpYXQiOjE3MzY5NTcxMDAsImV4cCI6MTczNzA0MzUwMH0.1TWf3hbG1pqCWX12I0GXucnvnS-nPd6m3KGLYdjDoRM', '2025-01-15 16:56:02', '2025-01-15 16:05:00');
+
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `carts`
 --
 
 CREATE TABLE `carts` (
@@ -33,21 +56,12 @@ CREATE TABLE `carts` (
   `quantity` int(11) NOT NULL DEFAULT 1,
   `userId` int(11) NOT NULL,
   `totalPrice` decimal(10,2) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `carts`
---
-
-INSERT INTO `carts` (`id`, `productId`, `quantity`, `userId`, `totalPrice`) VALUES
-(1, 2, 41, 6, 410000.00),
-(45, 1, 1, 7, 10000.00),
-(61, 1, 1, 3, 0.00);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `orders`
+-- Struktur dari tabel `orders`
 --
 
 CREATE TABLE `orders` (
@@ -60,28 +74,23 @@ CREATE TABLE `orders` (
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL,
   `paymentProof` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `orders`
+-- Dumping data untuk tabel `orders`
 --
 
 INSERT INTO `orders` (`id`, `userId`, `productId`, `quantity`, `totalPrice`, `status`, `createdAt`, `updatedAt`, `paymentProof`) VALUES
-(5, 2, 2, 1, 10000.00, 'Paid', '2025-01-14 10:16:50', '2025-01-14 17:44:28', NULL),
-(8, 2, 3, 1, 10000.00, 'Completed', '2025-01-14 10:19:40', '2025-01-14 17:45:13', NULL),
-(9, 2, 1, 1, 10000.00, 'Shipped', '2025-01-14 10:34:23', '2025-01-14 17:45:08', NULL),
-(10, 2, 2, 1, 10000.00, 'Pending', '2025-01-14 10:58:12', '2025-01-14 11:28:34', '/uploads/1736854114432-Ge_vw1za4AAKsQk.jpg'),
-(11, 2, 8, 1, 20000.00, 'Pending', '2025-01-14 11:40:50', '2025-01-14 11:40:59', '/uploads/1736854859926-dc215a4754a190b83dccf88275f93345.jpg'),
-(13, 3, 3, 1, 10000.00, 'Pending', '2025-01-14 15:38:09', '2025-01-14 15:38:09', NULL),
-(14, 3, 3, 8, 80000.00, 'Pending', '2025-01-14 15:44:22', '2025-01-14 15:44:22', NULL),
-(15, 3, 2, 1, 10000.00, 'Pending', '2025-01-14 15:57:43', '2025-01-14 15:57:43', NULL),
-(16, 3, 10, 2, 0.00, 'Pending', '2025-01-14 17:15:02', '2025-01-14 17:15:02', NULL),
-(17, 3, 6, 2, 0.00, 'Pending', '2025-01-14 17:27:00', '2025-01-14 17:27:00', NULL);
+(19, 1, 1, 1, 0.00, 'Paid', '2025-01-15 09:13:49', '2025-01-15 11:02:06', '/uploads/1736932497556-transaksi 1.jpg'),
+(20, 1, 2, 1, 0.00, 'Paid', '2025-01-15 09:13:49', '2025-01-15 15:12:16', '/uploads/1736932618720-Gambar WhatsApp 2024-12-02 pukul 11.43.42_a20e54c7.jpg'),
+(21, 1, 3, 1, 0.00, 'Pending', '2025-01-15 10:59:10', '2025-01-15 10:59:10', NULL),
+(22, 1, 11, 1, 0.00, 'Pending', '2025-01-15 10:59:10', '2025-01-15 10:59:10', NULL),
+(23, 1, 4, 1, 0.00, 'Pending', '2025-01-15 10:59:10', '2025-01-15 10:59:10', NULL);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `products`
+-- Struktur dari tabel `products`
 --
 
 CREATE TABLE `products` (
@@ -94,10 +103,10 @@ CREATE TABLE `products` (
   `stock` int(11) NOT NULL,
   `sold` int(11) NOT NULL,
   `rating` decimal(3,1) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `products`
+-- Dumping data untuk tabel `products`
 --
 
 INSERT INTO `products` (`id`, `name`, `image`, `price`, `specs`, `label`, `stock`, `sold`, `rating`) VALUES
@@ -120,41 +129,65 @@ INSERT INTO `products` (`id`, `name`, `image`, `price`, `specs`, `label`, `stock
 -- --------------------------------------------------------
 
 --
--- Table structure for table `users`
+-- Struktur dari tabel `users`
 --
 
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
-  `name` varchar(255) DEFAULT NULL,
-  `email` varchar(255) DEFAULT NULL,
-  `password` varchar(255) DEFAULT NULL,
+  `name` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
   `refresh_token` text DEFAULT NULL,
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `users`
+-- Dumping data untuk tabel `users`
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `password`, `refresh_token`, `createdAt`, `updatedAt`) VALUES
-(1, 'Muhammad Ridwan', 'ridwansmpl36@gmail.com', '$2b$10$wOZQd.Jg1I1jH.O7xmw5OOkWUJ9WRz4wd9Ja7aBglxcOoaln8b8NK', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsIm5hbWUiOiJNdWhhbW1hZCBSaWR3YW4iLCJlbWFpbCI6InJpZHdhbnNtcGwzNkBnbWFpbC5jb20iLCJpYXQiOjE3MzY4MTE4MDksImV4cCI6MTczNjg5ODIwOX0.1E5T9RJ6mESo4TFzBURAtBxFoiKfJOYx03ma1GmbPu4', '2025-01-10 03:54:15', '2025-01-13 23:43:29'),
+(1, 'Muhammad Ridwan', 'ridwansmpl36@gmail.com', '$2b$10$wOZQd.Jg1I1jH.O7xmw5OOkWUJ9WRz4wd9Ja7aBglxcOoaln8b8NK', NULL, '2025-01-10 03:54:15', '2025-01-15 15:13:53'),
 (2, 'Fadilano Abraham', 'fadilanoa@gmail.com', '$2b$10$/.LAp9tDi5ekDdompVjN7.sY7T9QoJvx/Zj7OJBdW.Wbvyt6h1X0W', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjcsIm5hbWUiOiJGQURJTEFOTyBBQlJBSEFNIiwiZW1haWwiOiJmYWRpbGFub2FAZ21haWwuY29tIiwiaWF0IjoxNzM2ODUzNjc1LCJleHAiOjE3MzY5NDAwNzV9.3aTYOvPcMHOZ0Zy70cNSvmodRF6felPAr0AyotOmZMY', '2025-01-13 01:57:01', '2025-01-14 11:21:15'),
-(3, 'Achmad Rizky', 'achmadrizky@gmail.com', '$2b$10$vQLU8hcyqs2XQuDxxSnaEenq2joXgNPaKqFmMTkszl0HXCXCg0jgG', NULL, '2025-01-14 15:35:38', '2025-01-14 18:16:02');
+(3, 'Achmad Rizky', 'achmadrizky@gmail.com', '$2b$10$vQLU8hcyqs2XQuDxxSnaEenq2joXgNPaKqFmMTkszl0HXCXCg0jgG', NULL, '2025-01-14 15:35:38', '2025-01-14 18:16:02'),
+(10, 'Muhammad Ridwan', 'admin@gmail.com', '$2b$10$3UAzMjirE67iWVk5iPxHB.pniz4DvxY4dHbG3awCSIL3g2HAZFvB6', NULL, '2025-01-15 14:20:05', '2025-01-15 14:20:05');
 
 --
 -- Indexes for dumped tables
 --
 
 --
--- Indexes for table `carts`
+-- Indeks untuk tabel `admin`
+--
+ALTER TABLE `admin`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `email` (`email`),
+  ADD UNIQUE KEY `email_2` (`email`),
+  ADD UNIQUE KEY `email_3` (`email`),
+  ADD UNIQUE KEY `email_4` (`email`),
+  ADD UNIQUE KEY `email_5` (`email`),
+  ADD UNIQUE KEY `email_6` (`email`),
+  ADD UNIQUE KEY `email_7` (`email`),
+  ADD UNIQUE KEY `email_8` (`email`),
+  ADD UNIQUE KEY `email_9` (`email`),
+  ADD UNIQUE KEY `email_10` (`email`),
+  ADD UNIQUE KEY `email_11` (`email`),
+  ADD UNIQUE KEY `email_12` (`email`),
+  ADD UNIQUE KEY `email_13` (`email`),
+  ADD UNIQUE KEY `email_14` (`email`),
+  ADD UNIQUE KEY `email_15` (`email`),
+  ADD UNIQUE KEY `email_16` (`email`),
+  ADD UNIQUE KEY `email_17` (`email`);
+
+--
+-- Indeks untuk tabel `carts`
 --
 ALTER TABLE `carts`
   ADD PRIMARY KEY (`id`),
   ADD KEY `productId` (`productId`);
 
 --
--- Indexes for table `orders`
+-- Indeks untuk tabel `orders`
 --
 ALTER TABLE `orders`
   ADD PRIMARY KEY (`id`),
@@ -162,61 +195,95 @@ ALTER TABLE `orders`
   ADD KEY `productId` (`productId`);
 
 --
--- Indexes for table `products`
+-- Indeks untuk tabel `products`
 --
 ALTER TABLE `products`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `users`
+-- Indeks untuk tabel `users`
 --
 ALTER TABLE `users`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `email` (`email`),
+  ADD UNIQUE KEY `email_2` (`email`),
+  ADD UNIQUE KEY `email_3` (`email`),
+  ADD UNIQUE KEY `email_4` (`email`),
+  ADD UNIQUE KEY `email_5` (`email`),
+  ADD UNIQUE KEY `email_6` (`email`),
+  ADD UNIQUE KEY `email_7` (`email`),
+  ADD UNIQUE KEY `email_8` (`email`),
+  ADD UNIQUE KEY `email_9` (`email`),
+  ADD UNIQUE KEY `email_10` (`email`),
+  ADD UNIQUE KEY `email_11` (`email`),
+  ADD UNIQUE KEY `email_12` (`email`),
+  ADD UNIQUE KEY `email_13` (`email`),
+  ADD UNIQUE KEY `email_14` (`email`),
+  ADD UNIQUE KEY `email_15` (`email`),
+  ADD UNIQUE KEY `email_16` (`email`),
+  ADD UNIQUE KEY `email_17` (`email`),
+  ADD UNIQUE KEY `email_18` (`email`),
+  ADD UNIQUE KEY `email_19` (`email`),
+  ADD UNIQUE KEY `email_20` (`email`),
+  ADD UNIQUE KEY `email_21` (`email`),
+  ADD UNIQUE KEY `email_22` (`email`),
+  ADD UNIQUE KEY `email_23` (`email`),
+  ADD UNIQUE KEY `email_24` (`email`),
+  ADD UNIQUE KEY `email_25` (`email`),
+  ADD UNIQUE KEY `email_26` (`email`),
+  ADD UNIQUE KEY `email_27` (`email`),
+  ADD UNIQUE KEY `email_28` (`email`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- AUTO_INCREMENT untuk tabel yang dibuang
 --
 
 --
--- AUTO_INCREMENT for table `carts`
+-- AUTO_INCREMENT untuk tabel `admin`
+--
+ALTER TABLE `admin`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT untuk tabel `carts`
 --
 ALTER TABLE `carts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=68;
 
 --
--- AUTO_INCREMENT for table `orders`
+-- AUTO_INCREMENT untuk tabel `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
--- AUTO_INCREMENT for table `products`
+-- AUTO_INCREMENT untuk tabel `products`
 --
 ALTER TABLE `products`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
--- AUTO_INCREMENT for table `users`
+-- AUTO_INCREMENT untuk tabel `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
--- Constraints for dumped tables
+-- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
 --
 
 --
--- Constraints for table `carts`
+-- Ketidakleluasaan untuk tabel `carts`
 --
 ALTER TABLE `carts`
   ADD CONSTRAINT `carts_ibfk_1` FOREIGN KEY (`productId`) REFERENCES `products` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE;
 
 --
--- Constraints for table `orders`
+-- Ketidakleluasaan untuk tabel `orders`
 --
 ALTER TABLE `orders`
-  ADD CONSTRAINT `orders_ibfk_21` FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `orders_ibfk_22` FOREIGN KEY (`productId`) REFERENCES `products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `orders_ibfk_95` FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `orders_ibfk_96` FOREIGN KEY (`productId`) REFERENCES `products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
