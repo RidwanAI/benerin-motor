@@ -1,26 +1,33 @@
 import Admin from "../models/adminModel.js";
-import Order from "../models/orderModel.js";
 import User from "../models/userModel.js";
+import Order from "../models/orderModel.js";
 import Product from "../models/productModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
+export const getAdmins = async (req, res) => {
+  try {
+    const admins = await Admin.findAll({
+      attributes: ["id", "name", "email"],
+    });
+    res.json(admins);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const adminLogin = async (req, res) => {
   try {
-    const admin = await Admin.findOne({
+    const admin = await Admin.findAll({
       where: {
         email: req.body.email,
       },
     });
-    if (!admin) return res.status(404).json({ msg: "Email tidak ditemukan" });
-
-    const match = await bcrypt.compare(req.body.password, admin.password);
+    const match = await bcrypt.compare(req.body.password, admin[0].password);
     if (!match) return res.status(400).json({ msg: "Password Salah" });
-
-    const adminId = admin.id;
-    const name = admin.name;
-    const email = admin.email;
-
+    const adminId = admin[0].id;
+    const name = admin[0].name;
+    const email = admin[0].email;
     const accessToken = jwt.sign(
       { adminId, name, email },
       process.env.ADMIN_ACCESS_TOKEN_SECRET,
@@ -35,7 +42,6 @@ export const adminLogin = async (req, res) => {
         expiresIn: "1d",
       }
     );
-
     await Admin.update(
       { refresh_token: refreshToken },
       {
@@ -44,16 +50,13 @@ export const adminLogin = async (req, res) => {
         },
       }
     );
-
-    res.cookie("adminRefreshToken", refreshToken, {
+    res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000,
     });
-
     res.json({ accessToken });
   } catch (error) {
-    res.status(500).json({ msg: "Server Error" });
-    console.log(error);
+    res.status(404).json({ msg: "Email Tidak Ditemukan" });
   }
 };
 
@@ -98,26 +101,24 @@ export const updateOrderStatus = async (req, res) => {
 };
 
 export const adminLogout = async (req, res) => {
-  const refreshToken = req.cookies.adminRefreshToken;
+  const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) return res.sendStatus(204);
-
-  const admin = await Admin.findOne({
+  const admin = await Admin.findAll({
     where: {
       refresh_token: refreshToken,
     },
   });
 
-  if (!admin) return res.sendStatus(204);
-
+  if (!admin[0]) return res.sendStatus(204);
+  const adminId = admin[0].id;
   await Admin.update(
     { refresh_token: null },
     {
       where: {
-        id: admin.id,
+        id: adminId,
       },
     }
   );
-
-  res.clearCookie("adminRefreshToken");
+  res.clearCookie("refreshToken");
   return res.sendStatus(200);
 };

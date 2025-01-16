@@ -11,6 +11,7 @@ import {
   adminLogout,
   updateOrderStatus,
   getOrders,
+  getAdmins,
 } from "../controllers/adminController.js";
 import { verifyToken } from "../middleware/verifyToken.js";
 import { verifyAdminToken } from "../middleware/verifyAdminToken.js";
@@ -64,6 +65,7 @@ router.put("/carts/:id", verifyToken, CartController.updateCartItem); // Update 
 router.delete("/carts/:id", verifyToken, CartController.deleteCartItem); // Delete cart item
 
 // Admin router
+router.get("/admin", verifyAdminToken, getAdmins);
 router.post("/admin/login", adminLogin);
 router.get("/admin/orders", verifyAdminToken, getOrders);
 router.put("/admin/orders/status", verifyAdminToken, updateOrderStatus);

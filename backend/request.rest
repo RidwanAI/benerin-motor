@@ -1,5 +1,25 @@
+### USER
+POST  http://localhost:5000/login
+Content-Type: application/json
+
+{
+    "email": "ridwansmpl36@gmail.com",
+    "password": "elektron1928"
+}
+
+### 
 GET http://localhost:5000/users
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsIm5hbWUiOiJNdWhhbW1hZCBSaWR3YW4iLCJlbWFpbCI6InJpZHdhbnNtcGwzNkBnbWFpbC5jb20iLCJpYXQiOjE3MzY2MDM2MjMsImV4cCI6MTczNjYwMzY4M30.6WkADL2Emh5PRHsMA9FjP8rq_3vElrkR1pCvd02zlLc
+
+###
+GET http://localhost:5000/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsIm5hbWUiOiJNdWhhbW1hZCBSaWR3YW4iLCJlbWFpbCI6InJpZHdhbnNtcGwzNkBnbWFpbC5jb20iLCJpYXQiOjE3MzY5MzY0NDMsImV4cCI6MTczNzAyMjg0M30.cD3Fb3IJZv_W0jc6Xd2vgfjDj0fbxk_DGhX4pZ6AXOg
+Content-Type: application/json
+
+{
+    "email": "ridwansmpl36@gmail.com",
+    "password": "elektron1928"
+}
 
 ###
 POST http://localhost:5000/register
@@ -13,21 +33,12 @@ Content-Type: application/json
 }
 
 ###
-POST  http://localhost:5000/login
-Content-Type: application/json
-
-{
-    "email": "ridwansmpl36@gmail.com",
-    "password": "elektron1928"
-}
-
-###
 GET http://localhost:5000/token
 
 ###
 DELETE http://localhost:5000/logout
 
-###
+### PRODUCT
 POST http://localhost:5000/products
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsIm5hbWUiOiJNdWhhbW1hZCBSaWR3YW4iLCJlbWFpbCI6InJpZHdhbnNtcGwzNkBnbWFpbC5jb20iLCJpYXQiOjE3MzY3NzYxOTgsImV4cCI6MTczNjg2MjU5OH0.WEz9DDY50ev0XVcNblBOLdTAgNK2z7EYmgrw0nE-mBA
 Content-Type: application/json
@@ -73,7 +84,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsIm5hb
 GET http://localhost:5000/products/second
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsIm5hbWUiOiJNdWhhbW1hZCBSaWR3YW4iLCJlbWFpbCI6InJpZHdhbnNtcGwzNkBnbWFpbC5jb20iLCJpYXQiOjE3MzY3NzYxOTgsImV4cCI6MTczNjg2MjU5OH0.WEz9DDY50ev0XVcNblBOLdTAgNK2z7EYmgrw0nE-mBA
 
-###
+### CARTS
 POST http://localhost:5000/carts
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsIm5hbWUiOiJNdWhhbW1hZCBSaWR3YW4iLCJlbWFpbCI6InJpZHdhbnNtcGwzNkBnbWFpbC5jb20iLCJpYXQiOjE3MzY4MTE4MDksImV4cCI6MTczNjg5ODIwOX0.NQdazK-aXrSr8eCebD81JitRVJ7a9p7jDVN94lhGAGI
 Content-Type: application/json
@@ -97,41 +108,53 @@ Content-Type: application/json
 GET http://localhost:5000/carts/user/7 
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsIm5hbWUiOiJNdWhhbW1hZCBSaWR3YW4iLCJlbWFpbCI6InJpZHdhbnNtcGwzNkBnbWFpbC5jb20iLCJpYXQiOjE3MzY4MTE4MDksImV4cCI6MTczNjg5ODIwOX0.NQdazK-aXrSr8eCebD81JitRVJ7a9p7jDVN94lhGAGI
 
-###
-GET http://localhost:5000/me
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsIm5hbWUiOiJNdWhhbW1hZCBSaWR3YW4iLCJlbWFpbCI6InJpZHdhbnNtcGwzNkBnbWFpbC5jb20iLCJpYXQiOjE3MzY5MzY0NDMsImV4cCI6MTczNzAyMjg0M30.cD3Fb3IJZv_W0jc6Xd2vgfjDj0fbxk_DGhX4pZ6AXOg
-Content-Type: application/json
-
-{
-    "email": "ridwansmpl36@gmail.com",
-    "password": "elektron1928"
-}
-
-###
+### Login Admin
 POST http://localhost:5000/admin/login
 Content-Type: application/json
 
 {
-    "email": "ridwansmpl36@gmail.com",
-    "password": "admin123"
+  "email": "admin@gmail.com",
+  "password": "admin"
 }
 
-### 
+###
+GET http://localhost:5000/admin
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjozLCJuYW1lIjoiQURNSU4iLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImlhdCI6MTczNzAwOTEwNiwiZXhwIjoxNzM3MDk1NTA2fQ.66JlBAnGSxmsEw7bzbesotFgwUZ04ZJ6LuLo85jWUFk
+
+
+### Refresh Admin Token
 GET http://localhost:5000/admin/token
 
-### 
-GET http://localhost:5000/admin/orders
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjoxLCJuYW1lIjoiTXVoYW1tYWQgUmlkd2FuIiwiZW1haWwiOiJyaWR3YW5zbXBsMzZAZ21haWwuY29tIiwiaWF0IjoxNzM2OTUzODg1LCJleHAiOjE3MzcwNDAyODV9.hEz55w5rMe0rDQYfPM0TjgF0StnDo73axfuCZXUUxas
+###
 
-### 
-PUT http://localhost:5000/admin/orders/status
+### Get Admin Data (requires Authorization)
+GET http://localhost:5000/admin/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjozLCJuYW1lIjoiQURNSU4iLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImlhdCI6MTczNzAwOTEwNiwiZXhwIjoxNzM3MDk1NTA2fQ.66JlBAnGSxmsEw7bzbesotFgwUZ04ZJ6LuLo85jWUFk
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjoxLCJuYW1lIjoiTXVoYW1tYWQgUmlkd2FuIiwiZW1haWwiOiJyaWR3YW5zbXBsMzZAZ21haWwuY29tIiwiaWF0IjoxNzM2OTUzODg1LCJleHAiOjE3MzcwNDAyODV9.hEz55w5rMe0rDQYfPM0TjgF0StnDo73axfuCZXUUxas
 
 {
-    "id": 20,
-    "status": "Paid"
+    "email": "admin@gmail.com",
+    "password": "admin"
 }
+###
+
+### Get Admin Orders (requires Authorization)
+GET http://localhost:5000/admin/orders
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjozLCJuYW1lIjoiQURNSU4iLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImlhdCI6MTczNzAwOTEwNiwiZXhwIjoxNzM3MDk1NTA2fQ.66JlBAnGSxmsEw7bzbesotFgwUZ04ZJ6LuLo85jWUFk
+
+###
+
+### Update Order Status (requires Authorization)
+PUT http://localhost:5000/admin/orders/status
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjozLCJuYW1lIjoiQURNSU4iLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImlhdCI6MTczNzAwOTEwNiwiZXhwIjoxNzM3MDk1NTA2fQ.66JlBAnGSxmsEw7bzbesotFgwUZ04ZJ6LuLo85jWUFk
+Content-Type: application/json
+
+{
+  "id": 21,
+  "status": "completed"
+}
+
+###
 
 ### Logout Admin
 DELETE http://localhost:5000/admin/logout
