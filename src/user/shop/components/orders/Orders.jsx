@@ -1,43 +1,30 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import { getUser, getOrdersByUserId, uploadPaymentProof } from "../../../../services/orderService";
 
 const Orders = () => {
-  const [orderItems, setOrderItems] = useState([]); // State untuk menyimpan order items
-  const [selectedCategory, setSelectedCategory] = useState("Pending"); // State untuk kategori yang dipilih
-  const [loading, setLoading] = useState(false); // State untuk loading
-  const [error, setError] = useState(null); // State untuk error
+  const [orderItems, setOrderItems] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("Pending");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const [showArrivalMessage, setShowArrivalMessage] = useState(false);
   const [showReviewPopup, setShowReviewPopup] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState(null);
   const [reviewText, setReviewText] = useState("");
 
-  // Fungsi untuk fetch data orders
   const fetchOrders = async () => {
     setLoading(true);
     try {
-      const userResponse = await axios.get("http://localhost:5000/me", {
-        headers: { Authorization: `Bearer ${localStorage.getItem("accessToken")}` },
-      });
-      const userId = userResponse.data.id;
-
-      const ordersResponse = await axios.get(`http://localhost:5000/orders/user/${userId}`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("accessToken")}` },
-      });
-
-      if (ordersResponse.data) {
-        setOrderItems(ordersResponse.data);
-      } else {
-        setOrderItems([]);
-      }
+      const user = await getUser();
+      const orders = await getOrdersByUserId(user.id);
+      setOrderItems(orders || []);
       setError(null);
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to fetch orders. Please try again later.");
+      setError(err.message || "Failed to fetch orders. Please try again later.");
     } finally {
       setLoading(false);
     }
   };
 
-  // Fetch data orders saat komponen pertama kali dirender
   useEffect(() => {
     fetchOrders();
   }, []);
@@ -69,18 +56,10 @@ const Orders = () => {
     const file = event.target.files[0];
     if (!file) return;
 
-    const formData = new FormData();
-    formData.append("paymentProof", file);
-
     try {
-      const response = await axios.post(`http://localhost:5000/orders/${orderId}/upload`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
-      });
-      alert(response.data.message);
-      fetchOrders(); // Refresh data order setelah upload
+      const response = await uploadPaymentProof(orderId, file);
+      alert(response.message);
+      fetchOrders();
     } catch (error) {
       console.error("Error uploading payment proof:", error);
       alert("Failed to upload payment proof. Please try again.");

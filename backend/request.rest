@@ -155,6 +155,7 @@ Content-Type: application/json
 }
 
 ###
-
+GET http://localhost:5000/admin/orders
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjozLCJuYW1lIjoiQURNSU4iLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImlhdCI6MTczNzAwOTEwNiwiZXhwIjoxNzM3MDk1NTA2fQ.66JlBAnGSxmsEw7bzbesotFgwUZ04ZJ6LuLo85jWUFk
 ### Logout Admin
 DELETE http://localhost:5000/admin/logout

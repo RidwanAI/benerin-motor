@@ -11,32 +11,31 @@ const Carts = () => {
     const fetchCartItems = async () => {
       try {
         setLoading(true);
-    
-        // Mengambil data pengguna dari endpoint /me
+
         const userResponse = await axios.get("http://localhost:5000/me", {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
           },
         });
-    
+
         const userId = userResponse.data.id;
-    
-        // Ambil data cart items milik pengguna dari /carts/user/:userId
+
         const response = await axios.get(`http://localhost:5000/carts/user/${userId}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
           },
         });
-    
-        setCartItems(response.data); // Set data ke state cartItems
+
+        setCartItems(response.data);
       } catch (err) {
         console.error(err);
-        setError(err.response?.data?.message || "Failed to fetch cart items. Please try again later.");
+        setError(
+          err.response?.data?.message || "Failed to fetch cart items. Please try again later."
+        );
       } finally {
         setLoading(false);
       }
     };
-    
 
     fetchCartItems();
   }, []);
@@ -54,48 +53,51 @@ const Carts = () => {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
       });
-  
+
       const userId = userResponse.data.id;
-  
-      // Kirim data userId dan selectedCartItemIds ke backend
+
+      const selectedCartItems = cartItems.filter((item) => selectedItems.includes(item.id));
+      const totalAmount = selectedCartItems.reduce((total, item) => {
+        const price = parseFloat(item.product.price.replace(/[^\d.]/g, ""));
+        return total + price * item.quantity;
+      }, 0);
+
       await axios.post(
         "http://localhost:5000/checkout",
-        { userId, selectedCartItemIds: selectedItems },
+        { userId, selectedCartItemIds: selectedItems, totalAmount },
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
           },
         }
       );
-  
+
       alert("Checkout successful!");
-      setCartItems((prev) => prev.filter((item) => !selectedItems.includes(item.id))); // Hapus item yang sudah di-checkout dari UI
-      setSelectedItems([]); // Kosongkan selectedItems setelah checkout
+      setCartItems((prev) => prev.filter((item) => !selectedItems.includes(item.id)));
+      setSelectedItems([]);
     } catch (error) {
       console.error("Error during checkout", error);
       alert("Checkout failed, please try again.");
     }
   };
-  
 
   const calculateTotal = () => {
     return cartItems.reduce((total, item) => {
       if (selectedItems.includes(item.id)) {
-        const priceValue = parseFloat(item.product.price.replace(/[^\d]/g, ""));
-        return total + priceValue * item.quantity;
+        const price = parseFloat(item.product.price.replace(/[^\d.]/g, ""));
+        return total + price * item.quantity;
       }
       return total;
     }, 0);
   };
-  
-  
 
-  const increaseQuantity = async (id) => {
+  const adjustQuantity = async (id, delta) => {
     try {
       const item = cartItems.find((item) => item.id === id);
-      const newQuantity = item.quantity + 1;
-  
-      // Update quantity di backend
+      const newQuantity = item.quantity + delta;
+
+      if (newQuantity < 1) return;
+
       const response = await axios.put(
         `http://localhost:5000/carts/${id}`,
         { quantity: newQuantity },
@@ -105,49 +107,17 @@ const Carts = () => {
           },
         }
       );
-  
-      // Update state setelah berhasil di backend
+
       setCartItems((prev) =>
         prev.map((item) =>
           item.id === id ? { ...item, quantity: response.data.quantity } : item
         )
       );
     } catch (err) {
-      console.error("Failed to increase quantity.", err);
+      console.error("Failed to update quantity.", err);
       setError("Failed to update quantity. Please try again later.");
     }
   };
-  
-  const decreaseQuantity = async (id) => {
-    try {
-      const item = cartItems.find((item) => item.id === id);
-      if (item.quantity <= 1) return;
-  
-      const newQuantity = item.quantity - 1;
-  
-      // Update quantity di backend
-      const response = await axios.put(
-        `http://localhost:5000/carts/${id}`,
-        { quantity: newQuantity },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-        }
-      );
-  
-      // Update state setelah berhasil di backend
-      setCartItems((prev) =>
-        prev.map((item) =>
-          item.id === id ? { ...item, quantity: response.data.quantity } : item
-        )
-      );
-    } catch (err) {
-      console.error("Failed to decrease quantity.", err);
-      setError("Failed to update quantity. Please try again later.");
-    }
-  };
-  
 
   const removeItem = async (id) => {
     try {
@@ -197,14 +167,14 @@ const Carts = () => {
                   </div>
                   <div className="flex gap-2 items-center">
                     <button
-                      onClick={() => decreaseQuantity(item.id)}
+                      onClick={() => adjustQuantity(item.id, -1)}
                       className="flex gap-2 items-center"
                     >
                       -
                     </button>
                     <span>{item.quantity}</span>
                     <button
-                      onClick={() => increaseQuantity(item.id)}
+                      onClick={() => adjustQuantity(item.id, 1)}
                       className="flex gap-2 items-center"
                     >
                       +
@@ -222,13 +192,10 @@ const Carts = () => {
           ))}
           <div className="bg-white flex items-center justify-between p-3 rounded-sm">
             <p className="font-semibold text-md md:text-xl">
-              Total : Rp.{calculateTotal().toLocaleString()}
+              Total: Rp.{calculateTotal().toLocaleString()}
             </p>
             <button
-              onClick={() => {
-                alert("Proceed to payment!"); // Munculkan alert
-                handleCheckout(); // Panggil fungsi checkout
-              }}
+              onClick={handleCheckout}
               className="bg-orange-500 duration-300 px-3 py-1.5 rounded-md text-white hover:bg-orange-700 md:px-5 md:py-1.5"
             >
               Checkout

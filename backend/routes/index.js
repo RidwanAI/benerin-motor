@@ -6,13 +6,7 @@ import {
   Register,
   getMe,
 } from "../controllers/userController.js";
-import {
-  adminLogin,
-  adminLogout,
-  updateOrderStatus,
-  getOrders,
-  getAdmins,
-} from "../controllers/adminController.js";
+
 import { verifyToken } from "../middleware/verifyToken.js";
 import { verifyAdminToken } from "../middleware/verifyAdminToken.js";
 import { refreshToken } from "../controllers/refreshToken.js";
@@ -20,6 +14,7 @@ import { adminRefreshToken } from "../controllers/adminRefreshToken.js";
 import ProductController from "../controllers/productController.js"; // Import the ProductController
 import CartController from "../controllers/cartController.js"; // Import the CartCOntroller
 import OrderController from "../controllers/orderController.js";
+import adminController from "../controllers/adminController.js";
 import multer from "multer";
 
 // Konfigurasi Multer untuk upload file
@@ -65,35 +60,42 @@ router.put("/carts/:id", verifyToken, CartController.updateCartItem); // Update 
 router.delete("/carts/:id", verifyToken, CartController.deleteCartItem); // Delete cart item
 
 // Admin router
-router.get("/admin", verifyAdminToken, getAdmins);
-router.post("/admin/login", adminLogin);
-router.get("/admin/orders", verifyAdminToken, getOrders);
-router.put("/admin/orders/status", verifyAdminToken, updateOrderStatus);
+router.get("/admin", verifyAdminToken, adminController.getAdmins);
+router.post("/admin/login", adminController.adminLogin);
 router.get("/admin/token", adminRefreshToken);
-router.delete("/admin/logout", adminLogout);
+router.delete("/admin/logout", adminController.adminLogout);
+
+// Order management (CRUD) for admin
+router.get("/admin/orders", verifyAdminToken, adminController.getOrders);
+router.post("/admin/orders", verifyAdminToken, adminController.getOrders);
+router.put("/admin/orders/:id", verifyAdminToken, adminController.updateOrder);
+router.delete("/admin/orders/:id", verifyAdminToken, adminController.deleteOrder);
+
+// User management (CRUD) for admin
+router.get("/admin/users", verifyAdminToken, adminController.getUsers);
+router.post("/admin/users", verifyAdminToken, adminController.createUser);
+router.put("/admin/users/:id", verifyAdminToken, adminController.updateUser);
+router.delete("/admin/users/:id", verifyAdminToken, adminController.deleteUser);
+
+// Product management (CRUD) for admin
+router.get("/admin/products", verifyAdminToken, adminController.getProducts);
+router.post("/admin/products", verifyAdminToken, adminController.createProduct);
+router.put("/admin/products/:id", verifyAdminToken, adminController.updateProduct);
+router.delete("/admin/products/:id", verifyAdminToken, adminController.deleteProduct);
+
+
 
 router.post("/orders", verifyToken, OrderController.createOrder);
-
-// Get all orders (admin view)
 router.get("/orders", verifyToken, OrderController.getAllOrders);
-
-// Get a single order by ID
 router.get("/orders/:id", verifyToken, OrderController.getOrderById);
-
 router.get(
   "/orders/user/:userId",
   verifyToken,
   OrderController.getOrdersByUserId
 );
-
-// Update an order (status or quantity)
 router.put("/orders/:id", verifyToken, OrderController.updateOrder);
-
 router.post("/checkout", verifyToken, OrderController.checkout);
-
-// Delete an order
 router.delete("/orders/:id", verifyToken, OrderController.deleteOrder);
-
 router.post(
   "/orders/:id/upload",
   verifyToken,
