@@ -18,7 +18,7 @@ const Footer = () => {
       {/* Divider & Copywriting */}
       <hr />
       <div className="flex flex-col items-center text-xs text-white md:flex-row md:justify-between md:space-y-0">
-        <p>&copy; {currentYear} Benerin Motor. All Rights Reserved.</p>
+        <p>&copy;{currentYear} Benerin Motor. All Rights Reserved.</p>
         <p>Made by Benerin Motor Team</p>
       </div>
     </footer>

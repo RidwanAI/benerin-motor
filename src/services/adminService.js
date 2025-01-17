@@ -1,9 +1,10 @@
 import axios from "axios";
 
-const API_BASE_URL = "http://localhost:5000"; // Update this to your backend URL
+// Backend URL
+const API_BASE_URL = "http://localhost:5000";
 
 const adminService = {
-  // Admin Authentication
+  // Function -> Admin Authentication
   login: async (email, password) => {
     const response = await axios.post(`${API_BASE_URL}/admin/login`, { email, password });
     return response.data;
@@ -14,13 +15,13 @@ const adminService = {
     return response.data;
   },
 
-  // Admin CRUD
+  // Function -> Admin CRUD
   getAdmins: async () => {
     const response = await axios.get(`${API_BASE_URL}/admin`);
     return response.data;
   },
 
-  // User CRUD
+  // Function -> User CRUD
   getUsers: async () => {
     const response = await axios.get(`${API_BASE_URL}/admin/users`);
     return response.data;
@@ -41,7 +42,7 @@ const adminService = {
     return response.data;
   },
 
-  // Product CRUD
+  // Function -> Product CRUD
   getProducts: async () => {
     const response = await axios.get(`${API_BASE_URL}/admin/products`);
     return response.data;
@@ -62,7 +63,7 @@ const adminService = {
     return response.data;
   },
 
-  // Order CRUD
+  // Function -> Order CRUD
   getOrders: async () => {
     const response = await axios.get(`${API_BASE_URL}/admin/orders`);
     return response.data;

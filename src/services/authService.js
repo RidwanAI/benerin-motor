@@ -2,9 +2,10 @@ import axios from "axios";
 
 const API_URL = "http://localhost:5000";
 
+// Handling Cookies
 const axiosInstance = axios.create({
   baseURL: API_URL,
-  withCredentials: true, // Important for handling cookies
+  withCredentials: true,
 });
 
 axiosInstance.interceptors.request.use((config) => {
@@ -22,9 +23,7 @@ export const authService = {
       const response = await axiosInstance.post("/register", userData);
       return response.data;
     } catch (error) {
-      throw (
-        error.response?.data || { msg: "An error occurred during registration" }
-      );
+      throw error.response?.data || { msg: "An error occurred during registration" };
     }
   },
 
@@ -81,9 +80,7 @@ export const authService = {
       }
       return response.data;
     } catch (error) {
-      throw (
-        error.response?.data || { msg: "An error occurred during admin login" }
-      );
+      throw error.response?.data || { msg: "An error occurred during admin login" };
     }
   },
 
@@ -121,9 +118,7 @@ export const authService = {
       await axiosInstance.delete("/admin/logout");
       localStorage.removeItem("adminAccessToken");
     } catch (error) {
-      throw (
-        error.response?.data || { msg: "An error occurred during admin logout" }
-      );
+      throw error.response?.data || { msg: "An error occurred during admin logout" };
     }
   },
 

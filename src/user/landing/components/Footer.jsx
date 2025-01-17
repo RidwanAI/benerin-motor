@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 
 const Footer = () => {
   // Dropdown Links
   const [isInfoOpen, setIsInfoOpen] = useState(false);
   const [isQuickLinksOpen, setIsQuickLinksOpen] = useState(false);
   const [isFollowUsOpen, setIsFollowUsOpen] = useState(false);
+  const currentYear = new Date().getFullYear();
 
   return (
     <footer id="footer" className="font-poppins text-white w-full">
@@ -174,7 +174,9 @@ const Footer = () => {
         </div>
 
         {/* Row - 3 */}
-        <div className="bg-slate-800 flex font-raleway items-center justify-center py-5 text-white tracking-wider w-full">Copyright@Benerin Motor - 2024</div>
+        <div className="bg-slate-800 flex font-raleway items-center justify-center py-5 text-white tracking-wider w-full">
+          <p>&copy;{currentYear} Benerin Motor. All Rights Reserved.</p>
+        </div>
       </div>
     </footer>
   );
