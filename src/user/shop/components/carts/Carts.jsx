@@ -163,7 +163,9 @@ const Carts = () => {
                 <div className="flex flex-col space-y-3 w-1/2">
                   <div className="flex flex-col truncate w-auto">
                     <p className="font-semibold text-md">{item.product.name}</p>
-                    <p className="text-xs md:text-sm text-slate-500">{item.product.price}</p>
+                    <p className="text-xs md:text-sm text-slate-500">   {`Rp.${parseFloat(item.product.price).toLocaleString("id-ID", {
+                minimumFractionDigits: 2,
+              })}`}</p>
                   </div>
                   <div className="flex gap-2 items-center">
                     <button

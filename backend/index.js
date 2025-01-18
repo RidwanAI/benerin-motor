@@ -8,28 +8,31 @@ import User from "./models/userModel.js"; // Import User model
 import Product from "./models/productModel.js"; // Import Product model
 import Cart from "./models/cartModel.js"; // Import Cart model
 import Order from "./models/orderModel.js"; // Import Order model
+import path from "path";
+import { fileURLToPath } from "url";
+
+// Recreate __dirname
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 
 dotenv.config();
 const app = express();
-
 
 // Relasi antar model
 const defineModelRelations = () => {
   // Relasi antara Order dan Product
   // Relasi di index.js atau file relasi lainnya
-Product.hasMany(Order, { foreignKey: "productId", as: "orders" });
-Order.belongsTo(Product, { foreignKey: "productId", as: "orderedProduct" });
+  Product.hasMany(Order, { foreignKey: "productId", as: "orders" });
+  Order.belongsTo(Product, { foreignKey: "productId", as: "orderedProduct" });
 
-User.hasMany(Order, { foreignKey: "userId", as: "orders" });
-Order.belongsTo(User, { foreignKey: "userId", as: "user" });
-
+  User.hasMany(Order, { foreignKey: "userId", as: "orders" });
+  Order.belongsTo(User, { foreignKey: "userId", as: "user" });
 
   // Relasi antara Cart dan Product
   Cart.belongsTo(Product, { foreignKey: "productId", as: "cartProduct" });
   Product.hasMany(Cart, { foreignKey: "productId", as: "carts" });
 };
-
-
 
 // Asynchronously connect to the database
 const connectDatabase = async () => {
@@ -63,7 +66,7 @@ app.use(cors({ credentials: true, origin: "http://localhost:5173" }));
 app.use(cookieParser());
 app.use(express.json());
 app.use(router);
-app.use("/uploads", express.static("uploads"));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 
 // Starting the server

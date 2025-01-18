@@ -35,7 +35,7 @@ const Login = () => {
       if (formData.email.includes("admin")) {
         // Login sebagai admin
         response = await authService.adminLogin(formData);
-        navigate("/dashboard");
+        navigate("/admin/dashboard");
       } else {
         // Login sebagai user
         response = await authService.login(formData);

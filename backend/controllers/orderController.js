@@ -2,10 +2,8 @@ import Order from "../models/orderModel.js";
 import Product from "../models/productModel.js";
 import User from "../models/userModel.js"; 
 import Cart from "../models/cartModel.js"; // Pastikan model Cart diimpor
-import multer from "multer";
+import { BASE_URL } from "./../config/config.js";
 
-// Konfigurasi Multer untuk upload file
-const upload = multer({ dest: "uploads/" });
 
 
 const OrderController = {
@@ -208,26 +206,34 @@ const OrderController = {
   },
   uploadPaymentProof: async (req, res) => {
     try {
-      const { id } = req.params; // ID order
-      const file = req.file; // File dari multer
+      const { id } = req.params; // Order ID
+      const file = req.file; // File from multer
   
       if (!file) {
         return res.status(400).json({ message: "No file uploaded." });
       }
   
+      // Find the order by ID
       const order = await Order.findByPk(id);
       if (!order) {
         return res.status(404).json({ message: "Order not found." });
       }
   
-      // Simpan path file ke database
-      order.paymentProof = `/uploads/${file.filename}`;
+      // Save the payment proof URL in the database
+      const paymentProofUrl = `${BASE_URL}/uploads/${file.filename}`;
+      order.paymentProof = paymentProofUrl;
       await order.save();
   
-      res.status(200).json({ message: "Payment proof uploaded successfully.", order });
+      res.status(200).json({
+        message: "Payment proof uploaded successfully.",
+        order,
+      });
     } catch (error) {
       console.error("Error uploading payment proof:", error);
-      res.status(500).json({ message: "Error uploading payment proof.", error: error.message });
+      res.status(500).json({
+        message: "Error uploading payment proof.",
+        error: error.message,
+      });
     }
   }
   

@@ -113,8 +113,8 @@ POST http://localhost:5000/admin/login
 Content-Type: application/json
 
 {
-  "email": "admin@gmail.com",
-  "password": "admin"
+  "email": "admin123@gmail.com",
+  "password": "admin123"
 }
 
 ###
@@ -128,7 +128,7 @@ GET http://localhost:5000/admin/token
 ###
 
 ### Get Admin Data (requires Authorization)
-GET http://localhost:5000/admin/me
+POST http://localhost:5000/admin/me
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjozLCJuYW1lIjoiQURNSU4iLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImlhdCI6MTczNzAwOTEwNiwiZXhwIjoxNzM3MDk1NTA2fQ.66JlBAnGSxmsEw7bzbesotFgwUZ04ZJ6LuLo85jWUFk
 Content-Type: application/json
 
@@ -139,23 +139,21 @@ Content-Type: application/json
 ###
 
 ### Get Admin Orders (requires Authorization)
-GET http://localhost:5000/admin/orders
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjozLCJuYW1lIjoiQURNSU4iLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImlhdCI6MTczNzAwOTEwNiwiZXhwIjoxNzM3MDk1NTA2fQ.66JlBAnGSxmsEw7bzbesotFgwUZ04ZJ6LuLo85jWUFk
+GET http://localhost:5000/admin/products
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjoxLCJuYW1lIjoiTXVoYW1tYWQgUmlkd2FuIiwiZW1haWwiOiJhZG1pbjEyM0BnbWFpbC5jb20iLCJpYXQiOjE3MzcxNzIzNjcsImV4cCI6MTczNzI1ODc2N30.nkLWTHRYLTHcrWVUS0RBbZtSGwAVqW9xbHKrCVfosJg
 
-###
+
 
 ### Update Order Status (requires Authorization)
-PUT http://localhost:5000/admin/orders/status
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjozLCJuYW1lIjoiQURNSU4iLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImlhdCI6MTczNzAwOTEwNiwiZXhwIjoxNzM3MDk1NTA2fQ.66JlBAnGSxmsEw7bzbesotFgwUZ04ZJ6LuLo85jWUFk
+PUT http://localhost:5000/admin/products/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjoxLCJuYW1lIjoiTXVoYW1tYWQgUmlkd2FuIiwiZW1haWwiOiJhZG1pbjEyM0BnbWFpbC5jb20iLCJpYXQiOjE3MzcxNzIwNTgsImV4cCI6MTczNzI1ODQ1OH0.HgcydR9PCeANjQKvRS-Hzwafo-tOXUFLR1g83e8bxe0
 Content-Type: application/json
 
 {
-  "id": 21,
-  "status": "completed"
+  "stock": "2"
 }
 
 ###
 GET http://localhost:5000/admin/orders
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjozLCJuYW1lIjoiQURNSU4iLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImlhdCI6MTczNzAwOTEwNiwiZXhwIjoxNzM3MDk1NTA2fQ.66JlBAnGSxmsEw7bzbesotFgwUZ04ZJ6LuLo85jWUFk
 ### Logout Admin
 DELETE http://localhost:5000/admin/logout

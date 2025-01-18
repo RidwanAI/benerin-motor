@@ -8,15 +8,21 @@ const ProductController = {
   createProduct: async (req, res) => {
     try {
       const { name, image, price, specs, label, stock, sold, rating } = req.body;
+  
+      // Ensure price is a number
+      if (isNaN(price)) {
+        return res.status(400).send({ message: "Price must be a number" });
+      }
+  
       const newProduct = await Product.create({
         name,
         image,
-        price,
+        price: parseFloat(price), // Convert price to a float
         specs,
         label,
         stock,
         sold,
-        rating
+        rating,
       });
       res.status(201).send(newProduct);
     } catch (error) {
@@ -52,18 +58,28 @@ const ProductController = {
   updateProduct: async (req, res) => {
     try {
       const { name, image, price, specs, label, stock, sold, rating } = req.body;
-      const update = await Product.update({
-        name,
-        image,
-        price,
-        specs,
-        label,
-        stock,
-        sold,
-        rating
-      }, {
-        where: { id: req.params.id }
-      });
+  
+      // Ensure price is a number
+      if (isNaN(price)) {
+        return res.status(400).send({ message: "Price must be a number" });
+      }
+  
+      const update = await Product.update(
+        {
+          name,
+          image,
+          price: parseFloat(price), // Convert price to a float
+          specs,
+          label,
+          stock,
+          sold,
+          rating,
+        },
+        {
+          where: { id: req.params.id },
+        }
+      );
+  
       if (update[0] > 0) {
         res.send({ message: "Product updated successfully" });
       } else {

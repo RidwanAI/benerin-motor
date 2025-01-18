@@ -13,7 +13,7 @@ const Product = db.define('products', {
         allowNull: false
     },
     price: {
-        type: DataTypes.STRING,
+        type: DataTypes.DECIMAL(10, 2), // Use DECIMAL for more precise pricing
         allowNull: false
     },
     specs: {

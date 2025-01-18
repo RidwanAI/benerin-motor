@@ -1,45 +1,89 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import adminService from "../../services/adminService"; // Adjust import path if needed
 
 const AdminProducts = () => {
-  // Function -> Data Dummy Products
-  const initialProducts = [
-    { id: 1, name: "Product A", price: "$10", stock: 100, description: "Kampas Ganda adalah..." },
-    { id: 2, name: "Product B", price: "$20", stock: 100, description: "Kampas Ganda adalah..." },
-    { id: 3, name: "Product C", price: "$30", stock: 100, description: "Kampas Ganda adalah..." },
-    { id: 4, name: "Product A", price: "$10", stock: 100, description: "Kampas Ganda adalah..." },
-    { id: 5, name: "Product B", price: "$20", stock: 100, description: "Kampas Ganda adalah..." },
-    { id: 6, name: "Product C", price: "$30", stock: 100, description: "Kampas Ganda adalah..." },
-    { id: 7, name: "Product D", price: "$40", stock: 80, description: "Kampas Ganda adalah..." },
-    { id: 8, name: "Product E", price: "$50", stock: 60, description: "Kampas Ganda adalah..." },
-    { id: 9, name: "Product F", price: "$60", stock: 50, description: "Kampas Ganda adalah..." },
-    { id: 10, name: "Product A", price: "$10", stock: 100, description: "Kampas Ganda adalah..." },
-    { id: 11, name: "Product B", price: "$20", stock: 100, description: "Kampas Ganda adalah..." },
-    { id: 12, name: "Product C", price: "$30", stock: 100, description: "Kampas Ganda adalah..." },
-    { id: 13, name: "Product D", price: "$40", stock: 80, description: "Kampas Ganda adalah..." },
-    { id: 14, name: "Product E", price: "$50", stock: 60, description: "Kampas Ganda adalah..." },
-    { id: 15, name: "Product F", price: "$60", stock: 50, description: "Kampas Ganda adalah..." },
-  ];
-
-  // Function -> Searching & Pagination
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
-  const [products, setProducts] = useState(initialProducts);
-  const filteredProducts = products.filter((product) => product.name.toLowerCase().includes(searchQuery.toLowerCase()));
-  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
-  const displayedProducts = filteredProducts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-
-  // Function -> Operation Crud Product
-  const [newProduct, setNewProduct] = useState({ name: "", price: "", stock: "", description: "" });
+  const [products, setProducts] = useState([]);
+  const [newProduct, setNewProduct] = useState({
+    name: "",
+    price: "",
+    stock: "",
+    specs: "",
+    label: "",
+    sold: "",
+    rating: "",
+  });
   const [editingProduct, setEditingProduct] = useState(null);
 
-  // Function -> Operation CRUD Products
-  const addProduct = () => {
-    if (!newProduct.name || !newProduct.price || !newProduct.stock || !newProduct.description) return;
-    const id = products.length + 1;
-    setProducts([...products, { id, ...newProduct }]);
-    setNewProduct({ name: "", price: "", stock: "", description: "" });
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const data = await adminService.getProducts();
+        setProducts(data);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+    fetchProducts();
+  }, []);
+
+  const filteredProducts = products.filter((product) =>
+    product.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+  const displayedProducts = filteredProducts.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  const addProduct = async () => {
+    if (
+      !newProduct.name ||
+      !newProduct.price ||
+      !newProduct.stock ||
+      !newProduct.specs ||
+      !newProduct.label ||
+      !newProduct.sold ||
+      !newProduct.rating ||
+      !newProduct.image
+    ) {
+      alert("Please fill out all fields before saving.");
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+      formData.append("name", newProduct.name);
+      formData.append("price", newProduct.price);
+      formData.append("stock", newProduct.stock);
+      formData.append("specs", newProduct.specs);
+      formData.append("label", newProduct.label);
+      formData.append("sold", newProduct.sold);
+      formData.append("rating", newProduct.rating);
+      formData.append("image", newProduct.image);
+
+      const createdProduct = await adminService.createProduct(formData);
+      setProducts([...products, createdProduct]);
+      setNewProduct({
+        name: "",
+        price: "",
+        stock: "",
+        specs: "",
+        label: "",
+        sold: "",
+        rating: "",
+        image: null,
+      });
+
+      // Show success alert
+      alert("Product created successfully!");
+    } catch (error) {
+      console.error("Error adding product:", error);
+      alert("Failed to create the product. Please try again.");
+    }
   };
 
   const editProduct = (id) => {
@@ -47,13 +91,39 @@ const AdminProducts = () => {
     setEditingProduct(product);
   };
 
-  const updateProduct = () => {
-    setProducts(products.map((product) => (product.id === editingProduct.id ? editingProduct : product)));
-    setEditingProduct(null);
+  const updateProduct = async () => {
+    try {
+      const updatedProduct = await adminService.updateProduct(
+        editingProduct.id,
+        editingProduct
+      );
+      setProducts(
+        products.map((product) =>
+          product.id === editingProduct.id ? updatedProduct : product
+        )
+      );
+      setEditingProduct(null);
+    } catch (error) {
+      console.error("Error updating product:", error);
+    }
   };
 
-  const deleteProduct = (id) => {
-    setProducts(products.filter((product) => product.id !== id));
+  const deleteProduct = async (id) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this product?"
+    );
+    if (!confirmDelete) return;
+
+    try {
+      await adminService.deleteProduct(id);
+      setProducts(products.filter((product) => product.id !== id));
+
+      // Show success alert
+      alert("Product deleted successfully!");
+    } catch (error) {
+      console.error("Error deleting product:", error);
+      alert("Failed to delete the product. Please try again.");
+    }
   };
 
   const handlePageChange = (page) => {
@@ -73,58 +143,93 @@ const AdminProducts = () => {
         {/* Main Content */}
         <div className="flex-1 bg-slate-100 overflow-auto">
           <main className="p-3 space-y-3">
-            {/* Fitur -> Add Product */}
-            <div className="bg-white p-3 rounded-sm shadow-sm space-y-3 w-full">
-              <p className="font-semibold text-slate-700 text-xl">Add New Product</p>
-              <div className="flex gap-3 w-full">
-                <input type="text" placeholder="Name" value={newProduct.name} onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })} className="border px-2 py-1 rounded-sm w-full sm:w-1/2 md:w-1/3" />
-                <input type="text" placeholder="Price" value={newProduct.price} onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })} className="border px-2 py-1 rounded-sm w-full sm:w-1/2 md:w-1/3" />
-                <input type="number" placeholder="Stock" value={newProduct.stock} onChange={(e) => setNewProduct({ ...newProduct, stock: e.target.value })} className="border px-2 py-1 rounded-sm w-full sm:w-1/2 md:w-1/3" />
-                <input type="text" placeholder="Description" value={newProduct.description} onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })} className="border px-2 py-1 rounded-sm w-full sm:w-1/2 md:w-1/3" />
-              </div>
-              <div className="w-full">
-                <button onClick={addProduct} className="bg-orange-500 duration-300 px-3 py-1.5 rounded-md transition text-sm text-white w-full hover:bg-orange-600 md:px-5 md:py-1.5">
-                  Save
-                </button>
-              </div>
-            </div>
+            {/* Search */}
+            <input
+              type="text"
+              placeholder="Search by Product Name"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="border p-2 rounded-sm w-full"
+            />
 
-            {/* Fitur -> Searching */}
-            <input type="text" placeholder="Search by Product Name" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="border p-2 rounded-sm w-full" />
-
-            {/* Fitur -> Table Product */}
+            {/* Table */}
             <div className="overflow-auto">
               <table className="bg-white border-collapse overflow-hidden rounded-sm shadow-sm w-full">
                 <thead className="bg-gray-800 text-white">
                   <tr>
-                    <th className="px-4 py-3 text-left text-sm font-semibold">ID</th>
-                    <th className="px-4 py-3 text-left text-sm font-semibold">Name</th>
-                    <th className="px-4 py-3 text-left text-sm font-semibold">Price</th>
-                    <th className="px-4 py-3 text-left text-sm font-semibold">Stock</th>
-                    <th className="px-4 py-3 text-left text-sm font-semibold">Description</th>
-                    <th className="px-4 py-3 text-center text-sm font-semibold">Actions</th>
+                    <th className="px-4 py-3 text-left text-sm font-semibold">
+                      ID
+                    </th>
+                    <th className="px-4 py-3 text-left text-sm font-semibold">
+                      Image
+                    </th>
+                    <th className="px-4 py-3 text-left text-sm font-semibold">
+                      Name
+                    </th>
+                    <th className="px-4 py-3 text-left text-sm font-semibold">
+                      Price
+                    </th>
+                    <th className="px-4 py-3 text-left text-sm font-semibold">
+                      Specs
+                    </th>
+                    <th className="px-4 py-3 text-left text-sm font-semibold">
+                      Label
+                    </th>
+                    <th className="px-4 py-3 text-left text-sm font-semibold">
+                      Stock
+                    </th>
+                    <th className="px-4 py-3 text-left text-sm font-semibold">
+                      Sold
+                    </th>
+                    <th className="px-4 py-3 text-left text-sm font-semibold">
+                      Rating
+                    </th>
+                    <th className="px-4 py-3 text-center text-sm font-semibold">
+                      Actions
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   {displayedProducts.map((product) => (
                     <tr key={product.id} className="text-sm">
                       <td className="px-4 py-3">{product.id}</td>
+                      <td className="px-4 py-3">
+                        <a
+                          href={product.image}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <img
+                            src={product.image}
+                            alt={product.name}
+                            className="w-16 h-16 object-cover rounded"
+                          />
+                        </a>
+                      </td>
                       <td className="px-4 py-3">{product.name}</td>
-                      <td className="px-4 py-3">{product.price}</td>
+                      <td className="px-4 py-3">{`Rp.${parseFloat(
+                        product.price
+                      ).toLocaleString("id-ID", {
+                        minimumFractionDigits: 2,
+                      })}`}</td>
+                      <td className="px-4 py-3">{product.specs}</td>
+                      <td className="px-4 py-3">{product.label}</td>
                       <td className="px-4 py-3">{product.stock}</td>
-                      <td className="px-4 py-3">{product.description}</td>
+                      <td className="px-4 py-3">{product.sold}</td>
+                      <td className="px-4 py-3">{product.rating}</td>
                       <td className="px-4 py-3">
                         <div className="flex gap-2 items-center justify-center">
-                          <button onClick={() => editProduct(product.id)} className="flex items-center bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1.5 rounded transition duration-300">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-pencil-square" viewBox="0 0 16 16">
-                              <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                              <path fillRule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
-                            </svg>
+                          <button
+                            onClick={() => editProduct(product.id)}
+                            className="flex items-center bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1.5 rounded transition duration-300"
+                          >
+                            Edit
                           </button>
-                          <button onClick={() => deleteProduct(product.id)} className="flex items-center bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded transition duration-300">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
-                              <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5" />
-                            </svg>
+                          <button
+                            onClick={() => deleteProduct(product.id)}
+                            className="flex items-center bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded transition duration-300"
+                          >
+                            Delete
                           </button>
                         </div>
                       </td>
@@ -134,7 +239,7 @@ const AdminProducts = () => {
               </table>
             </div>
 
-            {/* Fitur -> Pagination */}
+            {/* Pagination */}
             <div className="flex justify-between items-center">
               <button
                 onClick={() => handlePageChange(currentPage - 1)}
@@ -155,28 +260,98 @@ const AdminProducts = () => {
               </button>
             </div>
 
-            {/* Fitur -> Pop Up Edit Product */}
-            {editingProduct && (
-              <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                <div className="bg-white p-6 rounded-lg w-96">
-                  <h3 className="text-xl font-semibold mb-4">Edit Product</h3>
-                  <div className="flex flex-col space-y-2">
-                    <input type="text" placeholder="Name" value={editingProduct.name} onChange={(e) => setEditingProduct({ ...editingProduct, name: e.target.value })} className="border px-2 py-1 rounded" />
-                    <input type="text" placeholder="Price" value={editingProduct.price} onChange={(e) => setEditingProduct({ ...editingProduct, price: e.target.value })} className="border px-2 py-1 rounded" />
-                    <input type="number" placeholder="Stock" value={editingProduct.stock} onChange={(e) => setEditingProduct({ ...editingProduct, stock: e.target.value })} className="border px-2 py-1 rounded" />
-                    <input type="text" placeholder="Description" value={editingProduct.description} onChange={(e) => setEditingProduct({ ...editingProduct, description: e.target.value })} className="border px-2 py-1 rounded" />
-                    <div className="flex justify-end space-x-2 mt-4">
-                      <button onClick={() => setEditingProduct(null)} className="bg-slate-300 duration-300 px-3 py-1.5 rounded-md  hover:bg-slate-500 md:px-5 md:py-1.5">
-                        Cancel
-                      </button>
-                      <button onClick={updateProduct} className="bg-orange-500 duration-300 px-3 py-1.5 rounded-md text-white hover:bg-orange-700 md:px-5 md:py-1.5">
-                        Update
-                      </button>
-                    </div>
-                  </div>
-                </div>
+            {/* Add Product */}
+            <div className="bg-white p-3 rounded-sm shadow-sm space-y-3 w-full">
+              <p className="font-semibold text-slate-700 text-xl">
+                Add New Product
+              </p>
+              <div className="flex flex-wrap gap-3">
+                <input
+                  type="text"
+                  placeholder="Name"
+                  value={newProduct.name}
+                  onChange={(e) =>
+                    setNewProduct({ ...newProduct, name: e.target.value })
+                  }
+                  className="border px-2 py-1 rounded-sm w-full sm:w-1/3"
+                />
+                <input
+                  type="text"
+                  placeholder="Price"
+                  value={newProduct.price}
+                  onChange={(e) =>
+                    setNewProduct({ ...newProduct, price: e.target.value })
+                  }
+                  className="border px-2 py-1 rounded-sm w-full sm:w-1/3"
+                />
+                <input
+                  type="number"
+                  placeholder="Stock"
+                  value={newProduct.stock}
+                  onChange={(e) =>
+                    setNewProduct({ ...newProduct, stock: e.target.value })
+                  }
+                  className="border px-2 py-1 rounded-sm w-full sm:w-1/3"
+                />
+                <input
+                  type="text"
+                  placeholder="Specs"
+                  value={newProduct.specs}
+                  onChange={(e) =>
+                    setNewProduct({ ...newProduct, specs: e.target.value })
+                  }
+                  className="border px-2 py-1 rounded-sm w-full sm:w-1/3"
+                />
+                <input
+                  type="text"
+                  placeholder="Label"
+                  value={newProduct.label}
+                  onChange={(e) =>
+                    setNewProduct({ ...newProduct, label: e.target.value })
+                  }
+                  className="border px-2 py-1 rounded-sm w-full sm:w-1/3"
+                />
+                <input
+                  type="number"
+                  placeholder="Sold"
+                  value={newProduct.sold}
+                  onChange={(e) =>
+                    setNewProduct({ ...newProduct, sold: e.target.value })
+                  }
+                  className="border px-2 py-1 rounded-sm w-full sm:w-1/3"
+                />
+                <input
+                  type="number"
+                  step="0.1"
+                  placeholder="Rating"
+                  value={newProduct.rating}
+                  onChange={(e) =>
+                    setNewProduct({ ...newProduct, rating: e.target.value })
+                  }
+                  className="border px-2 py-1 rounded-sm w-full sm:w-1/3"
+                />
               </div>
-            )}
+              <div className="flex flex-wrap gap-3">
+                {/* Other input fields */}
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) =>
+                    setNewProduct({ ...newProduct, image: e.target.files[0] })
+                  }
+                  className="border px-2 py-1 rounded-sm w-full sm:w-1/3"
+                />
+              </div>
+              <div className="w-full">
+                <button
+                  onClick={addProduct}
+                  className="bg-orange-500 duration-300 px-3 py-1.5 rounded-md transition text-sm text-white w-full hover:bg-orange-600 md:px-5 md:py-1.5"
+                >
+                  Save
+                </button>
+              </div>
+            </div>
+            
           </main>
         </div>
       </div>
