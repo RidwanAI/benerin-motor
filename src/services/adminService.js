@@ -1,8 +1,9 @@
 import axios from "axios";
 
-// Backend URL
+/*
+  Function Axios Instance -> Communication With API Backend
+*/
 const API_BASE_URL = "http://localhost:5000";
-
 const axiosInstance = axios.create({
   baseURL: API_BASE_URL,
   withCredentials: true,
@@ -17,18 +18,30 @@ axiosInstance.interceptors.request.use((config) => {
 });
 
 const adminService = {
-  // Function -> Admin CRUD
+  /* 
+    Function Admin -> Create, Read, Update, Delete
+  */
   getAdmins: async () => {
-    const response = await axios.get(`${API_BASE_URL}/admin`);
-    return response.data;
+    try {
+      const response = await axios.get(`${API_BASE_URL}/admin`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { msg: "Failed to Fetch Admin!" };
+    }
   },
 
-  // Function -> User CRUD
+  /* 
+    Function User -> Create, Read, Update, Delete
+  */
   getUsers: async () => {
-    const response = await axios.get(`${API_BASE_URL}/admin/users`, {
-      headers: { Authorization: `Bearer ${localStorage.getItem("adminAccessToken")}` },
-    });
-    return response.data;
+    try {
+      const response = await axios.get(`${API_BASE_URL}/admin/users`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("adminAccessToken")}` },
+      });
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { msg: "Failed to Fetch User!" };
+    }
   },
 
   createUser: async (userData) => {
@@ -52,12 +65,18 @@ const adminService = {
     return response.data;
   },
 
-  // Function -> Product CRUD
+  /* 
+    Function Product -> Create, Read, Update, Delete
+  */
   getProducts: async () => {
-    const response = await axios.get(`${API_BASE_URL}/admin/products`, {
-      headers: { Authorization: `Bearer ${localStorage.getItem("adminAccessToken")}` },
-    });
-    return response.data;
+    try {
+      const response = await axios.get(`${API_BASE_URL}/admin/products`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("adminAccessToken")}` },
+      });
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { msg: "Failed to Fetch Product!" };
+    }
   },
 
   createProduct: async (productData) => {
@@ -69,7 +88,6 @@ const adminService = {
     });
     return response.data;
   },
-  
 
   updateProduct: async (id, productData) => {
     const response = await axios.put(`${API_BASE_URL}/admin/products/${id}`, productData, {
@@ -78,8 +96,8 @@ const adminService = {
         "Content-Type": "multipart/form-data",
       },
     });
-    return response.data; // Ensure it returns the updated product
-  },  
+    return response.data;
+  },
 
   deleteProduct: async (id) => {
     const response = await axios.delete(`${API_BASE_URL}/admin/products/${id}`, {
@@ -88,12 +106,18 @@ const adminService = {
     return response.data;
   },
 
-  // Function -> Order CRUD
+  /*  
+    Function Order -> Create, Read, Update, Delete
+  */
   getOrders: async () => {
-    const response = await axios.get(`${API_BASE_URL}/admin/orders`, {
-      headers: { Authorization: `Bearer ${localStorage.getItem("adminAccessToken")}` },
-    });
-    return response.data;
+    try {
+      const response = await axios.get(`${API_BASE_URL}/admin/orders`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("adminAccessToken")}` },
+      });
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { msg: "Failed to Fetch Order" };
+    }
   },
 
   createOrder: async (orderData) => {
@@ -110,15 +134,15 @@ const adminService = {
     return response.data;
   },
 
-  deleteOrder: async (id) => {
-    const response = await axios.delete(`${API_BASE_URL}/admin/orders/${id}`, {
+  updateOrderStatus: async (orderData) => {
+    const response = await axios.put(`${API_BASE_URL}/admin/orders/status`, orderData, {
       headers: { Authorization: `Bearer ${localStorage.getItem("adminAccessToken")}` },
     });
     return response.data;
   },
 
-  updateOrderStatus: async (orderData) => {
-    const response = await axios.put(`${API_BASE_URL}/admin/orders/status`, orderData, {
+  deleteOrder: async (id) => {
+    const response = await axios.delete(`${API_BASE_URL}/admin/orders/${id}`, {
       headers: { Authorization: `Bearer ${localStorage.getItem("adminAccessToken")}` },
     });
     return response.data;

@@ -14,6 +14,7 @@ import AdminSettings from "./admin/components/AdminSettings";
 /* User */
 // Landing Page
 import Home from "./user/landing/pages/Home";
+import Contact from "./user/landing/pages/Contact";
 import Login from "./user/landing/pages/Login";
 import Register from "./user/landing/pages/Register";
 
@@ -63,6 +64,7 @@ function AnimatedRoutes() {
             {/* ========== User ========== */}
             {/* Landing */}
             <Route path="/" element={<Home />} />
+            <Route path="/contact" element={<Contact />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
 

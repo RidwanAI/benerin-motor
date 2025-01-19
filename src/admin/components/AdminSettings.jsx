@@ -5,7 +5,7 @@ const AdminSettings = () => (
     <div className="flex-1 ">
       {/* Main Content */}
       <main className="bg-slate-100 p-3 space-y-3">
-        {/* Content -> Status Account */}
+        {/* Fitur -> Status Account */}
         <section className="font-poppins space-y-3">
           <div className="bg-white p-3 rounded-sm shadow-sm space-y-1">
             <p className="font-semibold text-xl">Status Account</p>
@@ -20,11 +20,10 @@ const AdminSettings = () => (
           </div>
         </section>
 
-        {/* Content -> Edit Profile */}
+        {/* Fitur -> Edit Profile */}
         <section className="bg-white font-poppins p-3 rounded-sm shadow-sm space-y-3">
           <p className="font-semibold text-xl">Edit Profile</p>
 
-          {/* Fitur -> Form Edit Profile */}
           <form className="space-y-3 text-sm">
             {/* Profile Photo */}
             <div className="flex flex-col items-center space-y-2">
@@ -78,7 +77,6 @@ const AdminSettings = () => (
             </div>
           </form>
 
-          {/* Button => Save Changes & Cancel */}
           <div className="flex items-center justify-end space-x-2 text-center">
             <button type="button" className="bg-slate-300 duration-300 px-3 py-1.5 rounded-md hover:bg-slate-500 md:px-5 md:py-1.5">
               Cancel
@@ -89,15 +87,13 @@ const AdminSettings = () => (
           </div>
         </section>
 
-        {/* Language */}
+        {/* Fitur -> Language */}
         <section className="bg-white font-poppins p-3 rounded-sm shadow-sm space-y-3">
-          {/* Header */}
           <div className="flex flex-col items-start space-y-1">
             <p className="font-semibold text-xl">Language</p>
             <p className="text-slate-500 text-sm">Select your preferred language from the options below. The selected language will be applied throughout the application.</p>
           </div>
 
-          {/* Fitur -> Language */}
           <div className="flex flex-col items-start justify-start space-y-3">
             <div className="space-y-2 text-slate-500 text-sm w-full">
               <label htmlFor="languageSelect" className="block">
@@ -129,17 +125,14 @@ const AdminSettings = () => (
           </div>
         </section>
 
-        {/* Delete Account */}
+        {/* Fitur -> Delete Account */}
         <section className="font-poppins space-y-3">
-          {/* Part => Delete Account */}
           <div className="bg-white p-3 rounded-sm shadow-sm space-y-3">
-            {/* Part => Header */}
             <div className="flex flex-col items-start space-y-1">
               <p className="font-semibold text-xl">Delete Account</p>
               <p className="text-slate-500 text-sm">Are you sure you want to delete your account? This action cannot be undone. Once deleted, all your data will be permanently removed.</p>
             </div>
 
-            {/* Part => Delete Validation */}
             <div className="flex flex-col items-start justify-start space-y-3">
               <div className="space-y-2 text-slate-500 text-sm w-full">
                 <label htmlFor="deleteAccount" className="block">
@@ -157,7 +150,6 @@ const AdminSettings = () => (
               </div>
             </div>
 
-            {/* Button => Cancel & Delete */}
             <div className="flex items-center justify-end space-x-2">
               <button className="bg-slate-300 duration-300 px-3 py-1.5 rounded-md hover:bg-slate-500 md:px-5 md:py-1.5">Cancel</button>
               <button className="bg-red-500 duration-300 px-3 py-1.5 rounded-md text-white hover:bg-red-700 md:px-5 md:py-1.5">Confirm</button>

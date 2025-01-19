@@ -77,7 +77,7 @@ const Sidebar = ({ onLinkClick, activePage, children }) => {
       setIsModalOpen(true);
       setModalAction("logout");
     } else {
-      navigate("/admin");
+      navigate("/login");
     }
   };
 
@@ -87,8 +87,8 @@ const Sidebar = ({ onLinkClick, activePage, children }) => {
 
   return (
     <div className="font-poppins flex">
-      {/* Part -> Sidebar */}
       <div className={`fixed top-0 left-0 h-screen bg-slate-900 text-white transform transition-transform duration-300 ${isOpen ? "translate-x-0" : "-translate-x-full"} w-60 md:w-72 z-50 flex flex-col`}>
+        {/* Fitur -> Sidebar */}
         <div>
           {/* Header */}
           <p className="font-bold p-3 text-xl md:text-2xl">

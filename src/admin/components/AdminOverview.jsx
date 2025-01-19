@@ -1,18 +1,48 @@
-import React from "react";
+/* Library / Package / File  */
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import adminService from "../../services/adminService";
 
 const AdminOverview = () => {
-  // Function -> Navigate URL
+  /* Function -> Navigate URL */
   const navigate = useNavigate();
 
-  // Function -> Shop
-  const productsShop = 120;
-  const customersShop = 250;
-  const ordersShop = 75;
+  /* Function Shop -> Count Products, Customers, Orders */
+  const [productCount, setProductCount] = useState(0);
+  const [customerCount, setCustomerCount] = useState(0);
+  const [orderCount, setOrderCount] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Function -> Service Motor
-  const bookingListServiceMotor = 20;
-  const customersServiceMotor = 100;
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [products, customers, orders] = await Promise.all([adminService.getProducts(), adminService.getUsers(), adminService.getOrders()]);
+        setProductCount(products.length);
+        setCustomerCount(customers.length);
+        setOrderCount(orders.length);
+      } catch (err) {
+        setError("Failed to Fetch Data!");
+        console.error(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
+  // Service Motor
+  const bookingListServiceMotor = 0;
+  const customersServiceMotor = 0;
 
   return (
     <div className="bg-slate-100 flex font-poppins min-h-screen">
@@ -42,7 +72,7 @@ const AdminOverview = () => {
                     </svg>
                   </div>
                   <div className="flex flex-col items-center md:items-start">
-                    <p className="font-bold text-slate-700 text-2xl">{productsShop}</p>
+                    <p className="font-bold text-slate-700 text-2xl">{productCount}</p>
                     <p className="text-slate-700 text-sm">Products Data</p>
                   </div>
                 </div>
@@ -61,7 +91,7 @@ const AdminOverview = () => {
                     </svg>
                   </div>
                   <div className="flex flex-col items-center md:items-start">
-                    <p className="font-bold text-slate-700 text-2xl">{customersShop}</p>
+                    <p className="font-bold text-slate-700 text-2xl">{customerCount}</p>
                     <p className="text-slate-700 text-sm">Customers Data</p>
                   </div>
                 </div>
@@ -81,7 +111,7 @@ const AdminOverview = () => {
                     </svg>
                   </div>
                   <div className="flex flex-col items-center md:items-start">
-                    <p className="font-bold text-slate-700 text-2xl">{ordersShop}</p>
+                    <p className="font-bold text-slate-700 text-2xl">{orderCount}</p>
                     <p className="text-slate-700 text-sm">Orders Data</p>
                   </div>
                 </div>

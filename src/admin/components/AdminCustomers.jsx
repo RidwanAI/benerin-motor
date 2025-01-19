@@ -1,21 +1,22 @@
 import React, { useState, useEffect } from "react";
-import adminService from "../../services/adminService"; // Ensure the correct path to adminService
+import adminService from "../../services/adminService";
 
 const AdminCustomers = () => {
-  // State for customers data
+  /* 
+    Function -> Fetch Customer From API
+  */
   const [customers, setCustomers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Function -> Fetch customers from API
   useEffect(() => {
     const fetchCustomers = async () => {
       try {
         setIsLoading(true);
-        const data = await adminService.getUsers(); // Call API to fetch users
-        setCustomers(data); // Update state with fetched data
+        const data = await adminService.getUsers();
+        setCustomers(data);
       } catch (err) {
-        setError(err.message || "Failed to load customers data.");
+        setError(err.message || "Failed to Load Customers Data!");
       } finally {
         setIsLoading(false);
       }
@@ -24,14 +25,18 @@ const AdminCustomers = () => {
     fetchCustomers();
   }, []);
 
-  // State -> Searching
+  /* 
+    Function -> Searching
+  */
   const [searchTerm, setSearchTerm] = useState("");
   const filteredCustomers = customers.filter((customer) => {
     const term = searchTerm.toLowerCase();
     return customer.name.toLowerCase().includes(term) || customer.phone.toLowerCase().includes(term);
   });
 
-  // State -> Pagination
+  /* 
+    Function -> Pagination
+  */
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
@@ -95,12 +100,8 @@ const AdminCustomers = () => {
                       <td className="px-4 py-3">{customer.phone}</td>
                       <td className="px-4 py-3">
                         <div className="flex gap-2 items-center justify-center">
-                          <button className="flex items-center bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1.5 rounded transition duration-300">
-                            Edit
-                          </button>
-                          <button className="flex items-center bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded transition duration-300">
-                            Delete
-                          </button>
+                          <button className="flex items-center bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1.5 rounded transition duration-300">Edit</button>
+                          <button className="flex items-center bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded transition duration-300">Delete</button>
                         </div>
                       </td>
                     </tr>
