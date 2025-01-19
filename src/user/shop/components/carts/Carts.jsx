@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import { cartService } from "../../../../services/cartService";
 
 const Carts = () => {
   const [cartItems, setCartItems] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [shippingAddress, setShippingAddress] = useState("");
+  const [customerPhoneNumber, setCustomerPhoneNumber] = useState("");
+  const [selectedShippingMethod, setSelectedShippingMethod] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -11,27 +15,24 @@ const Carts = () => {
     const fetchCartItems = async () => {
       try {
         setLoading(true);
+        const currentUser = await cartService.getCurrentUser();
+        const userId = currentUser.id;
 
-        const userResponse = await axios.get("http://localhost:5000/me", {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-        });
-
-        const userId = userResponse.data.id;
-
-        const response = await axios.get(`http://localhost:5000/carts/user/${userId}`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-        });
-
-        setCartItems(response.data);
+        const data = await cartService.fetchCartItems(userId);
+        setCartItems(data);
+        setError(null); // Reset error if data is fetched successfully
       } catch (err) {
-        console.error(err);
-        setError(
-          err.response?.data?.message || "Failed to fetch cart items. Please try again later."
-        );
+        if (err.response?.status === 404) {
+          // Handle 404 (Not Found) - no items in the cart
+          setCartItems([]); // Set cartItems to an empty array
+          setError(null); // No need to show an error
+        } else {
+          console.error(err);
+          setError(
+            err.response?.data?.message ||
+              "Failed to fetch cart items. Please try again later."
+          );
+        }
       } finally {
         setLoading(false);
       }
@@ -46,41 +47,6 @@ const Carts = () => {
     );
   };
 
-  const handleCheckout = async () => {
-    try {
-      const userResponse = await axios.get("http://localhost:5000/me", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
-      });
-
-      const userId = userResponse.data.id;
-
-      const selectedCartItems = cartItems.filter((item) => selectedItems.includes(item.id));
-      const totalAmount = selectedCartItems.reduce((total, item) => {
-        const price = parseFloat(item.product.price.replace(/[^\d.]/g, ""));
-        return total + price * item.quantity;
-      }, 0);
-
-      await axios.post(
-        "http://localhost:5000/checkout",
-        { userId, selectedCartItemIds: selectedItems, totalAmount },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-        }
-      );
-
-      alert("Checkout successful!");
-      setCartItems((prev) => prev.filter((item) => !selectedItems.includes(item.id)));
-      setSelectedItems([]);
-    } catch (error) {
-      console.error("Error during checkout", error);
-      alert("Checkout failed, please try again.");
-    }
-  };
-
   const calculateTotal = () => {
     return cartItems.reduce((total, item) => {
       if (selectedItems.includes(item.id)) {
@@ -91,6 +57,44 @@ const Carts = () => {
     }, 0);
   };
 
+  const handleCheckoutClick = () => {
+    if (!selectedItems.length) {
+      alert("Please select items to checkout.");
+      return;
+    }
+    setModalVisible(true);
+  };
+
+  const handleCheckout = async () => {
+    if (!shippingAddress || !customerPhoneNumber || !selectedShippingMethod) {
+      alert("Please fill in all the required fields.");
+      return;
+    }
+
+    try {
+      const currentUser = await cartService.getCurrentUser();
+      const userId = currentUser.id;
+
+      const shippingDetails = {
+        shippingAddress,
+        customerPhoneNumber,
+        shippingMethod: selectedShippingMethod,
+      };
+
+      await cartService.checkout(userId, selectedItems, shippingDetails);
+
+      alert("Checkout successful!");
+      setCartItems((prev) =>
+        prev.filter((item) => !selectedItems.includes(item.id))
+      );
+      setSelectedItems([]);
+      setModalVisible(false);
+    } catch (error) {
+      console.error("Error during checkout", error);
+      alert("Checkout failed, please try again.");
+    }
+  };
+
   const adjustQuantity = async (id, delta) => {
     try {
       const item = cartItems.find((item) => item.id === id);
@@ -98,20 +102,9 @@ const Carts = () => {
 
       if (newQuantity < 1) return;
 
-      const response = await axios.put(
-        `http://localhost:5000/carts/${id}`,
-        { quantity: newQuantity },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-        }
-      );
-
+      const data = await cartService.adjustQuantity(id, newQuantity);
       setCartItems((prev) =>
-        prev.map((item) =>
-          item.id === id ? { ...item, quantity: response.data.quantity } : item
-        )
+        prev.map((item) => (item.id === id ? { ...item, quantity: data.quantity } : item))
       );
     } catch (err) {
       console.error("Failed to update quantity.", err);
@@ -121,12 +114,7 @@ const Carts = () => {
 
   const removeItem = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/carts/${id}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
-      });
-
+      await cartService.removeItem(id);
       setCartItems((prev) => prev.filter((item) => item.id !== id));
     } catch (err) {
       console.error("Failed to remove item from cart.", err);
@@ -135,7 +123,6 @@ const Carts = () => {
   };
 
   if (loading) return <p>Loading cart items...</p>;
-  if (error) return <p className="text-red-500">{error}</p>;
 
   return (
     <div className="flex flex-col font-poppins">
@@ -144,6 +131,10 @@ const Carts = () => {
           <p className="font-semibold text-xl md:text-2xl">Cart</p>
         </div>
         <div className="p-3 space-y-3">
+          {cartItems.length === 0 && (
+            <p className="text-center text-gray-500">Your cart is empty.</p>
+          )}
+
           {cartItems.map((item) => (
             <div key={item.id} className="bg-white flex flex-col gap-2 p-3">
               <div className="flex items-center space-x-2">
@@ -163,9 +154,11 @@ const Carts = () => {
                 <div className="flex flex-col space-y-3 w-1/2">
                   <div className="flex flex-col truncate w-auto">
                     <p className="font-semibold text-md">{item.product.name}</p>
-                    <p className="text-xs md:text-sm text-slate-500">   {`Rp.${parseFloat(item.product.price).toLocaleString("id-ID", {
-                minimumFractionDigits: 2,
-              })}`}</p>
+                    <p className="text-xs md:text-sm text-slate-500">{`Rp.${parseFloat(
+                      item.product.price
+                    ).toLocaleString("id-ID", {
+                      minimumFractionDigits: 2,
+                    })}`}</p>
                   </div>
                   <div className="flex gap-2 items-center">
                     <button
@@ -192,19 +185,90 @@ const Carts = () => {
               </button>
             </div>
           ))}
-          <div className="bg-white flex items-center justify-between p-3 rounded-sm">
-            <p className="font-semibold text-md md:text-xl">
-              Total: Rp.{calculateTotal().toLocaleString()}
-            </p>
-            <button
-              onClick={handleCheckout}
-              className="bg-orange-500 duration-300 px-3 py-1.5 rounded-md text-white hover:bg-orange-700 md:px-5 md:py-1.5"
-            >
-              Checkout
-            </button>
-          </div>
+          {cartItems.length > 0 && (
+            <div className="bg-white flex items-center justify-between p-3 rounded-sm">
+              <p className="font-semibold text-md md:text-xl">
+                Total: Rp.{calculateTotal().toLocaleString()}
+              </p>
+              <button
+                onClick={handleCheckoutClick}
+                className="bg-orange-500 duration-300 px-3 py-1.5 rounded-md text-white hover:bg-orange-700 md:px-5 md:py-1.5"
+              >
+                Checkout
+              </button>
+            </div>
+          )}
         </div>
       </div>
+
+      {/* Modal => Checkout */}
+      {isModalVisible && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-1/3 shadow-lg">
+            <h2 className="text-lg font-bold mb-4">Complete Your Checkout</h2>
+
+            <div className="mb-4">
+              <label className="block font-medium mb-2" htmlFor="shippingAddress">
+                Shipping Address
+              </label>
+              <input
+                type="text"
+                id="shippingAddress"
+                value={shippingAddress}
+                onChange={(e) => setShippingAddress(e.target.value)}
+                className="w-full border border-gray-300 p-2 rounded-md"
+                placeholder="Enter your shipping address"
+              />
+            </div>
+
+            <div className="mb-4">
+              <label className="block font-medium mb-2" htmlFor="customerPhoneNumber">
+                Phone Number
+              </label>
+              <input
+                type="text"
+                id="customerPhoneNumber"
+                value={customerPhoneNumber}
+                onChange={(e) => setCustomerPhoneNumber(e.target.value)}
+                className="w-full border border-gray-300 p-2 rounded-md"
+                placeholder="Enter your phone number"
+              />
+            </div>
+
+            <div className="mb-4">
+              <label className="block font-medium mb-2">Shipping Method</label>
+              <select
+                value={selectedShippingMethod}
+                onChange={(e) => setSelectedShippingMethod(e.target.value)}
+                className="w-full border border-gray-300 p-2 rounded-md"
+              >
+                <option value="" disabled>
+                  Select shipping method
+                </option>
+                <option value="JNE">JNE</option>
+                <option value="JNT">JNT</option>
+                <option value="Shopee Express">Shopee Express</option>
+                <option value="Gojek">Gojek</option>
+              </select>
+            </div>
+
+            <div className="flex justify-end space-x-4">
+              <button
+                onClick={() => setModalVisible(false)}
+                className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleCheckout}
+                className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-700"
+              >
+                Confirm Checkout
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

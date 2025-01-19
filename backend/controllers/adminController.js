@@ -374,21 +374,27 @@ const adminController = {
         include: [
           {
             model: Product,
-            as: "product",
+            as: "orderedProduct", // Match alias defined in Order.belongsTo(Product)
             attributes: ["name", "price", "image"],
           },
-          { model: User, as: "user", attributes: ["name", "email"] },
+          {
+            model: User,
+            as: "user", // Match alias defined in Order.belongsTo(User)
+            attributes: ["name", "email"],
+          },
         ],
       });
-
       res.status(200).json(orders);
     } catch (error) {
-      res
-        .status(500)
-        .json({ message: "Error retrieving orders", error: error.message });
+      console.error("Error retrieving orders:", error.message);
+      res.status(500).json({
+        message: "Error retrieving orders",
+        error: error.message,
+      });
     }
   },
-
+  
+  
   // Get order by ID
   getOrderById: async (req, res) => {
     try {

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { productService } from "../../../../services/productService";
 
 const ProductList = ({ searchTerm, category }) => {
   const [products, setProducts] = useState([]);
@@ -18,10 +19,8 @@ const ProductList = ({ searchTerm, category }) => {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(
-          `http://localhost:5000/products/${category}`
-        );
-        setProducts(response.data);
+        const data = await productService.fetchProductsByCategory(category);
+        setProducts(data);
         setError(null);
       } catch (err) {
         setError("Error fetching products");
@@ -29,7 +28,7 @@ const ProductList = ({ searchTerm, category }) => {
         setLoading(false);
       }
     };
-
+  
     fetchProducts();
   }, [category]);
 
@@ -61,49 +60,6 @@ const ProductList = ({ searchTerm, category }) => {
     }
 
     return range;
-  };
-
-  const [quantity, setQuantity] = useState(1);
-  const [showAlert, setShowAlert] = useState(false);
-
-  const handleAddToCart = async (product, quantity) => {
-    try {
-      // Ambil informasi pengguna dari endpoint /me
-      const userResponse = await axios.get("http://localhost:5000/me", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
-      });
-
-      const userId = userResponse.data.id;
-
-      // Kirim permintaan ke backend untuk menambahkan produk ke keranjang
-      const response = await axios.post(
-        "http://localhost:5000/carts",
-        {
-          productId: product.id,
-          userId,
-          quantity,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-        }
-      );
-
-      // Tambahkan produk ke state cart lokal untuk memperbarui UI
-      setCart((prevCart) => [...prevCart, response.data]);
-
-      // Tampilkan notifikasi
-      setShowAlert(true);
-      setTimeout(() => {
-        setShowAlert(false);
-      }, 2000);
-    } catch (err) {
-      console.error("Failed to add to cart:", err);
-      setError("Failed to add product to cart. Please try again.");
-    }
   };
 
   const navigate = useNavigate();

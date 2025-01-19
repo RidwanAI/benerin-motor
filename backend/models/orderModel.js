@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import db from "../config/database.js"; // Pastikan jalur ini benar
+import db from "../config/database.js";
 
 const Order = db.define(
   "Order",
@@ -27,8 +27,20 @@ const Order = db.define(
       defaultValue: "Pending",
     },
     paymentProof: {
-      type: DataTypes.STRING, // Menyimpan URL gambar
+      type: DataTypes.STRING,
       allowNull: true,
+    },
+    shippingAddress: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    customerPhoneNumber: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    shippingMethod: {
+      type: DataTypes.ENUM("JNE", "JNT", "Shopee Express", "Gojek"),
+      allowNull: false,
     },
   },
   {
