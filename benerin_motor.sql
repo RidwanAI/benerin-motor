@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 18, 2025 at 04:26 PM
+-- Generation Time: Jan 19, 2025 at 02:28 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -42,7 +42,7 @@ CREATE TABLE `admin` (
 --
 
 INSERT INTO `admin` (`id`, `name`, `email`, `password`, `refresh_token`, `createdAt`, `updatedAt`) VALUES
-(1, 'Muhammad Ridwan', 'admin123@gmail.com', '$2a$12$LReeMdCDNZKomh4SjB7speIPgvcaiGkWUVRFQd1KPHs4.EkymT62G', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjoxLCJuYW1lIjoiTXVoYW1tYWQgUmlkd2FuIiwiZW1haWwiOiJhZG1pbjEyM0BnbWFpbC5jb20iLCJpYXQiOjE3MzcyMDg2ODMsImV4cCI6MTczNzI5NTA4M30.JFDh3wzIchUHAXOtL7zF7N4IO3wFfhAdJnpDdGxnXEY', '2025-01-15 16:56:02', '2025-01-18 13:58:03');
+(1, 'Muhammad Ridwan', 'admin123@gmail.com', '$2a$12$LReeMdCDNZKomh4SjB7speIPgvcaiGkWUVRFQd1KPHs4.EkymT62G', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjoxLCJuYW1lIjoiTXVoYW1tYWQgUmlkd2FuIiwiZW1haWwiOiJhZG1pbjEyM0BnbWFpbC5jb20iLCJpYXQiOjE3MzcyNDk2MzAsImV4cCI6MTczNzMzNjAzMH0.UH25xdAeFrFZO2DXkDQ7AVMlS-3EyPGSJoQzPZE_9yk', '2025-01-15 16:56:02', '2025-01-19 01:20:30');
 
 -- --------------------------------------------------------
 
@@ -73,21 +73,29 @@ CREATE TABLE `orders` (
   `status` enum('Pending','Paid','Shipped','Completed') NOT NULL DEFAULT 'Pending',
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL,
-  `paymentProof` varchar(255) DEFAULT NULL
+  `paymentProof` varchar(255) DEFAULT NULL,
+  `shippingAddress` varchar(255) NOT NULL,
+  `customerPhoneNumber` varchar(20) NOT NULL,
+  `shippingMethod` enum('JNE','JNT','Shopee Express','Gojek') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `orders`
 --
 
-INSERT INTO `orders` (`id`, `userId`, `productId`, `quantity`, `totalPrice`, `status`, `createdAt`, `updatedAt`, `paymentProof`) VALUES
-(19, 1, 1, 1, 0.00, 'Paid', '2025-01-15 09:13:49', '2025-01-15 11:02:06', '/uploads/1736932497556-transaksi 1.jpg'),
-(20, 1, 2, 1, 0.00, 'Paid', '2025-01-15 09:13:49', '2025-01-15 15:12:16', '/uploads/1736932618720-Gambar WhatsApp 2024-12-02 pukul 11.43.42_a20e54c7.jpg'),
-(23, 1, 4, 1, 0.00, 'Pending', '2025-01-15 10:59:10', '2025-01-15 10:59:10', NULL),
-(24, 2, 3, 1, 0.00, 'Pending', '2025-01-16 12:42:04', '2025-01-16 12:42:04', NULL),
-(25, 2, 2, 1, 1200000.00, 'Pending', '2025-01-16 13:05:13', '2025-01-16 13:05:13', NULL),
-(26, 2, 1, 3, 1350000.00, 'Pending', '2025-01-18 11:23:03', '2025-01-18 13:45:58', 'http://localhost:5000/uploads/1737207958913-https___images.genius.com_77b0d1b460d9ba4d1388aad0722a8188.1000x1000x1.png'),
-(27, 2, 1, 1, 450000.00, 'Pending', '2025-01-18 13:54:23', '2025-01-18 13:54:23', NULL);
+INSERT INTO `orders` (`id`, `userId`, `productId`, `quantity`, `totalPrice`, `status`, `createdAt`, `updatedAt`, `paymentProof`, `shippingAddress`, `customerPhoneNumber`, `shippingMethod`) VALUES
+(28, 2, 2, 1, 1200000.00, 'Paid', '2025-01-18 16:52:22', '2025-01-18 18:16:23', NULL, 'Jl raya legok', '085883327454', 'JNE'),
+(29, 2, 2, 1, 1200000.00, '', '2025-01-18 16:56:59', '2025-01-18 18:16:47', NULL, 'Jl raya legok', '085883327454', 'Shopee Express'),
+(30, 2, 2, 1, 1200000.00, 'Shipped', '2025-01-18 17:01:40', '2025-01-18 18:16:29', NULL, 'Jl raya legok', '085883327454', 'Gojek'),
+(31, 2, 2, 2, 2400000.00, 'Pending', '2025-01-18 17:06:57', '2025-01-18 17:06:57', NULL, 'Jl raya legok', '085883327454', 'JNT'),
+(32, 2, 29, 3, 3000.00, 'Pending', '2025-01-18 17:10:35', '2025-01-18 17:10:35', NULL, 'Jl raya legok', '085883327454', 'JNE'),
+(33, 2, 2, 1, 1200000.00, 'Pending', '2025-01-18 17:16:00', '2025-01-18 17:16:00', NULL, 'Jl raya legok', '085883327454', 'JNE'),
+(34, 2, 5, 1, 35000.00, 'Pending', '2025-01-18 17:16:00', '2025-01-18 17:16:00', NULL, 'Jl raya legok', '085883327454', 'JNE'),
+(35, 2, 1, 1, 450000.00, 'Pending', '2025-01-18 17:34:22', '2025-01-18 17:34:22', NULL, 'Jl raya legok', '085883327454', 'JNE'),
+(36, 2, 3, 1, 95000.00, 'Pending', '2025-01-18 17:34:22', '2025-01-18 17:34:22', NULL, 'Jl raya legok', '085883327454', 'JNE'),
+(37, 2, 2, 1, 1200000.00, 'Shipped', '2025-01-18 17:44:47', '2025-01-19 01:27:41', NULL, 'Jl raya legok', '085883327454', 'JNE'),
+(38, 2, 2, 1, 1200000.00, 'Paid', '2025-01-18 18:08:26', '2025-01-18 18:16:57', NULL, 'Jl raya legok', '085883327454', 'JNT'),
+(39, 2, 2, 1, 1200000.00, 'Pending', '2025-01-18 18:08:38', '2025-01-18 18:08:38', NULL, 'Jl raya legok', '085883327454', 'Shopee Express');
 
 -- --------------------------------------------------------
 
@@ -151,7 +159,7 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `name`, `email`, `password`, `refresh_token`, `createdAt`, `updatedAt`) VALUES
 (1, 'Muhammad Ridwan', 'ridwansmpl36@gmail.com', '$2b$10$wOZQd.Jg1I1jH.O7xmw5OOkWUJ9WRz4wd9Ja7aBglxcOoaln8b8NK', NULL, '2025-01-10 03:54:15', '2025-01-15 15:13:53'),
-(2, 'Fadilano Abraham', 'fadilanoa@gmail.com', '$2b$10$/.LAp9tDi5ekDdompVjN7.sY7T9QoJvx/Zj7OJBdW.Wbvyt6h1X0W', NULL, '2025-01-13 01:57:01', '2025-01-18 13:57:56'),
+(2, 'Fadilano Abraham', 'fadilanoa@gmail.com', '$2b$10$/.LAp9tDi5ekDdompVjN7.sY7T9QoJvx/Zj7OJBdW.Wbvyt6h1X0W', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsIm5hbWUiOiJGYWRpbGFubyBBYnJhaGFtIiwiZW1haWwiOiJmYWRpbGFub2FAZ21haWwuY29tIiwiaWF0IjoxNzM3MjUwMDk2LCJleHAiOjE3MzczMzY0OTZ9.N0I6PebedTQ23wxvreEImeXvv1W-jwzkEYA8Orgu-Ds', '2025-01-13 01:57:01', '2025-01-19 01:28:16'),
 (3, 'Achmad Rizky', 'achmadrizky@gmail.com', '$2b$10$vQLU8hcyqs2XQuDxxSnaEenq2joXgNPaKqFmMTkszl0HXCXCg0jgG', NULL, '2025-01-14 15:35:38', '2025-01-14 18:16:02'),
 (10, 'Muhammad Ridwan', 'admin@gmail.com', '$2b$10$3UAzMjirE67iWVk5iPxHB.pniz4DvxY4dHbG3awCSIL3g2HAZFvB6', NULL, '2025-01-15 14:20:05', '2025-01-15 14:20:05');
 
@@ -321,13 +329,13 @@ ALTER TABLE `admin`
 -- AUTO_INCREMENT for table `carts`
 --
 ALTER TABLE `carts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=73;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=82;
 
 --
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- AUTO_INCREMENT for table `products`
