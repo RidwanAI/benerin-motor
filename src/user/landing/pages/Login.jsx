@@ -8,6 +8,7 @@ import Layout from "./Layout";
 
 // Components
 import AutoScroll from "../components/generals/AutoScroll";
+import adminService from "../../../services/adminService";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -34,7 +35,7 @@ const Login = () => {
       let response;
       if (formData.email.includes("admin")) {
         // Login sebagai admin
-        response = await authService.adminLogin(formData);
+        response = await adminService.adminLogin(formData);
         navigate("/admin/dashboard");
       } else {
         // Login sebagai user

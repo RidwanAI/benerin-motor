@@ -62,6 +62,7 @@ router.delete("/carts/:id", verifyToken, CartController.deleteCartItem); // Dele
 // Admin router
 router.get("/admin", verifyAdminToken, adminController.getAdmins);
 router.post("/admin/login", adminController.adminLogin);
+router.get("/admin/me", verifyAdminToken, adminController.getCurrentAdmin);
 router.get("/admin/token", adminRefreshToken);
 router.delete("/admin/logout", adminController.adminLogout);
 
@@ -69,7 +70,11 @@ router.delete("/admin/logout", adminController.adminLogout);
 router.get("/admin/orders", verifyAdminToken, adminController.getAllOrders);
 router.post("/admin/orders", verifyAdminToken, adminController.getAllOrders);
 router.put("/admin/orders/:id", verifyAdminToken, adminController.updateOrder);
-router.delete("/admin/orders/:id", verifyAdminToken, adminController.deleteOrder);
+router.delete(
+  "/admin/orders/:id",
+  verifyAdminToken,
+  adminController.deleteOrder
+);
 
 // User management (CRUD) for admin
 router.get("/admin/users", verifyAdminToken, adminController.getUsers);
@@ -79,11 +84,22 @@ router.delete("/admin/users/:id", verifyAdminToken, adminController.deleteUser);
 
 // Product management (CRUD) for admin
 router.get("/admin/products", verifyAdminToken, adminController.getAllProducts);
-router.post("/admin/products", verifyAdminToken,upload.single("image"), adminController.createProduct);
-router.put("/admin/products/:id", verifyAdminToken, adminController.updateProduct);
-router.delete("/admin/products/:id", verifyAdminToken, adminController.deleteProduct);
-
-
+router.put(
+  "/admin/products/:id",
+  verifyAdminToken,
+  upload.single("image"), // Add multer middleware
+  adminController.updateProduct
+);
+router.put(
+  "/admin/products/:id",
+  verifyAdminToken,
+  adminController.updateProduct
+);
+router.delete(
+  "/admin/products/:id",
+  verifyAdminToken,
+  adminController.deleteProduct
+);
 
 router.post("/orders", verifyToken, OrderController.createOrder);
 router.get("/orders", verifyToken, OrderController.getAllOrders);

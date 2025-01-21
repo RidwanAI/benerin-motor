@@ -119,8 +119,7 @@ Content-Type: application/json
 
 ###
 GET http://localhost:5000/admin
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjozLCJuYW1lIjoiQURNSU4iLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImlhdCI6MTczNzAwOTEwNiwiZXhwIjoxNzM3MDk1NTA2fQ.66JlBAnGSxmsEw7bzbesotFgwUZ04ZJ6LuLo85jWUFk
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjoxLCJuYW1lIjoiTXVoYW1tYWQgUmlkd2FuIiwiZW1haWwiOiJhZG1pbjEyM0BnbWFpbC5jb20iLCJpYXQiOjE3Mzc0NzU5NTgsImV4cCI6MTczNzU2MjM1OH0.FQFh-a7-eNjkOX5YmBlr5gGSLk1NTkoBLMdPr5PZL9c
 
 ### Refresh Admin Token
 GET http://localhost:5000/admin/token
@@ -128,13 +127,13 @@ GET http://localhost:5000/admin/token
 ###
 
 ### Get Admin Data (requires Authorization)
-POST http://localhost:5000/admin/me
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjozLCJuYW1lIjoiQURNSU4iLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImlhdCI6MTczNzAwOTEwNiwiZXhwIjoxNzM3MDk1NTA2fQ.66JlBAnGSxmsEw7bzbesotFgwUZ04ZJ6LuLo85jWUFk
+GET http://localhost:5000/admin/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjoxLCJuYW1lIjoiTXVoYW1tYWQgUmlkd2FuIiwiZW1haWwiOiJhZG1pbjEyM0BnbWFpbC5jb20iLCJpYXQiOjE3Mzc0NzU5NTgsImV4cCI6MTczNzU2MjM1OH0.FQFh-a7-eNjkOX5YmBlr5gGSLk1NTkoBLMdPr5PZL9c
 Content-Type: application/json
 
 {
-    "email": "admin@gmail.com",
-    "password": "admin"
+    "email": "admin123@gmail.com",
+    "password": "admin123"
 }
 ###
 

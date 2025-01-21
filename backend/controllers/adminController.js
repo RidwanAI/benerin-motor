@@ -75,6 +75,27 @@ const adminController = {
       res.status(404).json({ msg: "Email Tidak Ditemukan" });
     }
   },
+
+  getCurrentAdmin: async (req, res) => {
+    try {
+      const admin = await Admin.findOne({
+        where: {
+          email: req.email,
+        },
+        attributes: ["id", "name", "email"],
+      });
+  
+      if (!admin) {
+        return res.status(404).json({ msg: "User tidak ditemukan" });
+      }
+  
+      res.json(admin);
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ msg: "Server Error" });
+    }
+  },
+
   adminLogout: async (req, res) => {
     const refreshToken = req.cookies.refreshToken;
     if (!refreshToken) return res.sendStatus(204);
@@ -101,7 +122,9 @@ const adminController = {
   // CRUD User
   getUsers: async (req, res) => {
     try {
-      const users = await User.findAll({ attributes: ["id", "name", "email"] });
+      const users = await User.findAll({
+        attributes: ["id", "name", "email"],
+      });
       res.json(users);
     } catch (error) {
       console.log(error);
@@ -130,12 +153,27 @@ const adminController = {
       const user = await User.findByPk(id);
       if (!user) return res.status(404).json({ msg: "User not found." });
 
-      const hashedPassword = password
-        ? await bcrypt.hash(password, 10)
-        : user.password;
-      await user.update({ name, email, password: hashedPassword });
+      // Only update password if a new one is provided
+      const updateData = {
+        name: name || user.name,
+        email: email || user.email,
+      };
 
-      res.json({ msg: "User updated successfully." });
+      if (password && password.trim() !== "") {
+        updateData.password = await bcrypt.hash(password, 10);
+      }
+
+      await user.update(updateData);
+
+      // Return user data without password
+      const updatedUser = await User.findByPk(id, {
+        attributes: ["id", "name", "email"],
+      });
+
+      res.json({
+        msg: "User updated successfully.",
+        user: updatedUser,
+      });
     } catch (error) {
       console.log(error);
       res.status(500).json({ msg: "Failed to update user." });
@@ -206,51 +244,51 @@ const adminController = {
         res.status(404).send({ message: "Product not found" });
       }
     } catch (error) {
-      res
-        .status(500)
-        .send({
-          message: "Error retrieving the product",
-          error: error.message,
-        });
-    }
-  },
-
-  // Update a product
-  // Update a product
-  updateProduct: async (req, res) => {
-    try {
-      const { name, price, specs, label, stock, sold, rating } = req.body;
-  
-      const product = await Product.findByPk(req.params.id);
-      if (!product) {
-        return res.status(404).send({ message: "Product not found" });
-      }
-  
-      const image = req.file
-        ? `${BASE_URL}/uploads/${req.file.filename}`
-        : product.image;
-  
-      await product.update({
-        name: name || product.name,
-        price: price ? parseFloat(price) : product.price,
-        specs: specs || product.specs,
-        label: label || product.label,
-        stock: stock || product.stock,
-        sold: sold || product.sold,
-        rating: rating || product.rating,
-        image,
-      });
-  
-      res.send(product); // Send the updated product object
-    } catch (error) {
-      console.error("Error updating the product:", error);
       res.status(500).send({
-        message: "Error updating the product",
+        message: "Error retrieving the product",
         error: error.message,
       });
     }
   },
-  
+
+  // Update a product
+  updateProduct: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { name, price, specs, label, stock, sold, rating } = req.body;
+
+      const product = await Product.findByPk(id);
+      if (!product) {
+        return res.status(404).send({ message: "Product not found" });
+      }
+
+      // Handle image update
+      let image = product.image; // Keep existing image by default
+      if (req.file) {
+        image = `${BASE_URL}/uploads/${req.file.filename}`;
+      }
+
+      // Update product with all fields
+      const updatedProduct = await product.update({
+        name: name || product.name,
+        price: price ? parseFloat(price) : product.price,
+        specs: specs || product.specs,
+        label: label || product.label,
+        stock: stock ? parseInt(stock) : product.stock,
+        sold: sold ? parseInt(sold) : product.sold,
+        rating: rating ? parseFloat(rating) : product.rating,
+        image,
+      });
+
+      res.status(200).json(updatedProduct);
+    } catch (error) {
+      console.error("Error updating product:", error);
+      res.status(500).send({
+        message: "Error updating product",
+        error: error.message,
+      });
+    }
+  },
 
   // Delete a product
   deleteProduct: async (req, res) => {
@@ -284,12 +322,10 @@ const adminController = {
       }
     } catch (error) {
       console.error("Error fetching new products: ", error);
-      res
-        .status(500)
-        .send({
-          message: "Error retrieving new products",
-          error: error.message,
-        });
+      res.status(500).send({
+        message: "Error retrieving new products",
+        error: error.message,
+      });
     }
   },
 
@@ -305,12 +341,10 @@ const adminController = {
       }
     } catch (error) {
       console.error("Error fetching recommended products: ", error);
-      res
-        .status(500)
-        .send({
-          message: "Error retrieving recommended products",
-          error: error.message,
-        });
+      res.status(500).send({
+        message: "Error retrieving recommended products",
+        error: error.message,
+      });
     }
   },
 
@@ -326,12 +360,10 @@ const adminController = {
       }
     } catch (error) {
       console.error("Error fetching second products: ", error);
-      res
-        .status(500)
-        .send({
-          message: "Error retrieving second products",
-          error: error.message,
-        });
+      res.status(500).send({
+        message: "Error retrieving second products",
+        error: error.message,
+      });
     }
   },
   createOrder: async (req, res) => {
@@ -393,8 +425,7 @@ const adminController = {
       });
     }
   },
-  
-  
+
   // Get order by ID
   getOrderById: async (req, res) => {
     try {
