@@ -42,19 +42,12 @@ export const cartService = {
     });
   },
 
-  checkout: async (userId, selectedCartItemIds, shippingDetails) => {
-    await axios.post(
-      `${BASE_URL}/checkout`,
-      {
-        userId,
-        selectedCartItemIds,
-        ...shippingDetails,
+  checkout: async (checkoutData) => {
+    const response = await axios.post(`${BASE_URL}/checkout`, checkoutData, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
-      }
-    );
+    });
+    return response.data;
   },
 };

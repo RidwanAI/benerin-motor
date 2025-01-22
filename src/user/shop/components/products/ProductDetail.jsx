@@ -3,6 +3,8 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { authService } from "../../../../services/authService.js";
 
+const SHIPPING_COST = 15000; // Fixed shipping cost in Rupiah
+
 const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -53,6 +55,16 @@ const ProductDetail = () => {
     }
   }, [id]);
 
+  const calculateSubtotal = () => {
+    if (!product) return 0;
+    return parseFloat(product.price) * quantity;
+  };
+
+  const calculateTotal = () => {
+    const subtotal = calculateSubtotal();
+    return subtotal + SHIPPING_COST;
+  };
+
   const handleCreateOrder = async () => {
     if (!shippingAddress || !customerPhoneNumber || !selectedShippingMethod) {
       alert("Please fill in all the required fields.");
@@ -66,26 +78,42 @@ const ProductDetail = () => {
         return;
       }
 
+      // Calculate the values before sending
+      const subtotal = calculateSubtotal();
+      const total = calculateTotal();
+
       const orderPayload = {
         userId: currentUser.id,
         productId: product.id,
-        quantity,
+        quantity: parseInt(quantity),
         shippingAddress,
         customerPhoneNumber,
         shippingMethod: selectedShippingMethod,
+        shippingCost: parseFloat(SHIPPING_COST),
+        subtotal: parseFloat(subtotal),
+        totalAmount: parseFloat(total),
       };
 
-      const response = await axios.post("http://localhost:5000/orders", orderPayload, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
-      });
+      console.log("Order payload:", orderPayload); // For debugging
+
+      const response = await axios.post(
+        "http://localhost:5000/orders",
+        orderPayload,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        }
+      );
 
       alert("Order created successfully!");
       setModalVisible(false);
       navigate(`/shop`);
     } catch (error) {
-      console.error("Error creating order:", error.response?.data || error.message);
+      console.error(
+        "Error creating order:",
+        error.response?.data || error.message
+      );
       alert("Failed to create order. Please try again.");
     }
   };
@@ -184,7 +212,9 @@ const ProductDetail = () => {
 
           {/* Details */}
           <div className="p-3 space-y-3">
-            <h2 className="font-semibold text-xl md:text-2xl">{product.name}</h2>
+            <h2 className="font-semibold text-xl md:text-2xl">
+              {product.name}
+            </h2>
             <p className="text-slate-500">{product.specs}</p>
             <p className="font-semibold text-orange-500 text-xl">{`Rp.${parseFloat(
               product.price
@@ -202,27 +232,29 @@ const ProductDetail = () => {
                 min="1"
                 max={product.stock}
                 value={quantity}
-                onChange={(e) => setQuantity(Math.min(e.target.value, product.stock))}
+                onChange={(e) =>
+                  setQuantity(Math.min(e.target.value, product.stock))
+                }
                 className="border text-center w-16"
               />
             </div>
             {renderActionButtons()}
 
             <Link
-            to="/shop"
-            className="absolute duration-300 left-3 rounded-full text-orange-500 top-1/2 transform -translate-y-1/2 hover:text-orange-700"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="30"
-              height="30"
-              fill="currentColor"
-              className="bi bi-arrow-left-circle-fill"
-              viewBox="0 0 16 16"
+              to="/shop"
+              className="absolute duration-300 left-3 rounded-full text-orange-500 top-1/2 transform -translate-y-1/2 hover:text-orange-700"
             >
-              <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0m3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z" />
-            </svg>
-          </Link>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="30"
+                height="30"
+                fill="currentColor"
+                className="bi bi-arrow-left-circle-fill"
+                viewBox="0 0 16 16"
+              >
+                <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0m3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z" />
+              </svg>
+            </Link>
           </div>
         </div>
       </div>
@@ -234,7 +266,10 @@ const ProductDetail = () => {
             <h2 className="text-lg font-bold mb-4">Complete Your Order</h2>
 
             <div className="mb-4">
-              <label className="block font-medium mb-2" htmlFor="shippingAddress">
+              <label
+                className="block font-medium mb-2"
+                htmlFor="shippingAddress"
+              >
                 Shipping Address
               </label>
               <input
@@ -248,7 +283,10 @@ const ProductDetail = () => {
             </div>
 
             <div className="mb-4">
-              <label className="block font-medium mb-2" htmlFor="customerPhoneNumber">
+              <label
+                className="block font-medium mb-2"
+                htmlFor="customerPhoneNumber"
+              >
                 Phone Number
               </label>
               <input
@@ -277,6 +315,29 @@ const ProductDetail = () => {
                 <option value="Gojek">Gojek</option>
               </select>
             </div>
+
+            {selectedShippingMethod && (
+              <div className="mb-4">
+                <div className="flex justify-between text-sm">
+                  <span>Subtotal:</span>
+                  <span>{`Rp.${calculateSubtotal().toLocaleString("id-ID", {
+                    minimumFractionDigits: 2,
+                  })}`}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span>Shipping Cost:</span>
+                  <span>{`Rp.${SHIPPING_COST.toLocaleString("id-ID", {
+                    minimumFractionDigits: 2,
+                  })}`}</span>
+                </div>
+                <div className="flex justify-between font-bold mt-2">
+                  <span>Total:</span>
+                  <span>{`Rp.${calculateTotal().toLocaleString("id-ID", {
+                    minimumFractionDigits: 2,
+                  })}`}</span>
+                </div>
+              </div>
+            )}
 
             <div className="flex justify-end space-x-4">
               <button

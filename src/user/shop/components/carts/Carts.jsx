@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { cartService } from "../../../../services/cartService";
 
+const SHIPPING_COST = 15000;
+
 const Carts = () => {
   const [cartItems, setCartItems] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
@@ -47,14 +49,20 @@ const Carts = () => {
     );
   };
 
-  const calculateTotal = () => {
+  const calculateSubtotal = () => {
     return cartItems.reduce((total, item) => {
       if (selectedItems.includes(item.id)) {
-        const price = parseFloat(item.product.price.replace(/[^\d.]/g, ""));
+        const price = parseFloat(item.product.price);
         return total + price * item.quantity;
       }
       return total;
     }, 0);
+  };
+
+  const calculateTotal = () => {
+    return selectedShippingMethod
+      ? calculateSubtotal() + SHIPPING_COST
+      : calculateSubtotal();
   };
 
   const handleCheckoutClick = () => {
@@ -70,27 +78,34 @@ const Carts = () => {
       alert("Please fill in all the required fields.");
       return;
     }
-
+  
     try {
       const currentUser = await cartService.getCurrentUser();
       const userId = currentUser.id;
-
-      const shippingDetails = {
+  
+      const selectedCartItems = cartItems.filter(item => selectedItems.includes(item.id));
+      const subtotal = calculateSubtotal();
+      const totalWithShipping = subtotal + SHIPPING_COST;
+  
+      const checkoutData = {
+        userId,
+        selectedCartItemIds: selectedItems,
         shippingAddress,
         customerPhoneNumber,
         shippingMethod: selectedShippingMethod,
+        shippingCost: SHIPPING_COST,
+        totalAmount: totalWithShipping,
+        subtotal: subtotal
       };
-
-      await cartService.checkout(userId, selectedItems, shippingDetails);
-
+  
+      await cartService.checkout(checkoutData);
+      
       alert("Checkout successful!");
-      setCartItems((prev) =>
-        prev.filter((item) => !selectedItems.includes(item.id))
-      );
+      setCartItems(prev => prev.filter(item => !selectedItems.includes(item.id)));
       setSelectedItems([]);
       setModalVisible(false);
     } catch (error) {
-      console.error("Error during checkout", error);
+      console.error("Error during checkout:", error);
       alert("Checkout failed, please try again.");
     }
   };
@@ -104,7 +119,9 @@ const Carts = () => {
 
       const data = await cartService.adjustQuantity(id, newQuantity);
       setCartItems((prev) =>
-        prev.map((item) => (item.id === id ? { ...item, quantity: data.quantity } : item))
+        prev.map((item) =>
+          item.id === id ? { ...item, quantity: data.quantity } : item
+        )
       );
     } catch (err) {
       console.error("Failed to update quantity.", err);
@@ -208,7 +225,10 @@ const Carts = () => {
             <h2 className="text-lg font-bold mb-4">Complete Your Checkout</h2>
 
             <div className="mb-4">
-              <label className="block font-medium mb-2" htmlFor="shippingAddress">
+              <label
+                className="block font-medium mb-2"
+                htmlFor="shippingAddress"
+              >
                 Shipping Address
               </label>
               <input
@@ -222,7 +242,10 @@ const Carts = () => {
             </div>
 
             <div className="mb-4">
-              <label className="block font-medium mb-2" htmlFor="customerPhoneNumber">
+              <label
+                className="block font-medium mb-2"
+                htmlFor="customerPhoneNumber"
+              >
                 Phone Number
               </label>
               <input
@@ -251,6 +274,29 @@ const Carts = () => {
                 <option value="Gojek">Gojek</option>
               </select>
             </div>
+
+            {selectedShippingMethod && (
+              <div className="mb-4">
+                <div className="flex justify-between text-sm">
+                  <span>Subtotal:</span>
+                  <span>{`Rp.${calculateSubtotal().toLocaleString("id-ID", {
+                    minimumFractionDigits: 2,
+                  })}`}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span>Shipping Cost:</span>
+                  <span>{`Rp.${SHIPPING_COST.toLocaleString("id-ID", {
+                    minimumFractionDigits: 2,
+                  })}`}</span>
+                </div>
+                <div className="flex justify-between font-bold mt-2">
+                  <span>Total:</span>
+                  <span>{`Rp.${calculateTotal().toLocaleString("id-ID", {
+                    minimumFractionDigits: 2,
+                  })}`}</span>
+                </div>
+              </div>
+            )}
 
             <div className="flex justify-end space-x-4">
               <button

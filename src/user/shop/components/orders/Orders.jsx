@@ -125,13 +125,20 @@ const Orders = () => {
                       <p className="font-semibold text-md truncate">
                         {item.orderedProduct?.name || "Unknown Product"}
                       </p>
-                      <p className="font-semibold text-sm">{`Rp.${parseFloat(
-                        item.orderedProduct.price
-                      ).toLocaleString("id-ID", {
-                        minimumFractionDigits: 2,
-                      })}`}</p>
+                      <p className="font-semibold text-sm">
+                        Total Price: Rp.
+                        {parseFloat(item.totalPrice || 0).toLocaleString(
+                          "id-ID",
+                          {
+                            minimumFractionDigits: 2,
+                          }
+                        )}
+                      </p>
                       <p className="text-sm">
                         Quantity: {item.quantity || "N/A"}
+                      </p>
+                      <p className="font-semibold text-sm text-orange-500">
+                        BCA: 51421057
                       </p>
                     </div>
                   </div>
