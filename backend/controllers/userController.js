@@ -97,6 +97,102 @@ export const Login = async (req, res) => {
   }
 };
 
+export const updateMe = async (req, res) => {
+  try {
+    const { name, email, currentPassword, newPassword } = req.body;
+
+    // Find current user
+    const user = await Users.findOne({
+      where: {
+        email: req.email,
+      },
+    });
+
+    if (!user) {
+      return res.status(404).json({ msg: "User tidak ditemukan" });
+    }
+
+    // If password change is requested, verify current password
+    if (currentPassword && newPassword) {
+      const validPassword = await bcrypt.compare(
+        currentPassword,
+        user.password
+      );
+      if (!validPassword) {
+        return res.status(400).json({ msg: "Password saat ini tidak valid" });
+      }
+
+      // Hash new password
+      const salt = await bcrypt.genSalt();
+      const hashPassword = await bcrypt.hash(newPassword, salt);
+
+      // Update user with new password
+      await user.update({
+        name,
+        email,
+        password: hashPassword,
+      });
+    } else {
+      // Update user without changing password
+      await user.update({
+        name,
+        email,
+      });
+    }
+
+    res.json({ msg: "Profil berhasil diperbarui" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ msg: "Server Error" });
+  }
+};
+
+export const deleteMe = async (req, res) => {
+  try {
+      const { confirmationEmail } = req.body;
+      
+      // Log untuk debugging
+      console.log('Request email:', req.email);
+      console.log('Confirmation email:', confirmationEmail);
+      
+      // Find current user
+      const user = await Users.findOne({
+          where: {
+              email: req.email
+          }
+      });
+
+      if (!user) {
+          return res.status(404).json({ msg: "User tidak ditemukan" });
+      }
+
+      // Log untuk debugging
+      console.log('User email from DB:', user.email);
+      
+      // Verify confirmation email matches user's email
+      if (confirmationEmail !== user.email) {
+          return res.status(400).json({ 
+              msg: "Email konfirmasi tidak sesuai",
+              debug: {
+                  confirmationEmail,
+                  userEmail: user.email
+              }
+          });
+      }
+
+      // Delete the user
+      await user.destroy();
+
+      // Clear refresh token cookie
+      res.clearCookie("refreshToken");
+      
+      res.json({ msg: "Akun berhasil dihapus" });
+  } catch (error) {
+      console.error('Delete account error:', error);
+      res.status(500).json({ msg: "Server Error" });
+  }
+};
+
 export const Logout = async (req, res) => {
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) return res.sendStatus(204);

@@ -5,6 +5,8 @@ import {
   Logout,
   Register,
   getMe,
+  updateMe,
+  deleteMe,
 } from "../controllers/userController.js";
 
 import { verifyToken } from "../middleware/verifyToken.js";
@@ -37,6 +39,8 @@ router.post("/login", Login);
 router.get("/token", refreshToken);
 router.delete("/logout", Logout);
 router.get("/me", verifyToken, getMe);
+router.put("/user/me", verifyToken, updateMe);
+router.delete("/user/me", verifyToken, deleteMe);
 
 // Product routes
 router.get("/products/new", ProductController.getAllNewProducts);

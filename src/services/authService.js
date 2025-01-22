@@ -50,6 +50,27 @@ export const authService = {
     }
   },
 
+  updateUser: async (userData) => {
+    try {
+      const response = await axiosInstance.put("/user/me", userData);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { msg: "Failed to update user data" };
+    }
+  },
+
+  deleteAccount: async (data) => {
+    try {
+      const response = await axiosInstance.delete("/user/me", {
+        data: data, // Tambahkan data ke body request
+      });
+      localStorage.removeItem("accessToken");
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { msg: "Failed to delete account" };
+    }
+  },
+
   getCurrentUser: async () => {
     try {
       const response = await axiosInstance.get("/me"); // Endpoint untuk mendapatkan data user saat ini
