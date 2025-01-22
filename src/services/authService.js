@@ -23,7 +23,9 @@ export const authService = {
       const response = await axiosInstance.post("/register", userData);
       return response.data;
     } catch (error) {
-      throw error.response?.data || { msg: "An error occurred during registration" };
+      throw (
+        error.response?.data || { msg: "An error occurred during registration" }
+      );
     }
   },
 
@@ -60,71 +62,6 @@ export const authService = {
   refreshToken: async () => {
     try {
       const response = await axiosInstance.get("/token");
-      return response.data;
-    } catch (error) {
-      localStorage.removeItem("accessToken");
-      throw (
-        error.response?.data || {
-          msg: "An error occurred while refreshing token",
-        }
-      );
-    }
-  },
-
-  // Admin
-  adminLogin: async (credentials) => {
-    try {
-      const response = await axiosInstance.post("/admin/login", credentials);
-      if (response.data.accessToken) {
-        localStorage.setItem("adminAccessToken", response.data.accessToken);
-      }
-      return response.data;
-    } catch (error) {
-      throw error.response?.data || { msg: "An error occurred during admin login" };
-    }
-  },
-
-  getAdminOrders: async () => {
-    try {
-      const response = await axiosInstance.get("/admin/orders");
-      return response.data;
-    } catch (error) {
-      throw (
-        error.response?.data || {
-          msg: "An error occurred while fetching admin orders",
-        }
-      );
-    }
-  },
-
-  updateOrderStatus: async (orderId, status) => {
-    try {
-      const response = await axiosInstance.put("/admin/orders/status", {
-        orderId,
-        status,
-      });
-      return response.data;
-    } catch (error) {
-      throw (
-        error.response?.data || {
-          msg: "An error occurred while updating order status",
-        }
-      );
-    }
-  },
-
-  adminLogout: async () => {
-    try {
-      await axiosInstance.delete("/admin/logout");
-      localStorage.removeItem("adminAccessToken");
-    } catch (error) {
-      throw error.response?.data || { msg: "An error occurred during admin logout" };
-    }
-  },
-
-  refreshTokenAdmin: async () => {
-    try {
-      const response = await axiosInstance.get("/admin/token");
       return response.data;
     } catch (error) {
       localStorage.removeItem("accessToken");
