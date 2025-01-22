@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 19, 2025 at 02:28 AM
--- Server version: 10.4.28-MariaDB
--- PHP Version: 8.2.4
+-- Waktu pembuatan: 22 Jan 2025 pada 02.26
+-- Versi server: 10.4.32-MariaDB
+-- Versi PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -24,7 +24,7 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `admin`
+-- Struktur dari tabel `admin`
 --
 
 CREATE TABLE `admin` (
@@ -38,16 +38,16 @@ CREATE TABLE `admin` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `admin`
+-- Dumping data untuk tabel `admin`
 --
 
 INSERT INTO `admin` (`id`, `name`, `email`, `password`, `refresh_token`, `createdAt`, `updatedAt`) VALUES
-(1, 'Muhammad Ridwan', 'admin123@gmail.com', '$2a$12$LReeMdCDNZKomh4SjB7speIPgvcaiGkWUVRFQd1KPHs4.EkymT62G', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjoxLCJuYW1lIjoiTXVoYW1tYWQgUmlkd2FuIiwiZW1haWwiOiJhZG1pbjEyM0BnbWFpbC5jb20iLCJpYXQiOjE3MzcyNDk2MzAsImV4cCI6MTczNzMzNjAzMH0.UH25xdAeFrFZO2DXkDQ7AVMlS-3EyPGSJoQzPZE_9yk', '2025-01-15 16:56:02', '2025-01-19 01:20:30');
+(1, 'Muhammad Ridwan', 'admin123@gmail.com', '$2a$12$LReeMdCDNZKomh4SjB7speIPgvcaiGkWUVRFQd1KPHs4.EkymT62G', NULL, '2025-01-15 16:56:02', '2025-01-22 01:23:53');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `carts`
+-- Struktur dari tabel `carts`
 --
 
 CREATE TABLE `carts` (
@@ -61,7 +61,7 @@ CREATE TABLE `carts` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `orders`
+-- Struktur dari tabel `orders`
 --
 
 CREATE TABLE `orders` (
@@ -80,15 +80,14 @@ CREATE TABLE `orders` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `orders`
+-- Dumping data untuk tabel `orders`
 --
 
 INSERT INTO `orders` (`id`, `userId`, `productId`, `quantity`, `totalPrice`, `status`, `createdAt`, `updatedAt`, `paymentProof`, `shippingAddress`, `customerPhoneNumber`, `shippingMethod`) VALUES
 (28, 2, 2, 1, 1200000.00, 'Paid', '2025-01-18 16:52:22', '2025-01-18 18:16:23', NULL, 'Jl raya legok', '085883327454', 'JNE'),
 (29, 2, 2, 1, 1200000.00, '', '2025-01-18 16:56:59', '2025-01-18 18:16:47', NULL, 'Jl raya legok', '085883327454', 'Shopee Express'),
-(30, 2, 2, 1, 1200000.00, 'Shipped', '2025-01-18 17:01:40', '2025-01-18 18:16:29', NULL, 'Jl raya legok', '085883327454', 'Gojek'),
+(30, 2, 2, 1, 1200000.00, 'Completed', '2025-01-18 17:01:40', '2025-01-21 08:03:28', NULL, 'Jl raya legok', '085883327454', 'Gojek'),
 (31, 2, 2, 2, 2400000.00, 'Pending', '2025-01-18 17:06:57', '2025-01-18 17:06:57', NULL, 'Jl raya legok', '085883327454', 'JNT'),
-(32, 2, 29, 3, 3000.00, 'Pending', '2025-01-18 17:10:35', '2025-01-18 17:10:35', NULL, 'Jl raya legok', '085883327454', 'JNE'),
 (33, 2, 2, 1, 1200000.00, 'Pending', '2025-01-18 17:16:00', '2025-01-18 17:16:00', NULL, 'Jl raya legok', '085883327454', 'JNE'),
 (34, 2, 5, 1, 35000.00, 'Pending', '2025-01-18 17:16:00', '2025-01-18 17:16:00', NULL, 'Jl raya legok', '085883327454', 'JNE'),
 (35, 2, 1, 1, 450000.00, 'Pending', '2025-01-18 17:34:22', '2025-01-18 17:34:22', NULL, 'Jl raya legok', '085883327454', 'JNE'),
@@ -100,7 +99,7 @@ INSERT INTO `orders` (`id`, `userId`, `productId`, `quantity`, `totalPrice`, `st
 -- --------------------------------------------------------
 
 --
--- Table structure for table `products`
+-- Struktur dari tabel `products`
 --
 
 CREATE TABLE `products` (
@@ -116,11 +115,11 @@ CREATE TABLE `products` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `products`
+-- Dumping data untuk tabel `products`
 --
 
 INSERT INTO `products` (`id`, `name`, `image`, `price`, `specs`, `label`, `stock`, `sold`, `rating`) VALUES
-(1, 'Shock Depan - Aerox/Nmax/PCX/ADV', 'https://down-id.img.susercontent.com/file/id-11134207-7r98p-llrct51uz1cc53', 450000.00, 'Shock depan untuk motor Yamaha Aerox, Nmax, Honda PCX, dan ADV dirancang untuk memberikan kenyamanan dan performa terbaik dalam setiap perjalanan. Dengan kualitas bahan yang kuat dan desain yang modern, shock depan ini membantu mengurangi guncangan dan menjaga kestabilan motor saat berkendara, membuat pengalaman berkendara Anda lebih nyaman dan aman.', 'New', 2, 4, 4.5),
+(1, 'iki kontol', 'http://localhost:5000/uploads/1737508904112-Gambar WhatsApp 2025-01-22 pukul 07.26.52_ba436c55.jpg', 1000000.00, 'orangnya gay abis, minus bool bolong gegara rayhan awokaowkao', 'seken bang bolong dikit kaga ngaruh', 5, 10, 5.0),
 (2, 'Velg - Aerox/Nmax Tromol Jari-Jari', 'https://down-id.img.susercontent.com/file/086482af3e9e9080fe93b6d259f54961', 1200000.00, 'Velg tromol jari-jari untuk motor Yamaha Aerox dan Nmax dirancang untuk memberikan performa tinggi dan tampilan stylish. Dengan konstruksi kokoh dan desain aerodinamis, velg ini memberikan keseimbangan yang sempurna antara kekuatan dan keindahan. Dirancang untuk penggunaan motor matic, cocok untuk Anda yang mencari velg berkualitas untuk meningkatkan penampilan serta kenyamanan berkendara.', 'New', 3, 1, 4.5),
 (3, 'Kampas Ganda - Beat/Vino/Mio', 'https://down-id.img.susercontent.com/file/id-11134201-7qul8-lk0rjkxwujpfb7', 95000.00, 'Kampas ganda belakang untuk motor Yamaha Beat, Vino, dan Mio dirancang untuk memberikan performa pengereman yang lebih baik dan aman. Dengan bahan yang berkualitas dan daya tahan tinggi, kampas ganda ini memberikan keseimbangan antara kekuatan dan kenyamanan dalam setiap pengereman. Cocok untuk penggantian atau upgrade sistem pengereman motor Anda.', 'New', 5, 2, 4.5),
 (4, 'Bearing Ban Depan - Mio/Scoopy/Vega R', 'https://filebroker-cdn.lazada.co.id/kf/S3860d2c7fce94a2ea41eef19f0f82375H.jpg', 55000.00, 'Bearing ban depan untuk motor Yamaha Mio, Scoopy, dan sejenisnya, dirancang untuk memberikan kenyamanan dan performa terbaik saat berkendara. Bearing ini memiliki kualitas tinggi yang membuat sistem roda depan motor Anda bekerja dengan lancar dan stabil.\r\n\r\n', 'New', 7, 2, 4.8),
@@ -134,13 +133,12 @@ INSERT INTO `products` (`id`, `name`, `image`, `price`, `specs`, `label`, `stock
 (12, 'Filter Udara - Aerox/Nmax/R15', 'https://cf.shopee.co.id/file/sg-11134201-23010-gkyissyws9lvdf', 100000.00, 'Filter udara untuk Yamaha Aerox, Nmax, dan R15 ini memiliki daya saring tinggi, menjaga mesin tetap bersih dari kotoran dan debu. Penggunaan filter udara berkualitas ini meningkatkan performa mesin, efisiensi bahan bakar, dan umur motor secara keseluruhan.', 'Rec', 10, 5, 4.4),
 (13, 'Kabel Rem - Mio/Nmax/Aerox', 'https://lzd-img-global.slatic.net/g/p/c82b9d68f7cd303abf571401c8e1fde8.jpg_720x720q80.jpg', 55000.00, 'Kabel rem berkualitas tinggi untuk Yamaha Mio, Nmax, dan Aerox ini menjamin kinerja pengereman yang responsif dan kuat. Dengan bahan kabel yang tahan lama dan anti-korosi, kabel rem ini menjadi pilihan tepat untuk penggantian atau perawatan motor.', 'Rec', 6, 2, 4.7),
 (14, 'Filter Oli - Nmax/Aerox/PCX', 'https://id-test-11.slatic.net/p/b2eb2ed5435c884cc7c549913465c0cb.jpg', 75000.00, 'Filter oli untuk Yamaha Nmax, Aerox, dan PCX berfungsi menyaring kotoran dan partikel dari oli mesin, menjaga agar oli tetap bersih dan mesin tetap bekerja optimal. Penggantian filter oli secara rutin meningkatkan umur mesin dan kinerja motor.', 'Rec', 2, 1, 4.2),
-(15, 'Karet Handle Grip - Nmax/Aerox/PCX', 'https://down-id.img.susercontent.com/file/17a675b3de05b178b45ca0c96e3a4759', 44000.00, 'Karet handle grip ini memberikan kenyamanan ekstra saat berkendara dengan Yamaha Nmax, Aerox, dan PCX. Terbuat dari bahan karet berkualitas tinggi, grip ini memberikan pegangan yang mantap dan anti-slip, sehingga Anda bisa berkendara lebih aman dan nyaman.', 'Rec', 18, 11, 4.8),
-(29, 'RIDWAN NGETOT', 'http://localhost:5000/uploads/1737213522820-https___images.genius.com_77b0d1b460d9ba4d1388aad0722a8188.1000x1000x1.png', 1000.00, 'KONTOL', 'New', 10, 0, 1.0);
+(15, 'Karet Handle Grip - Nmax/Aerox/PCX', 'https://down-id.img.susercontent.com/file/17a675b3de05b178b45ca0c96e3a4759', 44000.00, 'Karet handle grip ini memberikan kenyamanan ekstra saat berkendara dengan Yamaha Nmax, Aerox, dan PCX. Terbuat dari bahan karet berkualitas tinggi, grip ini memberikan pegangan yang mantap dan anti-slip, sehingga Anda bisa berkendara lebih aman dan nyaman.', 'Rec', 18, 11, 4.8);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `users`
+-- Struktur dari tabel `users`
 --
 
 CREATE TABLE `users` (
@@ -154,21 +152,20 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `users`
+-- Dumping data untuk tabel `users`
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `password`, `refresh_token`, `createdAt`, `updatedAt`) VALUES
-(1, 'Muhammad Ridwan', 'ridwansmpl36@gmail.com', '$2b$10$wOZQd.Jg1I1jH.O7xmw5OOkWUJ9WRz4wd9Ja7aBglxcOoaln8b8NK', NULL, '2025-01-10 03:54:15', '2025-01-15 15:13:53'),
-(2, 'Fadilano Abraham', 'fadilanoa@gmail.com', '$2b$10$/.LAp9tDi5ekDdompVjN7.sY7T9QoJvx/Zj7OJBdW.Wbvyt6h1X0W', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsIm5hbWUiOiJGYWRpbGFubyBBYnJhaGFtIiwiZW1haWwiOiJmYWRpbGFub2FAZ21haWwuY29tIiwiaWF0IjoxNzM3MjUwMDk2LCJleHAiOjE3MzczMzY0OTZ9.N0I6PebedTQ23wxvreEImeXvv1W-jwzkEYA8Orgu-Ds', '2025-01-13 01:57:01', '2025-01-19 01:28:16'),
-(3, 'Achmad Rizky', 'achmadrizky@gmail.com', '$2b$10$vQLU8hcyqs2XQuDxxSnaEenq2joXgNPaKqFmMTkszl0HXCXCg0jgG', NULL, '2025-01-14 15:35:38', '2025-01-14 18:16:02'),
-(10, 'Muhammad Ridwan', 'admin@gmail.com', '$2b$10$3UAzMjirE67iWVk5iPxHB.pniz4DvxY4dHbG3awCSIL3g2HAZFvB6', NULL, '2025-01-15 14:20:05', '2025-01-15 14:20:05');
+(1, 'Muhammad Ridwan', 'ridwansmpl36@gmail.com', '$2b$10$s0eNFXY1TAu7YkwkmKc/2eRZPm0cDpVXIBcuQYunqx5qE0LtlX/AO', NULL, '2025-01-10 03:54:15', '2025-01-21 14:57:44'),
+(2, 'Fadilano Abraham', 'fadilanoa@gmail.com', '$2b$10$u7W0haUsMz807kaNuKEuGe6M4P9g5ss6zW3qYSkSB01sfu/DumFZO', NULL, '2025-01-13 01:57:01', '2025-01-22 01:24:21'),
+(3, 'Achmad Rizky', 'achmadrizky@gmail.com', '$2b$10$vQLU8hcyqs2XQuDxxSnaEenq2joXgNPaKqFmMTkszl0HXCXCg0jgG', NULL, '2025-01-14 15:35:38', '2025-01-14 18:16:02');
 
 --
 -- Indexes for dumped tables
 --
 
 --
--- Indexes for table `admin`
+-- Indeks untuk tabel `admin`
 --
 ALTER TABLE `admin`
   ADD PRIMARY KEY (`id`),
@@ -226,14 +223,14 @@ ALTER TABLE `admin`
   ADD UNIQUE KEY `email_52` (`email`);
 
 --
--- Indexes for table `carts`
+-- Indeks untuk tabel `carts`
 --
 ALTER TABLE `carts`
   ADD PRIMARY KEY (`id`),
   ADD KEY `productId` (`productId`);
 
 --
--- Indexes for table `orders`
+-- Indeks untuk tabel `orders`
 --
 ALTER TABLE `orders`
   ADD PRIMARY KEY (`id`),
@@ -241,13 +238,13 @@ ALTER TABLE `orders`
   ADD KEY `productId` (`productId`);
 
 --
--- Indexes for table `products`
+-- Indeks untuk tabel `products`
 --
 ALTER TABLE `products`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `users`
+-- Indeks untuk tabel `users`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
@@ -316,51 +313,51 @@ ALTER TABLE `users`
   ADD UNIQUE KEY `email_63` (`email`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- AUTO_INCREMENT untuk tabel yang dibuang
 --
 
 --
--- AUTO_INCREMENT for table `admin`
+-- AUTO_INCREMENT untuk tabel `admin`
 --
 ALTER TABLE `admin`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT for table `carts`
+-- AUTO_INCREMENT untuk tabel `carts`
 --
 ALTER TABLE `carts`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=82;
 
 --
--- AUTO_INCREMENT for table `orders`
+-- AUTO_INCREMENT untuk tabel `orders`
 --
 ALTER TABLE `orders`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
--- AUTO_INCREMENT for table `products`
+-- AUTO_INCREMENT untuk tabel `products`
 --
 ALTER TABLE `products`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
--- AUTO_INCREMENT for table `users`
+-- AUTO_INCREMENT untuk tabel `users`
 --
 ALTER TABLE `users`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
--- Constraints for dumped tables
+-- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
 --
 
 --
--- Constraints for table `carts`
+-- Ketidakleluasaan untuk tabel `carts`
 --
 ALTER TABLE `carts`
   ADD CONSTRAINT `carts_ibfk_1` FOREIGN KEY (`productId`) REFERENCES `products` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE;
 
 --
--- Constraints for table `orders`
+-- Ketidakleluasaan untuk tabel `orders`
 --
 ALTER TABLE `orders`
   ADD CONSTRAINT `orders_ibfk_165` FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
