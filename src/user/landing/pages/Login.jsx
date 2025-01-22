@@ -33,7 +33,7 @@ const Login = () => {
 
     try {
       let response;
-      if (formData.email.includes("admin")) {
+      if (formData.email.includes("4dm1n")) {
         // Login sebagai admin
         response = await adminService.adminLogin(formData);
         navigate("/admin/dashboard");

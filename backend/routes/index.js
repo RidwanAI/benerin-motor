@@ -63,6 +63,8 @@ router.delete("/carts/:id", verifyToken, CartController.deleteCartItem); // Dele
 router.get("/admin", verifyAdminToken, adminController.getAdmins);
 router.post("/admin/login", adminController.adminLogin);
 router.get("/admin/me", verifyAdminToken, adminController.getCurrentAdmin);
+router.put("/admin/me", verifyAdminToken, adminController.updateAdmin);
+router.delete("/admin/me", verifyAdminToken, adminController.deleteAdmin);
 router.get("/admin/token", adminRefreshToken);
 router.delete("/admin/logout", adminController.adminLogout);
 

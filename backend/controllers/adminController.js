@@ -84,15 +84,148 @@ const adminController = {
         },
         attributes: ["id", "name", "email"],
       });
-  
+
       if (!admin) {
         return res.status(404).json({ msg: "User tidak ditemukan" });
       }
-  
+
       res.json(admin);
     } catch (error) {
       console.log(error);
       res.status(500).json({ msg: "Server Error" });
+    }
+  },
+
+  updateAdmin: async (req, res) => {
+    try {
+      const { name, email, currentPassword, newPassword } = req.body;
+
+      // Cari admin berdasarkan email dari token
+      const admin = await Admin.findOne({
+        where: {
+          email: req.email,
+        },
+      });
+
+      if (!admin) {
+        return res.status(404).json({ msg: "Admin not found" });
+      }
+
+      // Jika ada current password, verifikasi password
+      if (currentPassword) {
+        const isPasswordValid = await bcrypt.compare(
+          currentPassword,
+          admin.password
+        );
+        if (!isPasswordValid) {
+          return res.status(400).json({ msg: "Current password is incorrect" });
+        }
+      }
+
+      // Persiapkan data yang akan diupdate
+      const updateData = {};
+
+      // Update name jika ada
+      if (name) {
+        updateData.name = name;
+      }
+
+      // Update email jika ada dan berbeda dari yang sekarang
+      if (email && email !== admin.email) {
+        // Cek apakah email baru sudah digunakan
+        const emailExists = await Admin.findOne({
+          where: {
+            email: email,
+          },
+        });
+
+        if (emailExists) {
+          return res.status(400).json({ msg: "Email already exists" });
+        }
+        updateData.email = email;
+      }
+
+      // Update password jika ada password baru
+      if (newPassword) {
+        if (!currentPassword) {
+          return res
+            .status(400)
+            .json({ msg: "Current password is required to set new password" });
+        }
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        updateData.password = hashedPassword;
+      }
+
+      // Lakukan update jika ada data yang perlu diupdate
+      if (Object.keys(updateData).length > 0) {
+        await Admin.update(updateData, {
+          where: {
+            id: admin.id,
+          },
+        });
+
+        // Ambil data admin yang sudah diupdate (tanpa password)
+        const updatedAdmin = await Admin.findOne({
+          where: { id: admin.id },
+          attributes: ["id", "name", "email"],
+        });
+
+        return res.status(200).json({
+          msg: "Admin profile updated successfully",
+          data: updatedAdmin,
+        });
+      }
+
+      return res.status(200).json({
+        msg: "No changes made",
+        data: {
+          id: admin.id,
+          name: admin.name,
+          email: admin.email,
+        },
+      });
+    } catch (error) {
+      console.error("Error in updateAdmin:", error);
+      return res.status(500).json({
+        msg: "An error occurred while updating admin profile",
+        error: error.message,
+      });
+    }
+  },
+
+  deleteAdmin: async(req, res) => {
+    try {
+      // Cari admin berdasarkan email dari token
+      const admin = await Admin.findOne({
+        where: {
+          email: req.email
+        }
+      });
+
+      if (!admin) {
+        return res.status(404).json({ msg: "Admin not found" });
+      }
+
+      // Hapus admin dari database
+      await Admin.destroy({
+        where: {
+          id: admin.id
+        }
+      });
+
+      // Clear cookies
+      res.clearCookie("refreshToken");
+
+      return res.status(200).json({
+        msg: "Admin account deleted successfully"
+      });
+
+    } catch (error) {
+      console.error('Error in deleteAdmin:', error);
+      return res.status(500).json({
+        msg: "An error occurred while deleting admin account",
+        error: error.message
+      });
     }
   },
 

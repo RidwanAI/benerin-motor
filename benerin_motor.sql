@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 22 Jan 2025 pada 02.26
+-- Waktu pembuatan: 22 Jan 2025 pada 08.32
 -- Versi server: 10.4.32-MariaDB
 -- Versi PHP: 8.2.12
 
@@ -42,7 +42,7 @@ CREATE TABLE `admin` (
 --
 
 INSERT INTO `admin` (`id`, `name`, `email`, `password`, `refresh_token`, `createdAt`, `updatedAt`) VALUES
-(1, 'Muhammad Ridwan', 'admin123@gmail.com', '$2a$12$LReeMdCDNZKomh4SjB7speIPgvcaiGkWUVRFQd1KPHs4.EkymT62G', NULL, '2025-01-15 16:56:02', '2025-01-22 01:23:53');
+(1, 'Admin', '4dm1n123@gmail.com', '$2b$10$lhYz.Sj.tLRrmfqBjf0lc.KpV.qeMy16jfu8l74hxAwi1mNSGO8w6', NULL, '2025-01-15 16:56:02', '2025-01-22 05:15:50');
 
 -- --------------------------------------------------------
 
@@ -157,7 +157,7 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `name`, `email`, `password`, `refresh_token`, `createdAt`, `updatedAt`) VALUES
 (1, 'Muhammad Ridwan', 'ridwansmpl36@gmail.com', '$2b$10$s0eNFXY1TAu7YkwkmKc/2eRZPm0cDpVXIBcuQYunqx5qE0LtlX/AO', NULL, '2025-01-10 03:54:15', '2025-01-21 14:57:44'),
-(2, 'Fadilano Abraham', 'fadilanoa@gmail.com', '$2b$10$u7W0haUsMz807kaNuKEuGe6M4P9g5ss6zW3qYSkSB01sfu/DumFZO', NULL, '2025-01-13 01:57:01', '2025-01-22 01:24:21'),
+(2, 'Fadilano Abraham', 'fadilanoa@gmail.com', '$2b$10$u7W0haUsMz807kaNuKEuGe6M4P9g5ss6zW3qYSkSB01sfu/DumFZO', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsIm5hbWUiOiJGYWRpbGFubyBBYnJhaGFtIiwiZW1haWwiOiJmYWRpbGFub2FAZ21haWwuY29tIiwiaWF0IjoxNzM3NTMxMTIxLCJleHAiOjE3Mzc2MTc1MjF9.22FbXnL3pU4fSdr1TEg0dlvwhk4csmZX7gV7Ol6f3j4', '2025-01-13 01:57:01', '2025-01-22 07:32:01'),
 (3, 'Achmad Rizky', 'achmadrizky@gmail.com', '$2b$10$vQLU8hcyqs2XQuDxxSnaEenq2joXgNPaKqFmMTkszl0HXCXCg0jgG', NULL, '2025-01-14 15:35:38', '2025-01-14 18:16:02');
 
 --
@@ -320,7 +320,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT untuk tabel `admin`
 --
 ALTER TABLE `admin`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT untuk tabel `carts`

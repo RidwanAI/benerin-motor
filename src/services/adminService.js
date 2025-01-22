@@ -44,6 +44,25 @@ const adminService = {
     }
   },
 
+  updateAdmin: async (adminData) => {
+    try {
+      const response = await axiosInstance.put("/admin/me", adminData);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { msg: "Failed to update admin data!" };
+    }
+  },
+  
+  deleteAdmin: async () => {
+    try {
+      const response = await axiosInstance.delete("/admin/me");
+      localStorage.removeItem("adminAccessToken"); // Hapus token setelah delete berhasil
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { msg: "Failed to delete admin account!" };
+    }
+  },
+
   getCurrentAdmin: async () => {
     try {
       const response = await axiosInstance.get(`${API_BASE_URL}/admin/me`);
