@@ -14,6 +14,7 @@ const AdminSettings = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     const fetchAdminData = async () => {
@@ -24,9 +25,15 @@ const AdminSettings = () => {
           name: adminData.name,
           email: adminData.email,
         }));
+        setIsLoggedIn(true);
         setLoading(false);
       } catch (error) {
-        setError("Failed to load admin data");
+        setError("Intruder!!!");
+        setIsLoggedIn(false);
+        setFormData(prev => ({
+          ...prev,
+          name: "Intruder"
+        }));
         setLoading(false);
       }
     };
@@ -48,13 +55,11 @@ const AdminSettings = () => {
     setSuccessMessage("");
 
     try {
-      // Buat objek dengan data yang akan diupdate
       const updateData = {
         name: formData.name,
         email: formData.email,
       };
 
-      // Tambahkan password jika diisi
       if (formData.currentPassword && formData.newPassword) {
         updateData.currentPassword = formData.currentPassword;
         updateData.newPassword = formData.newPassword;
@@ -63,7 +68,6 @@ const AdminSettings = () => {
       const response = await adminService.updateAdmin(updateData);
       setSuccessMessage(response.msg);
 
-      // Reset password fields
       setFormData((prev) => ({
         ...prev,
         currentPassword: "",
@@ -85,7 +89,7 @@ const AdminSettings = () => {
       await adminService.adminLogout();
       navigate("/login");
     } catch (error) {
-      setError(error.msg || "Failed to delete account");
+      setError("Intruder!!! Please login with admin account");
     }
   };
 
@@ -118,8 +122,10 @@ const AdminSettings = () => {
                 </svg>
                 <p className="text-slate-500">
                   Welcome,{" "}
-                  <span className="text-orange-500">{formData.name}!</span> Your
-                  account is currently active.
+                  <span className="text-orange-500">{formData.name}!</span>{" "}
+                  {isLoggedIn
+                    ? "Your account is currently active."
+                    : "Please login with admin account"}
                 </p>
               </div>
             </div>

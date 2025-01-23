@@ -23,9 +23,15 @@ const Orders = () => {
       setOrderItems(orders || []);
       setError(null);
     } catch (err) {
-      setError(
-        err.message || "Failed to fetch orders. Please try again later."
-      );
+      // Check if it's a 403 error and handle it differently
+      if (err.response && err.response.status === 403) {
+        setOrderItems([]);
+        setError(null);
+      } else {
+        setError(
+          err.message || "Failed to fetch orders. Please try again later."
+        );
+      }
     } finally {
       setLoading(false);
     }
@@ -102,12 +108,12 @@ const Orders = () => {
           {loading ? (
             <p>Loading...</p>
           ) : error ? (
-            <p className="text-red-500">{error}</p>
+            <p className="text-center text-gray-500">Your order is empty</p>
           ) : orderItems.length === 0 ? (
-            <p>No orders found.</p>
+            <p className="text-center text-gray-500">Your order is empty</p>
           ) : (
             orderItems
-              .filter((item) => item.status === selectedCategory) // Filter berdasarkan status
+              .filter((item) => item.status === selectedCategory)
               .map((item) => (
                 <div
                   key={item.id}

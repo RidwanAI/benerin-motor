@@ -90,6 +90,12 @@ router.delete("/admin/users/:id", verifyAdminToken, adminController.deleteUser);
 
 // Product management (CRUD) for admin
 router.get("/admin/products", verifyAdminToken, adminController.getAllProducts);
+router.post(
+  "/admin/products",
+  verifyAdminToken,
+  upload.single("image"),
+  adminController.createProduct
+);
 router.put(
   "/admin/products/:id",
   verifyAdminToken,

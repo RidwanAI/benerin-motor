@@ -5,7 +5,7 @@ import { authService } from "../../../../services/authService";
 const UserSettings = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    name: "",
+    name: "Guest Account",
     email: "",
     currentPassword: "",
     newPassword: "",
@@ -14,19 +14,24 @@ const UserSettings = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         const userData = await authService.getCurrentUser();
-        setFormData((prevState) => ({
-          ...prevState,
-          name: userData.name,
-          email: userData.email,
-        }));
+        if (userData) {
+          setFormData((prevState) => ({
+            ...prevState,
+            name: userData.name,
+            email: userData.email,
+          }));
+          setIsLoggedIn(true);
+        }
         setLoading(false);
       } catch (error) {
-        setError("Failed to load user data");
+        setError("You're not login");
+        setIsLoggedIn(false);
         setLoading(false);
       }
     };
@@ -48,23 +53,19 @@ const UserSettings = () => {
     setSuccessMessage("");
 
     try {
-      // Create update data object
       const updateData = {
         name: formData.name,
         email: formData.email,
       };
 
-      // Add password if provided
       if (formData.currentPassword && formData.newPassword) {
         updateData.currentPassword = formData.currentPassword;
         updateData.newPassword = formData.newPassword;
       }
 
-      // Call the update endpoint (you'll need to implement this in userService)
       const response = await authService.updateUser(updateData);
       setSuccessMessage(response.msg || "Profile updated successfully");
 
-      // Reset password fields
       setFormData((prev) => ({
         ...prev,
         currentPassword: "",
@@ -82,7 +83,6 @@ const UserSettings = () => {
     }
 
     try {
-      // Ubah ini untuk mengirim email konfirmasi ke backend
       await authService.deleteAccount({
         confirmationEmail: formData.deleteConfirmation,
       });
@@ -124,12 +124,15 @@ const UserSettings = () => {
                   <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2m.995-14.901a1 1 0 1 0-1.99 0A5 5 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901" />
                 </svg>
                 <p className="text-slate-500">
-                  Your account is currently active.
+                  {isLoggedIn
+                    ? "Your account is currently active."
+                    : "Now you are in guest account mode, login with user account to edit"}
                 </p>
               </div>
             </div>
           </section>
 
+          {/* Rest of the component remains the same */}
           {/* Edit Profile Section */}
           <section className="bg-white font-poppins p-3 rounded-sm shadow-sm space-y-3">
             <p className="font-semibold text-xl">Edit Profile</p>
