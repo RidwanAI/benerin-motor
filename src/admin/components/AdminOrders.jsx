@@ -41,7 +41,7 @@ const AdminOrders = () => {
   };
 
   const openImageInNewTab = (imageUrl) => {
-    window.open(imageUrl, '_blank');
+    window.open(imageUrl, "_blank");
   };
 
   if (loading) return <p>Loading orders...</p>;
@@ -77,12 +77,18 @@ const AdminOrders = () => {
     }
   };
 
-  const filteredOrders = orders.filter(
-    (order) =>
-      order.user?.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      order.status.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      order.shippingAddress.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // Enhanced search and filter function
+  const filteredOrders = orders.filter((order) => {
+    const searchLower = searchQuery.toLowerCase();
+    return (
+      order.user?.name?.toLowerCase().includes(searchLower) ||
+      order.status.toLowerCase().includes(searchLower) ||
+      order.shippingAddress.toLowerCase().includes(searchLower) ||
+      order.id.toString().toLowerCase().includes(searchLower) ||
+      order.orderedProduct?.name?.toLowerCase().includes(searchLower) ||
+      order.customerPhoneNumber?.toLowerCase().includes(searchLower)
+    );
+  });
 
   const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -109,7 +115,7 @@ const AdminOrders = () => {
         <main className="p-3 space-y-3">
           <input
             type="text"
-            placeholder="Search by Customer Name, Status, or Shipping Address"
+            placeholder="Search by Customer Name, ID, Status, Product, Phone, or Shipping Address"
             value={searchQuery}
             onChange={(e) => {
               setSearchQuery(e.target.value);
@@ -122,27 +128,55 @@ const AdminOrders = () => {
             <table className="bg-white border-collapse overflow-hidden rounded-sm shadow-sm w-full">
               <thead className="bg-gray-800 text-white">
                 <tr>
-                  <th className="px-4 py-3 text-left text-sm font-semibold">ID</th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold">Customer</th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold">Product</th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold">Quantity</th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold">Total Price</th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold">Status</th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold">Payment Proof</th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold">Shipping Address</th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold">Customer Phone</th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold">Shipping Method</th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold">Actions</th>
+                  <th className="px-4 py-3 text-left text-sm font-semibold">
+                    ID
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-semibold">
+                    Customer
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-semibold">
+                    Product
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-semibold">
+                    Quantity
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-semibold">
+                    Total Price
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-semibold">
+                    Status
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-semibold">
+                    Payment Proof
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-semibold">
+                    Shipping Address
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-semibold">
+                    Customer Phone
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-semibold">
+                    Shipping Method
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-semibold">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {currentOrders.map((order) => (
                   <tr key={order.id} className="border-t text-sm">
                     <td className="px-4 py-3">{order.id}</td>
-                    <td className="px-4 py-3">{order.user?.name || "Unknown User"}</td>
-                    <td className="px-4 py-3">{order.orderedProduct?.name || "Unknown Product"}</td>
+                    <td className="px-4 py-3">
+                      {order.user?.name || "Unknown User"}
+                    </td>
+                    <td className="px-4 py-3">
+                      {order.orderedProduct?.name || "Unknown Product"}
+                    </td>
                     <td className="px-4 py-3">{order.quantity}</td>
-                    <td className="px-4 py-3">{`Rp.${parseFloat(order.totalPrice).toLocaleString("id-ID", {
+                    <td className="px-4 py-3">{`Rp.${parseFloat(
+                      order.totalPrice
+                    ).toLocaleString("id-ID", {
                       minimumFractionDigits: 2,
                     })}`}</td>
                     <td className="px-4 py-3">{order.status}</td>
@@ -179,7 +213,10 @@ const AdminOrders = () => {
                 ))}
                 {currentOrders.length === 0 && (
                   <tr>
-                    <td colSpan="11" className="px-4 py-3 text-center text-gray-500">
+                    <td
+                      colSpan="11"
+                      className="px-4 py-3 text-center text-gray-500"
+                    >
                       No orders found.
                     </td>
                   </tr>

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 24 Jan 2025 pada 01.49
+-- Waktu pembuatan: 24 Jan 2025 pada 05.58
 -- Versi server: 10.4.32-MariaDB
 -- Versi PHP: 8.2.12
 
@@ -42,7 +42,10 @@ CREATE TABLE `admin` (
 --
 
 INSERT INTO `admin` (`id`, `name`, `email`, `password`, `refresh_token`, `createdAt`, `updatedAt`) VALUES
-(1, 'Admin', '4dm1n123@gmail.com', '$2b$10$lhYz.Sj.tLRrmfqBjf0lc.KpV.qeMy16jfu8l74hxAwi1mNSGO8w6', NULL, '2025-01-15 16:56:02', '2025-01-24 00:49:26');
+(1, 'Admin', '4dm1nBenerinMotor@gmail.com', '$2b$10$lhYz.Sj.tLRrmfqBjf0lc.KpV.qeMy16jfu8l74hxAwi1mNSGO8w6', NULL, '2025-01-15 16:56:02', '2025-01-24 03:37:25'),
+(2, 'Fadilano Abraham', '4dm1nFadilanoAbraham@gmail.com', '$2a$12$NpNoy4G3035dykLtsgKZ9.jfkqWFzLQDWAtcEkoPRnufkR79z1RfK', NULL, '2025-01-24 11:57:45', '2025-01-24 04:52:29'),
+(3, 'Muhammad Ridwan', '4dm1nMuhammadRidwan@gmail.com', '$2a$12$N3LI2.IG.iI.TSOMaSNZueONPYNARLiwdX6m1K1Ehf9EHNUwZlu06', NULL, '2025-01-24 11:58:00', '2025-01-24 04:56:33'),
+(4, 'Achmad Rizky', '4dm1nAchmadRizky@gmail.com', '$2a$12$.ftjG1j4IOLI7wQShvDfMOqU66epVZGDeJ3fn7UarE7UaNYNirlNK', NULL, '2025-01-24 11:58:05', '2025-01-24 04:57:26');
 
 -- --------------------------------------------------------
 
@@ -143,7 +146,7 @@ CREATE TABLE `users` (
 INSERT INTO `users` (`id`, `name`, `email`, `password`, `refresh_token`, `createdAt`, `updatedAt`) VALUES
 (2, 'Fadilano Abraham', 'fadilanoa@gmail.com', '$2b$10$u7W0haUsMz807kaNuKEuGe6M4P9g5ss6zW3qYSkSB01sfu/DumFZO', NULL, '2025-01-13 01:57:01', '2025-01-22 07:35:57'),
 (3, 'Achmad Rizky', 'achmadrizky@gmail.com', '$2b$10$vQLU8hcyqs2XQuDxxSnaEenq2joXgNPaKqFmMTkszl0HXCXCg0jgG', NULL, '2025-01-14 15:35:38', '2025-01-14 18:16:02'),
-(13, 'Muhammad Ridwan', 'ridwansmpl36@gmail.com', '$2b$10$o6LYN5CUMJzTn4vGc1TjteTVmPRaeXICo8lq8bOCqHIF60tOUfHBO', NULL, '2025-01-23 07:02:16', '2025-01-24 00:39:13');
+(13, 'Muhammad Ridwan', 'ridwansmpl36@gmail.com', '$2b$10$o6LYN5CUMJzTn4vGc1TjteTVmPRaeXICo8lq8bOCqHIF60tOUfHBO', NULL, '2025-01-23 07:02:16', '2025-01-24 03:36:47');
 
 --
 -- Indexes for dumped tables
@@ -305,19 +308,19 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT untuk tabel `admin`
 --
 ALTER TABLE `admin`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT untuk tabel `carts`
 --
 ALTER TABLE `carts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=107;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=110;
 
 --
 -- AUTO_INCREMENT untuk tabel `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=72;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=76;
 
 --
 -- AUTO_INCREMENT untuk tabel `products`
