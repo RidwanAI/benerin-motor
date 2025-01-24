@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-import axios from "axios";
 import { productService } from "../../../../services/productService";
 
 const ProductList = ({ searchTerm, category }) => {
@@ -24,6 +23,7 @@ const ProductList = ({ searchTerm, category }) => {
         setError(null);
       } catch (err) {
         setError("Error fetching products");
+        console.error(err);
       } finally {
         setLoading(false);
       }
@@ -67,6 +67,17 @@ const ProductList = ({ searchTerm, category }) => {
     navigate("/cart", { state: { cart } });
   };
 
+  // Get category title
+  const getCategoryTitle = () => {
+    switch (category) {
+      case "all": return "All Products";
+      case "new": return "New Products";
+      case "second": return "Second Products";
+      case "rec": return "Recommended Products";
+      default: return "Products";
+    }
+  };
+
   if (loading) {
     return <p>Loading...</p>;
   }
@@ -79,7 +90,7 @@ const ProductList = ({ searchTerm, category }) => {
     <div className="font-poppins px-3">
       {/* Header & Button Cart */}
       <div className="flex font-semibold items-center justify-between py-4 text-xl md:text-2xl">
-        <p>{category === "new" ? "New Products" : "Second Products"}</p>
+        <p>{getCategoryTitle()}</p>
         <button
           onClick={handleViewCart}
           className="flex duration-300 gap-2 items-center hover:-translate-x-2"
