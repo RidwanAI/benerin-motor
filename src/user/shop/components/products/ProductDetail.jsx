@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import { productService } from "../../../../services/productService.js";
 import { authService } from "../../../../services/authService.js";
+import { createOrderforUser } from "../../../../services/orderService.js";
+import { cartService } from "../../../../services/cartService.js";
 
 const SHIPPING_COST = 15000; // Fixed shipping cost in Rupiah
 
@@ -35,10 +37,8 @@ const ProductDetail = () => {
     const fetchProduct = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(
-          `http://localhost:5000/products/${id}`
-        );
-        setProduct(response.data);
+        const fetchProdId = await productService.fetchProductById(id);
+        setProduct(fetchProdId);
         setError(null);
       } catch (err) {
         setError("Product not found");
@@ -94,26 +94,13 @@ const ProductDetail = () => {
         totalAmount: parseFloat(total),
       };
 
-      console.log("Order payload:", orderPayload); // For debugging
-
-      const response = await axios.post(
-        "http://localhost:5000/orders",
-        orderPayload,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-        }
-      );
+      await createOrderforUser(orderPayload);
 
       alert("Order created successfully!");
       setModalVisible(false);
       navigate(`/shop`);
     } catch (error) {
-      console.error(
-        "Error creating order:",
-        error.response?.data || error.message
-      );
+      console.error("Error creating order:", error);
       alert("Failed to create order. Please try again.");
     }
   };
@@ -157,26 +144,17 @@ const ProductDetail = () => {
         return;
       }
 
-      const userId = currentUser.id;
-
       const payload = {
         productId: product.id,
-        userId,
+        userId: currentUser.id,
         quantity,
       };
 
-      await axios.post("http://localhost:5000/carts", payload, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
-      });
+      await cartService.addToCart(payload);
 
       alert(`${product.name} has been successfully added to the cart!`);
     } catch (error) {
-      console.error(
-        "Error adding to cart:",
-        error.response?.data || error.message
-      );
+      console.error("Error adding to cart:", error);
       alert("Failed to add to the cart. Please try again.");
     }
   };

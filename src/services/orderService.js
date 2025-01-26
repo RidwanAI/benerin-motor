@@ -23,20 +23,36 @@ export const uploadPaymentProof = async (orderId, file) => {
   const formData = new FormData();
   formData.append("paymentProof", file);
 
-  const response = await axios.post(`${BASE_URL}/orders/${orderId}/upload`, formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-      Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-    },
-  });
+  const response = await axios.post(
+    `${BASE_URL}/orders/${orderId}/upload`,
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
+    }
+  );
   return response.data;
 };
 
 // Checkout pesanan
-export const checkout = async ({ userId, selectedCartItemIds, shippingAddress, customerPhoneNumber, shippingMethod }) => {
+export const checkout = async ({
+  userId,
+  selectedCartItemIds,
+  shippingAddress,
+  customerPhoneNumber,
+  shippingMethod,
+}) => {
   const response = await axios.post(
     `${BASE_URL}/orders/checkout`,
-    { userId, selectedCartItemIds, shippingAddress, customerPhoneNumber, shippingMethod },
+    {
+      userId,
+      selectedCartItemIds,
+      shippingAddress,
+      customerPhoneNumber,
+      shippingMethod,
+    },
     {
       headers: {
         "Content-Type": "application/json",
@@ -47,17 +63,20 @@ export const checkout = async ({ userId, selectedCartItemIds, shippingAddress, c
   return response.data;
 };
 
-// Membuat pesanan baru secara manual (untuk admin)
-export const createOrder = async ({ userId, productId, quantity, shippingAddress, customerPhoneNumber, shippingMethod }) => {
-  const response = await axios.post(
-    `${BASE_URL}/orders`,
-    { userId, productId, quantity, shippingAddress, customerPhoneNumber, shippingMethod },
-    {
+export const createOrderforUser = async (orderPayload) => {
+  try {
+    const response = await axios.post(`${BASE_URL}/orders`, orderPayload, {
       headers: {
-        "Content-Type": "application/json",
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        "Content-Type": "application/json",
       },
-    }
-  );
-  return response.data;
+    });
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error creating order:",
+      error.response?.data || error.message
+    );
+    throw error;
+  }
 };

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { Link } from "react-router-dom";
+import { productService } from "../../../../services/productService";
 
 const NewProduct = () => {
   // State untuk produk dan loading
@@ -16,18 +16,17 @@ const NewProduct = () => {
     const fetchProducts = async () => {
       try {
         // No authentication token needed anymore
-        const response = await axios.get("http://localhost:5000/products/new");
-        setListNewProducts(response.data);
+        const data = await productService.getNewProduct();
+        setListNewProducts(data);
         setLoading(false);
       } catch (err) {
         setError("Error fetching new products");
         setLoading(false);
       }
     };
-  
+
     fetchProducts();
   }, []);
-  
 
   const totalPages = Math.ceil(listNewProducts.length / itemsPerPage);
   const currentItems = listNewProducts.slice(

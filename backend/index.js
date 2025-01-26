@@ -15,11 +15,8 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-
 dotenv.config();
 const app = express();
-
-
 
 // Asynchronously connect to the database
 const connectDatabase = async () => {
@@ -36,15 +33,13 @@ const defineModelRelations = () => {
   // Relasi di index.js atau file relasi lainnya
   Product.hasMany(Order, { foreignKey: "productId", as: "orders" });
   Order.belongsTo(Product, { foreignKey: "productId", as: "orderedProduct" });
-  
+
   User.hasMany(Order, { foreignKey: "userId", as: "orders" });
   Order.belongsTo(User, { foreignKey: "userId", as: "user" });
-  
 
   // Relasi antara Cart dan Product
   Cart.belongsTo(Product, { foreignKey: "productId", as: "cartProduct" });
   Product.hasMany(Cart, { foreignKey: "productId", as: "carts" });
-  
 };
 
 // Sync models and relationships
@@ -70,7 +65,6 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(router);
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-
 
 // Starting the server
 app.listen(process.env.PORT || 5000, () => {

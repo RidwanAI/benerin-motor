@@ -1,18 +1,18 @@
-import { Sequelize } from 'sequelize';
-import db from '../config/database.js';
-import Product from './productModel.js'; // Import product model
+import { Sequelize } from "sequelize";
+import db from "../config/database.js";
+import Product from "./productModel.js"; // Import product model
 
 const { DataTypes } = Sequelize;
 
 const Cart = db.define(
-  'carts',
+  "carts",
   {
     productId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
         model: Product, // Mengacu pada model Product
-        key: 'id',
+        key: "id",
       },
     },
     quantity: {
@@ -22,7 +22,7 @@ const Cart = db.define(
       validate: {
         min: {
           args: [1],
-          msg: 'Quantity must be at least 1',
+          msg: "Quantity must be at least 1",
         },
       },
     },
@@ -42,14 +42,14 @@ const Cart = db.define(
       beforeCreate: async (cart, options) => {
         const product = await Product.findByPk(cart.productId);
         if (!product) {
-          throw new Error('Product not found');
+          throw new Error("Product not found");
         }
         cart.totalPrice = product.price * cart.quantity;
       },
       beforeUpdate: async (cart, options) => {
         const product = await Product.findByPk(cart.productId);
         if (!product) {
-          throw new Error('Product not found');
+          throw new Error("Product not found");
         }
         cart.totalPrice = product.price * cart.quantity;
       },
@@ -58,6 +58,6 @@ const Cart = db.define(
 );
 
 // Relasi ke Product
-Cart.belongsTo(Product, { foreignKey: 'productId', as: 'product' });
+Cart.belongsTo(Product, { foreignKey: "productId", as: "product" });
 
 export default Cart;

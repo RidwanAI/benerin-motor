@@ -32,7 +32,9 @@ const Testimoni = () => {
   return (
     <div className="border border-orange-500 flex flex-col items-start justify-center max-w-7xl mx-auto p-5 rounded-md space-y-2 text-white">
       <p>"{testimonials[currentTestimoniComponent].text}"</p>
-      <p className="font-bold">{testimonials[currentTestimoniComponent].author}</p>
+      <p className="font-bold">
+        {testimonials[currentTestimoniComponent].author}
+      </p>
     </div>
   );
 };

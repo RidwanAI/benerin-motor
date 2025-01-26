@@ -28,7 +28,7 @@ const ProductList = ({ searchTerm, category }) => {
         setLoading(false);
       }
     };
-  
+
     fetchProducts();
   }, [category]);
 
@@ -70,11 +70,16 @@ const ProductList = ({ searchTerm, category }) => {
   // Get category title
   const getCategoryTitle = () => {
     switch (category) {
-      case "all": return "All Products";
-      case "new": return "New Products";
-      case "second": return "Second Products";
-      case "rec": return "Recommended Products";
-      default: return "Products";
+      case "all":
+        return "All Products";
+      case "new":
+        return "New Products";
+      case "second":
+        return "Second Products";
+      case "rec":
+        return "Recommended Products";
+      default:
+        return "Products";
     }
   };
 

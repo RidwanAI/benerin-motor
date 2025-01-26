@@ -94,11 +94,15 @@ const AdminProducts = () => {
 
   const updateProduct = async () => {
     try {
-      if (!editingProduct.name || !editingProduct.price || !editingProduct.stock) {
+      if (
+        !editingProduct.name ||
+        !editingProduct.price ||
+        !editingProduct.stock
+      ) {
         alert("Please fill in all required fields");
         return;
       }
-  
+
       const formData = new FormData();
       formData.append("name", editingProduct.name);
       formData.append("price", editingProduct.price);
@@ -107,32 +111,37 @@ const AdminProducts = () => {
       formData.append("label", editingProduct.label);
       formData.append("sold", editingProduct.sold);
       formData.append("rating", editingProduct.rating);
-  
+
       if (editingProduct.newImage) {
         formData.append("image", editingProduct.newImage);
       }
-  
+
       const updatedProduct = await adminService.updateProduct(
         editingProduct.id,
         formData
       );
-  
+
       // Update local state with the new data
-      setProducts(products.map((product) =>
-        product.id === editingProduct.id ? updatedProduct : product
-      ));
-  
+      setProducts(
+        products.map((product) =>
+          product.id === editingProduct.id ? updatedProduct : product
+        )
+      );
+
       setShowEditModal(false);
       setEditingProduct(null);
-      
+
       // Refresh product list
       const refreshedProducts = await adminService.getProducts();
       setProducts(refreshedProducts);
-  
+
       alert("Product updated successfully!");
     } catch (error) {
       console.error("Error updating product:", error);
-      alert("Failed to update product: " + (error.response?.data?.message || error.message));
+      alert(
+        "Failed to update product: " +
+          (error.response?.data?.message || error.message)
+      );
     }
   };
 

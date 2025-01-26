@@ -30,9 +30,9 @@ const AdminSettings = () => {
       } catch (error) {
         setError("Intruder!!!");
         setIsLoggedIn(false);
-        setFormData(prev => ({
+        setFormData((prev) => ({
           ...prev,
-          name: "Intruder"
+          name: "Intruder",
         }));
         setLoading(false);
       }

@@ -39,7 +39,10 @@ const Carousel = () => {
 
   return (
     <section>
-      <div ref={carouselRef} className="carousel flex gap-2 overflow-x-hidden snap-x scrollbar-hide">
+      <div
+        ref={carouselRef}
+        className="carousel flex gap-2 overflow-x-hidden snap-x scrollbar-hide"
+      >
         {listCarousel.map((promo, index) => (
           <div
             key={index}

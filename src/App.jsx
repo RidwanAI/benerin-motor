@@ -3,7 +3,6 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 
 /* Admin */
-import AdminLogin from "./admin/pages/AdminLogin";
 import AdminDashboard from "./admin/pages/AdminDashboard";
 import AdminOverview from "./admin/components/AdminOverview";
 import AdminProducts from "./admin/components/AdminProducts";
@@ -53,13 +52,24 @@ function AnimatedRoutes() {
         <div className="page-content">
           <Routes location={location}>
             {/* ========== Admin ========== */}
-            <Route path="/admin" element={<AdminLogin />} />
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
-            <Route path="/admin/dashboard/overview" element={<AdminOverview />} />
-            <Route path="/admin/dashboard/products" element={<AdminProducts />} />
-            <Route path="/admin/dashboard/customers" element={<AdminCustomers />} />
+            <Route
+              path="/admin/dashboard/overview"
+              element={<AdminOverview />}
+            />
+            <Route
+              path="/admin/dashboard/products"
+              element={<AdminProducts />}
+            />
+            <Route
+              path="/admin/dashboard/customers"
+              element={<AdminCustomers />}
+            />
             <Route path="/admin/dashboard/orders" element={<AdminOrders />} />
-            <Route path="/admin/dashboard/settings" element={<AdminSettings />} />
+            <Route
+              path="/admin/dashboard/settings"
+              element={<AdminSettings />}
+            />
 
             {/* ========== User ========== */}
             {/* Landing */}

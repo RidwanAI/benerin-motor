@@ -50,4 +50,22 @@ export const cartService = {
     });
     return response.data;
   },
+
+  addToCart: async (payload) => {
+    try {
+      const response = await axios.post(`${BASE_URL}/carts`, payload, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          "Content-Type": "application/json",
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error(
+        "Error adding to cart:",
+        error.response?.data || error.message
+      );
+      throw error;
+    }
+  },
 };

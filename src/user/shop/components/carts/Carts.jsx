@@ -78,15 +78,17 @@ const Carts = () => {
       alert("Please fill in all the required fields.");
       return;
     }
-  
+
     try {
       const currentUser = await cartService.getCurrentUser();
       const userId = currentUser.id;
-  
-      const selectedCartItems = cartItems.filter(item => selectedItems.includes(item.id));
+
+      const selectedCartItems = cartItems.filter((item) =>
+        selectedItems.includes(item.id)
+      );
       const subtotal = calculateSubtotal();
       const totalWithShipping = subtotal + SHIPPING_COST;
-  
+
       const checkoutData = {
         userId,
         selectedCartItemIds: selectedItems,
@@ -95,13 +97,15 @@ const Carts = () => {
         shippingMethod: selectedShippingMethod,
         shippingCost: SHIPPING_COST,
         totalAmount: totalWithShipping,
-        subtotal: subtotal
+        subtotal: subtotal,
       };
-  
+
       await cartService.checkout(checkoutData);
-      
+
       alert("Checkout successful!");
-      setCartItems(prev => prev.filter(item => !selectedItems.includes(item.id)));
+      setCartItems((prev) =>
+        prev.filter((item) => !selectedItems.includes(item.id))
+      );
       setSelectedItems([]);
       setModalVisible(false);
     } catch (error) {

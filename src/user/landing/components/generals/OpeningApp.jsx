@@ -19,9 +19,18 @@ function OpeningApp() {
   return (
     <>
       {showPopup && (
-        <div className={`bg-orange-400 fixed flex font-poppins inset-0 items-center justify-center tracking-wider z-50 md:px-7 ${fadeOut ? "animate-fade-out" : ""}`}>
+        <div
+          className={`bg-orange-400 fixed flex font-poppins inset-0 items-center justify-center tracking-wider z-50 md:px-7 ${
+            fadeOut ? "animate-fade-out" : ""
+          }`}
+        >
           <div className="flex flex-col gap-4 items-center justify-center text-center text-white">
-            <img src="../general/logo.png" alt="logo.png" className="animate-bounce" width={500} />
+            <img
+              src="../general/logo.png"
+              alt="logo.png"
+              className="animate-bounce"
+              width={500}
+            />
           </div>
         </div>
       )}

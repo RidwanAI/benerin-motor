@@ -49,7 +49,11 @@ const Setting = () => {
                   setActiveTab("editProfile");
                   setIsMenuOpen(false);
                 }}
-                className={`flex gap-2 items-center ${activeTab === "editProfile" ? "font-semibold text-orange-500 underline" : "duration-300 hover:text-orange-700"}`}
+                className={`flex gap-2 items-center ${
+                  activeTab === "editProfile"
+                    ? "font-semibold text-orange-500 underline"
+                    : "duration-300 hover:text-orange-700"
+                }`}
               >
                 Edit Profile
               </button>
@@ -60,7 +64,11 @@ const Setting = () => {
                   setActiveTab("language");
                   setIsMenuOpen(false);
                 }}
-                className={`flex gap-2 items-center ${activeTab === "language" ? "font-semibold text-orange-500 underline" : "duration-300 hover:text-orange-700"}`}
+                className={`flex gap-2 items-center ${
+                  activeTab === "language"
+                    ? "font-semibold text-orange-500 underline"
+                    : "duration-300 hover:text-orange-700"
+                }`}
               >
                 Language
               </button>
@@ -71,7 +79,11 @@ const Setting = () => {
                   setActiveTab("statusAccount");
                   setIsMenuOpen(false);
                 }}
-                className={`flex gap-2 items-center ${activeTab === "statusAccount" ? "font-semibold text-orange-500 underline" : "duration-300 hover:text-orange-700"}`}
+                className={`flex gap-2 items-center ${
+                  activeTab === "statusAccount"
+                    ? "font-semibold text-orange-500 underline"
+                    : "duration-300 hover:text-orange-700"
+                }`}
               >
                 Status Account
               </button>
@@ -82,7 +94,11 @@ const Setting = () => {
                   setActiveTab("FAQ");
                   setIsMenuOpen(false);
                 }}
-                className={`flex gap-2 items-center ${activeTab === "FAQ" ? "font-semibold text-orange-500 underline" : "duration-300 hover:text-orange-700"}`}
+                className={`flex gap-2 items-center ${
+                  activeTab === "FAQ"
+                    ? "font-semibold text-orange-500 underline"
+                    : "duration-300 hover:text-orange-700"
+                }`}
               >
                 FAQ
               </button>

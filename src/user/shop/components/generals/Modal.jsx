@@ -14,10 +14,16 @@ const Modal = ({ isOpen, onClose, onConfirm, title, message }) => {
 
         {/* Button => Cancel & Confirm */}
         <div className="flex justify-end space-x-2">
-          <button className="bg-slate-300 duration-300 px-3 py-1.5 rounded-md hover:bg-slate-500 md:px-5 md:py-1.5" onClick={onClose}>
+          <button
+            className="bg-slate-300 duration-300 px-3 py-1.5 rounded-md hover:bg-slate-500 md:px-5 md:py-1.5"
+            onClick={onClose}
+          >
             Cancel
           </button>
-          <button className="bg-orange-500 duration-300 px-3 py-1.5 rounded-md text-white hover:bg-orange-700 md:px-5 md:py-1.5" onClick={onConfirm}>
+          <button
+            className="bg-orange-500 duration-300 px-3 py-1.5 rounded-md text-white hover:bg-orange-700 md:px-5 md:py-1.5"
+            onClick={onConfirm}
+          >
             Confirm
           </button>
         </div>

@@ -1,44 +1,47 @@
-import { Sequelize } from 'sequelize';
-import db from '../config/database.js';
+import { Sequelize } from "sequelize";
+import db from "../config/database.js";
 
 const { DataTypes } = Sequelize;
 
-const Product = db.define('products', {
+const Product = db.define(
+  "products",
+  {
     name: {
-        type: DataTypes.STRING,
-        allowNull: false
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     image: {
-        type: DataTypes.STRING,
-        allowNull: false
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     price: {
-        type: DataTypes.DECIMAL(10, 2), // Use DECIMAL for more precise pricing
-        allowNull: false
+      type: DataTypes.DECIMAL(10, 2), // Use DECIMAL for more precise pricing
+      allowNull: false,
     },
     specs: {
-        type: DataTypes.TEXT,
-        allowNull: true
+      type: DataTypes.TEXT,
+      allowNull: true,
     },
     label: {
-        type: DataTypes.STRING,
-        allowNull: true
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     stock: {
-        type: DataTypes.INTEGER,
-        allowNull: false
+      type: DataTypes.INTEGER,
+      allowNull: false,
     },
     sold: {
-        type: DataTypes.INTEGER,
-        allowNull: false
+      type: DataTypes.INTEGER,
+      allowNull: false,
     },
     rating: {
-        type: DataTypes.DECIMAL(3, 1)
-    }
-}, {
+      type: DataTypes.DECIMAL(3, 1),
+    },
+  },
+  {
     freezeTableName: true,
-    timestamps: false  // Disable Sequelize's automatic timestamp handling
-});
-
+    timestamps: false, // Disable Sequelize's automatic timestamp handling
+  }
+);
 
 export default Product;

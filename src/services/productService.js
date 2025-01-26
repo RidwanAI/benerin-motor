@@ -16,6 +16,26 @@ export const productService = {
     }
   },
 
+  getNewProduct: async () => {
+    try {
+      const newProducts = await axios.get(`${BASE_URL}/products/new`);
+      return newProducts.data;
+    } catch (error) {
+      console.error("Cannot fetch new products:", error);
+      throw error;
+    }
+  },
+
+  getRecomendedProduct: async () => {
+    try {
+      const recProducts = await axios.get(`${BASE_URL}/products/rec`);
+      return recProducts.data;
+    } catch (error) {
+      console.error("Cannot fetch recomended product:", error);
+      throw error;
+    }
+  },
+
   // Fetch products by category
   fetchProductsByCategory: async (category) => {
     switch (category) {
@@ -37,8 +57,13 @@ export const productService = {
 
   // Fetch product details by ID
   fetchProductById: async (id) => {
-    const response = await axios.get(`${BASE_URL}/products/${id}`);
-    return response.data;
+    try {
+      const response = await axios.get(`${BASE_URL}/products/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error("Cannot fetch product by id");
+      throw error;
+    }
   },
 
   // Add a product to the cart

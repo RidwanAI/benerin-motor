@@ -149,47 +149,47 @@ export const updateMe = async (req, res) => {
 
 export const deleteMe = async (req, res) => {
   try {
-      const { confirmationEmail } = req.body;
-      
-      // Log untuk debugging
-      console.log('Request email:', req.email);
-      console.log('Confirmation email:', confirmationEmail);
-      
-      // Find current user
-      const user = await Users.findOne({
-          where: {
-              email: req.email
-          }
+    const { confirmationEmail } = req.body;
+
+    // Log untuk debugging
+    console.log("Request email:", req.email);
+    console.log("Confirmation email:", confirmationEmail);
+
+    // Find current user
+    const user = await Users.findOne({
+      where: {
+        email: req.email,
+      },
+    });
+
+    if (!user) {
+      return res.status(404).json({ msg: "User tidak ditemukan" });
+    }
+
+    // Log untuk debugging
+    console.log("User email from DB:", user.email);
+
+    // Verify confirmation email matches user's email
+    if (confirmationEmail !== user.email) {
+      return res.status(400).json({
+        msg: "Email konfirmasi tidak sesuai",
+        debug: {
+          confirmationEmail,
+          userEmail: user.email,
+        },
       });
+    }
 
-      if (!user) {
-          return res.status(404).json({ msg: "User tidak ditemukan" });
-      }
+    // Delete the user
+    await user.destroy();
 
-      // Log untuk debugging
-      console.log('User email from DB:', user.email);
-      
-      // Verify confirmation email matches user's email
-      if (confirmationEmail !== user.email) {
-          return res.status(400).json({ 
-              msg: "Email konfirmasi tidak sesuai",
-              debug: {
-                  confirmationEmail,
-                  userEmail: user.email
-              }
-          });
-      }
+    // Clear refresh token cookie
+    res.clearCookie("refreshToken");
 
-      // Delete the user
-      await user.destroy();
-
-      // Clear refresh token cookie
-      res.clearCookie("refreshToken");
-      
-      res.json({ msg: "Akun berhasil dihapus" });
+    res.json({ msg: "Akun berhasil dihapus" });
   } catch (error) {
-      console.error('Delete account error:', error);
-      res.status(500).json({ msg: "Server Error" });
+    console.error("Delete account error:", error);
+    res.status(500).json({ msg: "Server Error" });
   }
 };
 

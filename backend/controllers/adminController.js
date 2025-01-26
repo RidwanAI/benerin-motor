@@ -193,13 +193,13 @@ const adminController = {
     }
   },
 
-  deleteAdmin: async(req, res) => {
+  deleteAdmin: async (req, res) => {
     try {
       // Cari admin berdasarkan email dari token
       const admin = await Admin.findOne({
         where: {
-          email: req.email
-        }
+          email: req.email,
+        },
       });
 
       if (!admin) {
@@ -209,22 +209,21 @@ const adminController = {
       // Hapus admin dari database
       await Admin.destroy({
         where: {
-          id: admin.id
-        }
+          id: admin.id,
+        },
       });
 
       // Clear cookies
       res.clearCookie("refreshToken");
 
       return res.status(200).json({
-        msg: "Admin account deleted successfully"
+        msg: "Admin account deleted successfully",
       });
-
     } catch (error) {
-      console.error('Error in deleteAdmin:', error);
+      console.error("Error in deleteAdmin:", error);
       return res.status(500).json({
         msg: "An error occurred while deleting admin account",
-        error: error.message
+        error: error.message,
       });
     }
   },
