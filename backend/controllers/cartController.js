@@ -7,25 +7,20 @@ const CartController = {
     try {
       const { productId, userId, quantity } = req.body;
 
-      if (!productId || !userId || !quantity) {
-        return res
-          .status(400)
-          .json({
-            message: "All fields are required: productId, userId, quantity",
-          });
-      }
-
-      // Fetch product to get price
+      // Check product stock
       const product = await Product.findByPk(productId);
       if (!product) {
         return res.status(404).json({ message: "Product not found" });
       }
 
-      // Calculate total price
-      const totalPrice =
-        parseFloat(product.price.replace(/[^\d.]/g, "")) * quantity;
+      if (product.stock < quantity) {
+        return res.status(400).json({ message: "Insufficient stock" });
+      }
 
-      // Create the cart item
+      // Calculate total price
+      const totalPrice = parseFloat(product.price) * quantity;
+
+      // Create cart item
       const newCartItem = await Cart.create({
         productId,
         userId,
@@ -33,11 +28,22 @@ const CartController = {
         totalPrice,
       });
 
+      // Update product stock
+      await Product.update(
+        {
+          stock: product.stock - quantity
+        },
+        {
+          where: { id: productId }
+        }
+      );
+
       res.status(201).json(newCartItem);
     } catch (error) {
-      res
-        .status(500)
-        .json({ message: "Error creating cart item", error: error.message });
+      res.status(500).json({ 
+        message: "Error creating cart item", 
+        error: error.message 
+      });
     }
   },
 

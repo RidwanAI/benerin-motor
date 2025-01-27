@@ -14,44 +14,49 @@ const OrderController = {
         shippingAddress,
         customerPhoneNumber,
         shippingMethod,
-        shippingCost, // Add shipping cost parameter
-        totalAmount, // Use total amount that includes shipping
+        shippingCost,
+        totalAmount,
       } = req.body;
 
-      if (
-        !userId ||
-        !productId ||
-        !quantity ||
-        !shippingAddress ||
-        !customerPhoneNumber ||
-        !shippingMethod
-      ) {
-        return res.status(400).json({
-          message: "All fields are required.",
-        });
-      }
-
+      // Check product stock first
       const product = await Product.findByPk(productId);
       if (!product) {
         return res.status(404).json({ message: "Product not found" });
       }
 
+      if (product.stock < quantity) {
+        return res.status(400).json({ message: "Insufficient stock" });
+      }
+
+      // Create order
       const order = await Order.create({
         userId,
         productId,
         quantity,
-        totalPrice: totalAmount, // Use totalAmount instead of calculating
+        totalPrice: totalAmount,
         status: "Pending",
         shippingAddress,
         customerPhoneNumber,
         shippingMethod,
       });
 
+      // Update product stock and sold count
+      await Product.update(
+        {
+          stock: product.stock - quantity,
+          sold: product.sold + quantity,
+        },
+        {
+          where: { id: productId },
+        }
+      );
+
       res.status(201).json(order);
     } catch (error) {
-      res
-        .status(500)
-        .json({ message: "Error creating order", error: error.message });
+      res.status(500).json({
+        message: "Error creating order",
+        error: error.message,
+      });
     }
   },
 
@@ -63,7 +68,7 @@ const OrderController = {
         shippingAddress,
         customerPhoneNumber,
         shippingMethod,
-        shippingCost, // Add shipping cost parameter
+        shippingCost,
       } = req.body;
 
       if (
@@ -74,9 +79,7 @@ const OrderController = {
         !customerPhoneNumber ||
         !shippingMethod
       ) {
-        return res.status(400).json({
-          message: "All fields are required.",
-        });
+        return res.status(400).json({ message: "All fields are required." });
       }
 
       const validShippingMethods = ["JNE", "JNT", "Shopee Express", "Gojek"];
@@ -85,10 +88,7 @@ const OrderController = {
       }
 
       const cartItems = await Cart.findAll({
-        where: {
-          id: selectedCartItemIds,
-          userId,
-        },
+        where: { id: selectedCartItemIds, userId },
         include: [{ model: Product, as: "product", attributes: ["price"] }],
       });
 
@@ -98,6 +98,7 @@ const OrderController = {
           .json({ message: "No cart items found for the selected IDs." });
       }
 
+      // Create orders without modifying stock (stock was already adjusted when adding to cart)
       const orders = await Promise.all(
         cartItems.map(async (item) => {
           const subtotal = parseFloat(item.product.price) * item.quantity;
@@ -107,7 +108,7 @@ const OrderController = {
             userId,
             productId: item.productId,
             quantity: item.quantity,
-            totalPrice: totalWithShipping, // Include shipping cost in total
+            totalPrice: totalWithShipping,
             status: "Pending",
             shippingAddress,
             customerPhoneNumber,
@@ -116,10 +117,24 @@ const OrderController = {
         })
       );
 
+      // Update only the sold count for products
+      await Promise.all(
+        cartItems.map(async (item) => {
+          const product = await Product.findByPk(item.productId);
+          await Product.update(
+            {
+              sold: product.sold + item.quantity,
+            },
+            {
+              where: { id: item.productId }
+            }
+          );
+        })
+      );
+
+      // Remove items from cart
       await Cart.destroy({
-        where: {
-          id: selectedCartItemIds,
-        },
+        where: { id: selectedCartItemIds },
       });
 
       res.status(201).json({ message: "Checkout successful", orders });

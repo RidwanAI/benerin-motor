@@ -54,12 +54,10 @@ const ProductController = {
         res.status(404).send({ message: "Product not found" });
       }
     } catch (error) {
-      res
-        .status(500)
-        .send({
-          message: "Error retrieving the product",
-          error: error.message,
-        });
+      res.status(500).send({
+        message: "Error retrieving the product",
+        error: error.message,
+      });
     }
   },
 
@@ -102,6 +100,50 @@ const ProductController = {
     }
   },
 
+  updateProductStock: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { quantity, increaseSold = false, isRestore = false, updateStockOnCheckout = true } = req.body;
+
+      const product = await Product.findByPk(id);
+      if (!product) {
+        return res.status(404).json({ message: "Product not found" });
+      }
+
+      let updates = {};
+      
+      // Only update sold count if requested during checkout
+      if (increaseSold) {
+        updates.sold = product.sold + quantity;
+      }
+
+      // Only update stock if not in checkout process
+      if (updateStockOnCheckout) {
+        if (isRestore) {
+          updates.stock = product.stock + quantity;
+        } else {
+          if (product.stock < quantity) {
+            return res.status(400).json({ message: "Insufficient stock" });
+          }
+          updates.stock = product.stock - quantity;
+        }
+      }
+
+      if (Object.keys(updates).length > 0) {
+        await Product.update(updates, {
+          where: { id }
+        });
+      }
+
+      res.status(200).json({ message: "Product updated successfully" });
+    } catch (error) {
+      res.status(500).json({
+        message: "Error updating product",
+        error: error.message,
+      });
+    }
+  },
+
   // Delete a product
   deleteProduct: async (req, res) => {
     try {
@@ -134,12 +176,10 @@ const ProductController = {
       }
     } catch (error) {
       console.error("Error fetching new products: ", error);
-      res
-        .status(500)
-        .send({
-          message: "Error retrieving new products",
-          error: error.message,
-        });
+      res.status(500).send({
+        message: "Error retrieving new products",
+        error: error.message,
+      });
     }
   },
 
@@ -155,12 +195,10 @@ const ProductController = {
       }
     } catch (error) {
       console.error("Error fetching recommended products: ", error);
-      res
-        .status(500)
-        .send({
-          message: "Error retrieving recommended products",
-          error: error.message,
-        });
+      res.status(500).send({
+        message: "Error retrieving recommended products",
+        error: error.message,
+      });
     }
   },
 
@@ -176,12 +214,10 @@ const ProductController = {
       }
     } catch (error) {
       console.error("Error fetching second products: ", error);
-      res
-        .status(500)
-        .send({
-          message: "Error retrieving second products",
-          error: error.message,
-        });
+      res.status(500).send({
+        message: "Error retrieving second products",
+        error: error.message,
+      });
     }
   },
 };

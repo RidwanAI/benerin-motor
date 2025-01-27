@@ -78,7 +78,12 @@ const ProductDetail = () => {
         return;
       }
 
-      // Calculate the values before sending
+      // Check if quantity is valid
+      if (quantity > product.stock) {
+        alert("Selected quantity exceeds available stock!");
+        return;
+      }
+
       const subtotal = calculateSubtotal();
       const total = calculateTotal();
 
@@ -96,12 +101,26 @@ const ProductDetail = () => {
 
       await createOrderforUser(orderPayload);
 
+      // Update local product state
+      setProduct((prev) => ({
+        ...prev,
+        stock: prev.stock - quantity,
+        sold: prev.sold + quantity,
+      }));
+
       alert("Order created successfully!");
       setModalVisible(false);
       navigate(`/shop`);
     } catch (error) {
-      console.error("Error creating order:", error);
-      alert("Failed to create order. Please try again.");
+      if (
+        error.response?.status === 400 &&
+        error.response?.data?.message === "Insufficient stock"
+      ) {
+        alert("Sorry, the selected quantity is no longer available.");
+      } else {
+        console.error("Error creating order:", error);
+        alert("Failed to create order. Please try again.");
+      }
     }
   };
 
@@ -144,6 +163,12 @@ const ProductDetail = () => {
         return;
       }
 
+      // Check if quantity is valid
+      if (quantity > product.stock) {
+        alert("Selected quantity exceeds available stock!");
+        return;
+      }
+
       const payload = {
         productId: product.id,
         userId: currentUser.id,
@@ -152,10 +177,23 @@ const ProductDetail = () => {
 
       await cartService.addToCart(payload);
 
+      // Update local product state
+      setProduct((prev) => ({
+        ...prev,
+        stock: prev.stock - quantity,
+      }));
+
       alert(`${product.name} has been successfully added to the cart!`);
     } catch (error) {
-      console.error("Error adding to cart:", error);
-      alert("Failed to add to the cart. Please try again.");
+      if (
+        error.response?.status === 400 &&
+        error.response?.data?.message === "Insufficient stock"
+      ) {
+        alert("Sorry, the selected quantity is no longer available.");
+      } else {
+        console.error("Error adding to cart:", error);
+        alert("Failed to add to the cart. Please try again.");
+      }
     }
   };
 
@@ -199,6 +237,21 @@ const ProductDetail = () => {
             ).toLocaleString("id-ID", {
               minimumFractionDigits: 2,
             })}`}</p>
+
+            <div className="flex items-center gap-2 text-sm">
+              <span className="text-gray-600">Stock Available:</span>
+              <span
+                className={`font-medium ${
+                  product.stock < 5
+                    ? "text-red-500"
+                    : product.stock < 10
+                    ? "text-yellow-500"
+                    : "text-green-600"
+                }`}
+              >
+                {product.stock} units
+              </span>
+            </div>
 
             <div className="flex items-center justify-between">
               <label htmlFor="quantity" className="text-sm">

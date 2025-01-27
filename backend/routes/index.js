@@ -50,6 +50,11 @@ router.post("/products", verifyToken, ProductController.createProduct); // Creat
 router.get("/products", ProductController.getAllProducts); // Get all products
 router.get("/products/:id", ProductController.getProductById); // Get single product by id
 router.put("/products/:id", verifyToken, ProductController.updateProduct); // Update product
+router.put(
+  "/products/:id/stock",
+  verifyToken,
+  ProductController.updateProductStock
+);
 router.delete("/products/:id", verifyToken, ProductController.deleteProduct); // Delete product
 
 // Cart routes

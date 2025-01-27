@@ -22,12 +22,11 @@ const Carts = () => {
 
         const data = await cartService.fetchCartItems(userId);
         setCartItems(data);
-        setError(null); // Reset error if data is fetched successfully
+        setError(null);
       } catch (err) {
         if (err.response?.status === 404) {
-          // Handle 404 (Not Found) - no items in the cart
-          setCartItems([]); // Set cartItems to an empty array
-          setError(null); // No need to show an error
+          setCartItems([]);
+          setError(null);
         } else {
           console.error(err);
           setError(
@@ -92,6 +91,7 @@ const Carts = () => {
       const checkoutData = {
         userId,
         selectedCartItemIds: selectedItems,
+        cartItems: selectedCartItems,
         shippingAddress,
         customerPhoneNumber,
         shippingMethod: selectedShippingMethod,
@@ -114,6 +114,7 @@ const Carts = () => {
     }
   };
 
+  // Fixed adjustQuantity function to properly handle stock updates
   const adjustQuantity = async (id, delta) => {
     try {
       const item = cartItems.find((item) => item.id === id);
@@ -121,22 +122,38 @@ const Carts = () => {
 
       if (newQuantity < 1) return;
 
-      const data = await cartService.adjustQuantity(id, newQuantity);
+      const updatedItem = await cartService.adjustQuantity(
+        id,
+        newQuantity,
+        item.quantity
+      );
+
       setCartItems((prev) =>
-        prev.map((item) =>
-          item.id === id ? { ...item, quantity: data.quantity } : item
+        prev.map((cartItem) =>
+          cartItem.id === id ? { ...cartItem, quantity: updatedItem.quantity } : cartItem
         )
       );
     } catch (err) {
       console.error("Failed to update quantity.", err);
-      setError("Failed to update quantity. Please try again later.");
+      if (err.response?.data?.message === "Insufficient stock") {
+        alert("Not enough stock available");
+      } else {
+        setError("Failed to update quantity. Please try again later.");
+      }
     }
   };
 
+  // Fixed removeItem function to properly restore stock
   const removeItem = async (id) => {
     try {
-      await cartService.removeItem(id);
-      setCartItems((prev) => prev.filter((item) => item.id !== id));
+      const item = cartItems.find((item) => item.id === id);
+      if (!item) return;
+
+      // We pass the current quantity and productId to properly restore stock
+      await cartService.removeItem(id, item.quantity, item.productId);
+      
+      setCartItems((prev) => prev.filter((cartItem) => cartItem.id !== id));
+      setSelectedItems((prev) => prev.filter((itemId) => itemId !== id));
     } catch (err) {
       console.error("Failed to remove item from cart.", err);
       setError("Failed to remove item. Please try again later.");
@@ -222,17 +239,14 @@ const Carts = () => {
         </div>
       </div>
 
-      {/* Modal => Checkout */}
+      {/* Checkout Modal */}
       {isModalVisible && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 w-1/3 shadow-lg">
             <h2 className="text-lg font-bold mb-4">Complete Your Checkout</h2>
 
             <div className="mb-4">
-              <label
-                className="block font-medium mb-2"
-                htmlFor="shippingAddress"
-              >
+              <label className="block font-medium mb-2" htmlFor="shippingAddress">
                 Shipping Address
               </label>
               <input
@@ -246,10 +260,7 @@ const Carts = () => {
             </div>
 
             <div className="mb-4">
-              <label
-                className="block font-medium mb-2"
-                htmlFor="customerPhoneNumber"
-              >
+              <label className="block font-medium mb-2" htmlFor="customerPhoneNumber">
                 Phone Number
               </label>
               <input
@@ -283,21 +294,27 @@ const Carts = () => {
               <div className="mb-4">
                 <div className="flex justify-between text-sm">
                   <span>Subtotal:</span>
-                  <span>{`Rp.${calculateSubtotal().toLocaleString("id-ID", {
-                    minimumFractionDigits: 2,
-                  })}`}</span>
+                  <span>
+                    {`Rp.${calculateSubtotal().toLocaleString("id-ID", {
+                      minimumFractionDigits: 2,
+                    })}`}
+                  </span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span>Shipping Cost:</span>
-                  <span>{`Rp.${SHIPPING_COST.toLocaleString("id-ID", {
-                    minimumFractionDigits: 2,
-                  })}`}</span>
+                  <span>
+                    {`Rp.${SHIPPING_COST.toLocaleString("id-ID", {
+                      minimumFractionDigits: 2,
+                    })}`}
+                  </span>
                 </div>
                 <div className="flex justify-between font-bold mt-2">
                   <span>Total:</span>
-                  <span>{`Rp.${calculateTotal().toLocaleString("id-ID", {
-                    minimumFractionDigits: 2,
-                  })}`}</span>
+                  <span>
+                    {`Rp.${calculateTotal().toLocaleString("id-ID", {
+                      minimumFractionDigits: 2,
+                    })}`}
+                  </span>
                 </div>
               </div>
             )}
