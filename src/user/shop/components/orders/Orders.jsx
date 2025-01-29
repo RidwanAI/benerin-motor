@@ -5,6 +5,76 @@ import {
   uploadPaymentProof,
   updateOrderStatus,
 } from "../../../../services/orderService";
+import { submitReview } from "../../../../services/reviewService";
+
+// ReviewModal Component
+const ReviewModal = ({ isOpen, onClose, onSubmit }) => {
+  const [rating, setRating] = useState(5);
+  const [feedback, setFeedback] = useState("");
+
+  if (!isOpen) return null;
+
+  const handleSubmit = () => {
+    onSubmit({ rating, feedback });
+    setRating(5);
+    setFeedback("");
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
+      <div className="absolute inset-0 bg-black opacity-50"></div>
+      <div className="relative bg-white rounded-lg p-6 w-96 max-w-[90%]">
+        <h3 className="text-lg font-semibold mb-4">Write Your Review</h3>
+
+        <div className="mb-4">
+          <p className="mb-2">Rating:</p>
+          <div className="flex gap-2">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <button
+                key={star}
+                type="button"
+                onClick={() => setRating(star)}
+                className={`text-2xl ${
+                  star <= rating ? "text-yellow-400" : "text-gray-300"
+                }`}
+              >
+                ★
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="mb-4">
+          <p className="mb-2">Your Feedback:</p>
+          <textarea
+            value={feedback}
+            onChange={(e) => setFeedback(e.target.value)}
+            className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+            rows="4"
+            placeholder="Write your feedback here..."
+          />
+        </div>
+
+        <div className="flex justify-end gap-2">
+          <button
+            type="button"
+            onClick={onClose}
+            className="px-4 py-2 text-gray-600 bg-gray-100 rounded-md hover:bg-gray-200"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            onClick={handleSubmit}
+            className="px-4 py-2 text-white bg-orange-500 rounded-md hover:bg-orange-600"
+          >
+            Submit Review
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const Orders = () => {
   const [orderItems, setOrderItems] = useState([]);
@@ -12,19 +82,36 @@ const Orders = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showArrivalMessage, setShowArrivalMessage] = useState(false);
-  const [showReviewPopup, setShowReviewPopup] = useState(false);
-  const [selectedItemId, setSelectedItemId] = useState(null);
-  const [reviewText, setReviewText] = useState("");
+  const [showReviewModal, setShowReviewModal] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [user, setUser] = useState(null);
+  const [reviewedOrders, setReviewedOrders] = useState(new Set());
 
   const fetchOrders = async () => {
     setLoading(true);
     try {
       const user = await getUser();
+      setUser(user);
       const orders = await getOrdersByUserId(user.id);
-      setOrderItems(orders || []);
+
+      // Update orders but preserve the existing reviewedOrders
+      setOrderItems(
+        orders.map((order) => ({
+          ...order,
+          hasReview: reviewedOrders.has(order.id) || order.hasReview,
+        })) || []
+      );
+
+      // Only update reviewedOrders from API if we don't have local state
+      if (reviewedOrders.size === 0) {
+        const reviewedIds = orders
+          .filter((order) => order.hasReview)
+          .map((order) => order.id);
+        setReviewedOrders(new Set(reviewedIds));
+      }
+
       setError(null);
     } catch (err) {
-      // Check if it's a 403 error and handle it differently
       if (err.response && err.response.status === 403) {
         setOrderItems([]);
         setError(null);
@@ -45,7 +132,7 @@ const Orders = () => {
   const handleArrival = async (orderId) => {
     try {
       await updateOrderStatus(orderId, "Completed");
-      await fetchOrders(); // Refresh the orders list
+      await fetchOrders();
       setShowArrivalMessage(true);
       setTimeout(() => {
         setShowArrivalMessage(false);
@@ -56,20 +143,42 @@ const Orders = () => {
     }
   };
 
-  const handleOpenReviewPopup = (id) => {
-    setSelectedItemId(id);
-    setShowReviewPopup(true);
+  const handleOpenReviewModal = (orderId) => {
+    setSelectedOrder(orderId);
+    setShowReviewModal(true);
   };
 
-  const handleCloseReviewPopup = () => {
-    setShowReviewPopup(false);
-    setReviewText("");
+  const handleCloseReviewModal = () => {
+    setShowReviewModal(false);
+    setSelectedOrder(null);
   };
 
-  const handleSubmitReview = (id) => {
-    console.log(`Review for item ${id}: ${reviewText}`);
-    setShowReviewPopup(false);
-    setReviewText("");
+  const handleSubmitReview = async ({ rating, feedback }) => {
+    try {
+      await submitReview({
+        orderId: selectedOrder,
+        userId: user.id,
+        rating,
+        feedback,
+      });
+
+      // Update local state first
+      const newReviewedOrders = new Set(reviewedOrders);
+      newReviewedOrders.add(selectedOrder);
+      setReviewedOrders(newReviewedOrders);
+
+      // Update the orderItems to reflect the review status immediately
+      const updatedOrderItems = orderItems.map((item) =>
+        item.id === selectedOrder ? { ...item, hasReview: true } : item
+      );
+      setOrderItems(updatedOrderItems);
+
+      handleCloseReviewModal();
+      alert("Thank you for your review!");
+    } catch (error) {
+      console.error("Error submitting review:", error);
+      alert("Failed to submit review. Please try again.");
+    }
   };
 
   const handleFileUpload = async (event, orderId) => {
@@ -89,12 +198,12 @@ const Orders = () => {
   return (
     <div className="flex flex-col font-poppins">
       <div className="flex-1">
-        {/* Part => Header */}
+        {/* Header */}
         <div className="bg-white p-3 shadow-sm sticky top-0 z-10">
           <p className="font-semibold text-xl md:text-2xl">Order</p>
         </div>
 
-        {/* Part => Category Orders */}
+        {/* Category Orders */}
         <div className="bg-white flex gap-2 overflow-x-auto p-3 sticky top-0 whitespace-nowrap z-10">
           {["Pending", "Paid", "Shipped", "Completed"].map((category) => (
             <button
@@ -111,7 +220,7 @@ const Orders = () => {
           ))}
         </div>
 
-        {/* Part => Order Items */}
+        {/* Order Items */}
         <div className="p-3 space-y-3">
           {loading ? (
             <p>Loading...</p>
@@ -160,12 +269,14 @@ const Orders = () => {
                         {item.status === "Shipped" &&
                           "Please wait for your items to arrive at your destination"}
                         {item.status === "Completed" &&
+                          !item.hasReview &&
+                          !reviewedOrders.has(item.id) &&
                           "Thank you for orders from our store, give your rate about your order."}
                       </p>
                     </div>
                   </div>
 
-                  {/* Extra Buttons */}
+                  {/* Action Buttons */}
                   {selectedCategory === "Pending" && (
                     <div className="bg-slate-100 flex flex-col p-3 w-full">
                       <label
@@ -186,7 +297,7 @@ const Orders = () => {
 
                   {selectedCategory === "Shipped" && (
                     <button
-                      onClick={() => handleArrival(item.id)} // Pass the order ID
+                      onClick={() => handleArrival(item.id)}
                       className="bg-orange-500 duration-300 flex gap-2 items-center justify-center mt-2 px-3 py-1.5 rounded-md text-white hover:bg-orange-700 md:px-5 md:py-1.5"
                     >
                       Item Delivered
@@ -194,18 +305,40 @@ const Orders = () => {
                   )}
 
                   {selectedCategory === "Completed" && (
-                    <button
-                      onClick={() => handleOpenReviewPopup(item.id)}
-                      className="bg-orange-500 duration-300 flex gap-2 items-center justify-center mt-2 px-3 py-1.5 rounded-md text-white hover:bg-orange-700 md:px-5 md:py-1.5"
-                    >
-                      Feedback
-                    </button>
+                    <>
+                      {item.hasReview || reviewedOrders.has(item.id) ? (
+                        <p className="text-green-600 font-medium mt-2">
+                          Thank you for rating your order.
+                        </p>
+                      ) : (
+                        <button
+                          onClick={() => handleOpenReviewModal(item.id)}
+                          className="bg-orange-500 duration-300 flex gap-2 items-center justify-center mt-2 px-3 py-1.5 rounded-md text-white hover:bg-orange-700 md:px-5 md:py-1.5"
+                        >
+                          Feedback
+                        </button>
+                      )}
+                    </>
                   )}
                 </div>
               ))
           )}
         </div>
       </div>
+
+      {/* Review Modal */}
+      <ReviewModal
+        isOpen={showReviewModal}
+        onClose={handleCloseReviewModal}
+        onSubmit={handleSubmitReview}
+      />
+
+      {/* Arrival Message */}
+      {showArrivalMessage && (
+        <div className="fixed bottom-4 right-4 bg-green-500 text-white p-4 rounded-md">
+          Order status updated successfully!
+        </div>
+      )}
     </div>
   );
 };

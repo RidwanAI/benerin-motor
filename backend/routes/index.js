@@ -16,6 +16,7 @@ import { adminRefreshToken } from "../controllers/adminRefreshToken.js";
 import ProductController from "../controllers/productController.js"; // Import the ProductController
 import CartController from "../controllers/cartController.js"; // Import the CartCOntroller
 import OrderController from "../controllers/orderController.js";
+import ReviewController from "../controllers/reviewController.js";
 import adminController from "../controllers/adminController.js";
 import multer from "multer";
 
@@ -67,6 +68,9 @@ router.get(
 ); // Get cart items by userId
 router.put("/carts/:id", verifyToken, CartController.updateCartItem); // Update cart item
 router.delete("/carts/:id", verifyToken, CartController.deleteCartItem); // Delete cart item
+
+// Review Routes
+router.post("/reviews", verifyToken, ReviewController.createReview);
 
 // Admin router
 router.get("/admin", verifyAdminToken, adminController.getAdmins);

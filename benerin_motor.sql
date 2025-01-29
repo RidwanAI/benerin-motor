@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 27 Jan 2025 pada 09.17
+-- Waktu pembuatan: 29 Jan 2025 pada 15.18
 -- Versi server: 10.4.32-MariaDB
 -- Versi PHP: 8.2.12
 
@@ -42,7 +42,7 @@ CREATE TABLE `admin` (
 --
 
 INSERT INTO `admin` (`id`, `name`, `email`, `password`, `refresh_token`, `createdAt`, `updatedAt`) VALUES
-(1, 'Admin', '4dm1nBenerinMotor@gmail.com', '$2b$10$lhYz.Sj.tLRrmfqBjf0lc.KpV.qeMy16jfu8l74hxAwi1mNSGO8w6', NULL, '2025-01-15 16:56:02', '2025-01-27 07:00:13'),
+(1, 'Admin', '4dm1nBenerinMotor@gmail.com', '$2b$10$lhYz.Sj.tLRrmfqBjf0lc.KpV.qeMy16jfu8l74hxAwi1mNSGO8w6', NULL, '2025-01-15 16:56:02', '2025-01-29 14:18:15'),
 (2, 'Fadilano Abraham', '4dm1nFadilanoAbraham@gmail.com', '$2a$12$NpNoy4G3035dykLtsgKZ9.jfkqWFzLQDWAtcEkoPRnufkR79z1RfK', NULL, '2025-01-24 11:57:45', '2025-01-24 04:52:29'),
 (3, 'Muhammad Ridwan', '4dm1nMuhammadRidwan@gmail.com', '$2a$12$N3LI2.IG.iI.TSOMaSNZueONPYNARLiwdX6m1K1Ehf9EHNUwZlu06', NULL, '2025-01-24 11:58:00', '2025-01-24 04:56:33'),
 (4, 'Achmad Rizky', '4dm1nAchmadRizky@gmail.com', '$2a$12$.ftjG1j4IOLI7wQShvDfMOqU66epVZGDeJ3fn7UarE7UaNYNirlNK', NULL, '2025-01-24 11:58:05', '2025-01-24 04:57:26');
@@ -126,6 +126,22 @@ INSERT INTO `products` (`id`, `name`, `image`, `price`, `specs`, `label`, `stock
 -- --------------------------------------------------------
 
 --
+-- Struktur dari tabel `reviews`
+--
+
+CREATE TABLE `reviews` (
+  `id` int(11) NOT NULL,
+  `orderId` int(11) NOT NULL,
+  `userId` int(11) NOT NULL,
+  `rating` int(11) NOT NULL CHECK (`rating` >= 1 and `rating` <= 5),
+  `feedback` text DEFAULT NULL,
+  `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updatedAt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Struktur dari tabel `users`
 --
 
@@ -146,7 +162,7 @@ CREATE TABLE `users` (
 INSERT INTO `users` (`id`, `name`, `email`, `password`, `refresh_token`, `createdAt`, `updatedAt`) VALUES
 (2, 'Fadilano Abraham', 'fadilanoa@gmail.com', '$2b$10$u7W0haUsMz807kaNuKEuGe6M4P9g5ss6zW3qYSkSB01sfu/DumFZO', NULL, '2025-01-13 01:57:01', '2025-01-22 07:35:57'),
 (3, 'Achmad Rizky', 'achmadrizky@gmail.com', '$2b$10$vQLU8hcyqs2XQuDxxSnaEenq2joXgNPaKqFmMTkszl0HXCXCg0jgG', NULL, '2025-01-14 15:35:38', '2025-01-14 18:16:02'),
-(14, 'Muhammad Ridwan', 'ridwansmpl36@gmail.com', '$2b$10$ibWTywMrv8hPr8g9.OeOMe/Yr2hgRMrWpomQD/IrYltl8nEmDgQmW', NULL, '2025-01-26 04:06:15', '2025-01-27 07:45:24');
+(14, 'Muhammad Ridwan', 'ridwansmpl36@gmail.com', '$2b$10$ibWTywMrv8hPr8g9.OeOMe/Yr2hgRMrWpomQD/IrYltl8nEmDgQmW', NULL, '2025-01-26 04:06:15', '2025-01-29 14:16:32');
 
 --
 -- Indexes for dumped tables
@@ -232,6 +248,14 @@ ALTER TABLE `products`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indeks untuk tabel `reviews`
+--
+ALTER TABLE `reviews`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_order` (`orderId`),
+  ADD KEY `fk_user` (`userId`);
+
+--
 -- Indeks untuk tabel `users`
 --
 ALTER TABLE `users`
@@ -314,19 +338,25 @@ ALTER TABLE `admin`
 -- AUTO_INCREMENT untuk tabel `carts`
 --
 ALTER TABLE `carts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=144;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=149;
 
 --
 -- AUTO_INCREMENT untuk tabel `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=107;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=114;
 
 --
 -- AUTO_INCREMENT untuk tabel `products`
 --
 ALTER TABLE `products`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+
+--
+-- AUTO_INCREMENT untuk tabel `reviews`
+--
+ALTER TABLE `reviews`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT untuk tabel `users`
@@ -350,6 +380,13 @@ ALTER TABLE `carts`
 ALTER TABLE `orders`
   ADD CONSTRAINT `orders_ibfk_165` FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `orders_ibfk_166` FOREIGN KEY (`productId`) REFERENCES `products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Ketidakleluasaan untuk tabel `reviews`
+--
+ALTER TABLE `reviews`
+  ADD CONSTRAINT `fk_order` FOREIGN KEY (`orderId`) REFERENCES `orders` (`id`),
+  ADD CONSTRAINT `fk_user` FOREIGN KEY (`userId`) REFERENCES `users` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

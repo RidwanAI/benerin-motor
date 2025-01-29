@@ -8,6 +8,7 @@ import User from "./models/userModel.js"; // Import User model
 import Product from "./models/productModel.js"; // Import Product model
 import Cart from "./models/cartModel.js"; // Import Cart model
 import Order from "./models/orderModel.js"; // Import Order model
+import Review from "./models/reviewModel.js";
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -40,6 +41,12 @@ const defineModelRelations = () => {
   // Relasi antara Cart dan Product
   Cart.belongsTo(Product, { foreignKey: "productId", as: "cartProduct" });
   Product.hasMany(Cart, { foreignKey: "productId", as: "carts" });
+
+  Order.hasOne(Review, { foreignKey: "orderId" });
+  Review.belongsTo(Order, { foreignKey: "orderId" });
+
+  User.hasMany(Review, { foreignKey: "userId" });
+  Review.belongsTo(User, { foreignKey: "userId" });
 };
 
 // Sync models and relationships
