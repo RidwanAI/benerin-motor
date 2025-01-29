@@ -3,6 +3,7 @@ import {
   getUser,
   getOrdersByUserId,
   uploadPaymentProof,
+  updateOrderStatus,
 } from "../../../../services/orderService";
 
 const Orders = () => {
@@ -41,11 +42,18 @@ const Orders = () => {
     fetchOrders();
   }, []);
 
-  const handleArrival = () => {
-    setShowArrivalMessage(true);
-    setTimeout(() => {
-      setShowArrivalMessage(false);
-    }, 3000);
+  const handleArrival = async (orderId) => {
+    try {
+      await updateOrderStatus(orderId, "Completed");
+      await fetchOrders(); // Refresh the orders list
+      setShowArrivalMessage(true);
+      setTimeout(() => {
+        setShowArrivalMessage(false);
+      }, 3000);
+    } catch (error) {
+      console.error("Error updating order status:", error);
+      alert("Failed to update order status. Please try again.");
+    }
   };
 
   const handleOpenReviewPopup = (id) => {
@@ -143,8 +151,16 @@ const Orders = () => {
                       <p className="text-sm">
                         Quantity: {item.quantity || "N/A"}
                       </p>
+
+                      {/* Status-based messages */}
                       <p className="font-semibold text-sm text-orange-500">
-                        BCA: 51421057
+                        {item.status === "Pending" && "BCA: 51421057"}
+                        {item.status === "Paid" &&
+                          "Seller has confirmed your payment, please wait for the items to be shipped."}
+                        {item.status === "Shipped" &&
+                          "Please wait for your items to arrive at your destination"}
+                        {item.status === "Completed" &&
+                          "Thank you for orders from our store, give your rate about your order."}
                       </p>
                     </div>
                   </div>
@@ -170,7 +186,7 @@ const Orders = () => {
 
                   {selectedCategory === "Shipped" && (
                     <button
-                      onClick={handleArrival}
+                      onClick={() => handleArrival(item.id)} // Pass the order ID
                       className="bg-orange-500 duration-300 flex gap-2 items-center justify-center mt-2 px-3 py-1.5 rounded-md text-white hover:bg-orange-700 md:px-5 md:py-1.5"
                     >
                       Item Delivered

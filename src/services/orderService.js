@@ -80,3 +80,25 @@ export const createOrderforUser = async (orderPayload) => {
     throw error;
   }
 };
+
+export const updateOrderStatus = async (orderId, status) => {
+  try {
+    const response = await axios.put(
+      `${BASE_URL}/orders/${orderId}`,
+      { status },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error updating order status:",
+      error.response?.data || error.message
+    );
+    throw error;
+  }
+};
