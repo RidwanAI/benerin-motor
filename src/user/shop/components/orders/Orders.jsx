@@ -9,15 +9,21 @@ import { submitReview } from "../../../../services/reviewService";
 
 // ReviewModal Component
 const ReviewModal = ({ isOpen, onClose, onSubmit }) => {
-  const [rating, setRating] = useState(5);
+  const [rating, setRating] = useState(0); // Changed initial state to 0 for empty stars
   const [feedback, setFeedback] = useState("");
+  const [showRatingError, setShowRatingError] = useState(false);
 
   if (!isOpen) return null;
 
   const handleSubmit = () => {
+    if (rating === 0) {
+      setShowRatingError(true);
+      return;
+    }
     onSubmit({ rating, feedback });
-    setRating(5);
+    setRating(0);
     setFeedback("");
+    setShowRatingError(false);
   };
 
   return (
@@ -33,15 +39,23 @@ const ReviewModal = ({ isOpen, onClose, onSubmit }) => {
               <button
                 key={star}
                 type="button"
-                onClick={() => setRating(star)}
+                onClick={() => {
+                  setRating(star);
+                  setShowRatingError(false);
+                }}
                 className={`text-2xl ${
-                  star <= rating ? "text-yellow-400" : "text-gray-300"
+                  star <= rating ? "text-yellow-400" : "text-yellow-400"
                 }`}
               >
-                ★
+                {star <= rating ? "★" : "☆"}
               </button>
             ))}
           </div>
+          {showRatingError && (
+            <p className="text-red-500 text-sm mt-1">
+              You have not rated for this order
+            </p>
+          )}
         </div>
 
         <div className="mb-4">
@@ -85,7 +99,6 @@ const Orders = () => {
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [user, setUser] = useState(null);
-  const [reviewedOrders, setReviewedOrders] = useState(new Set());
 
   const fetchOrders = async () => {
     setLoading(true);
@@ -93,23 +106,7 @@ const Orders = () => {
       const user = await getUser();
       setUser(user);
       const orders = await getOrdersByUserId(user.id);
-
-      // Update orders but preserve the existing reviewedOrders
-      setOrderItems(
-        orders.map((order) => ({
-          ...order,
-          hasReview: reviewedOrders.has(order.id) || order.hasReview,
-        })) || []
-      );
-
-      // Only update reviewedOrders from API if we don't have local state
-      if (reviewedOrders.size === 0) {
-        const reviewedIds = orders
-          .filter((order) => order.hasReview)
-          .map((order) => order.id);
-        setReviewedOrders(new Set(reviewedIds));
-      }
-
+      setOrderItems(orders || []);
       setError(null);
     } catch (err) {
       if (err.response && err.response.status === 403) {
@@ -162,16 +159,18 @@ const Orders = () => {
         feedback,
       });
 
-      // Update local state first
-      const newReviewedOrders = new Set(reviewedOrders);
-      newReviewedOrders.add(selectedOrder);
-      setReviewedOrders(newReviewedOrders);
-
-      // Update the orderItems to reflect the review status immediately
+      // Update the orderItems to reflect the review status
       const updatedOrderItems = orderItems.map((item) =>
         item.id === selectedOrder ? { ...item, hasReview: true } : item
       );
       setOrderItems(updatedOrderItems);
+
+      // Store the review status in localStorage
+      const reviewedOrders = JSON.parse(
+        localStorage.getItem("reviewedOrders") || "{}"
+      );
+      reviewedOrders[selectedOrder] = true;
+      localStorage.setItem("reviewedOrders", JSON.stringify(reviewedOrders));
 
       handleCloseReviewModal();
       alert("Thank you for your review!");
@@ -193,6 +192,14 @@ const Orders = () => {
       console.error("Error uploading payment proof:", error);
       alert("Failed to upload payment proof. Please try again.");
     }
+  };
+
+  // Check if an order has been reviewed
+  const isOrderReviewed = (orderId) => {
+    const reviewedOrders = JSON.parse(
+      localStorage.getItem("reviewedOrders") || "{}"
+    );
+    return reviewedOrders[orderId] || false;
   };
 
   return (
@@ -270,8 +277,8 @@ const Orders = () => {
                           "Please wait for your items to arrive at your destination"}
                         {item.status === "Completed" &&
                           !item.hasReview &&
-                          !reviewedOrders.has(item.id) &&
-                          "Thank you for orders from our store, give your rate about your order."}
+                          !isOrderReviewed(item.id) &&
+                          "Thank you for your order in our store, rate your order."}
                       </p>
                     </div>
                   </div>
@@ -306,7 +313,7 @@ const Orders = () => {
 
                   {selectedCategory === "Completed" && (
                     <>
-                      {item.hasReview || reviewedOrders.has(item.id) ? (
+                      {item.hasReview || isOrderReviewed(item.id) ? (
                         <p className="text-green-600 font-medium mt-2">
                           Thank you for rating your order.
                         </p>

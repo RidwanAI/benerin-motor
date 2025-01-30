@@ -32,15 +32,37 @@ const ProductList = ({ searchTerm, category }) => {
     fetchProducts();
   }, [category]);
 
-  // Filter products by search term
-  const filteredProducts = products.filter((product) =>
-    product.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Enhanced filter function that searches across multiple fields
+  const filteredProducts = products.filter((product) => {
+    const searchTermLower = searchTerm.toLowerCase();
+
+    // Convert price to string for searching
+    const priceString = parseFloat(product.price)
+      .toLocaleString("id-ID", { minimumFractionDigits: 2 })
+      .toLowerCase();
+
+    // Convert sold and rating to strings for searching
+    const soldString = product.sold.toString();
+    const ratingString = product.rating.toString();
+
+    // Check if searchTerm matches any of the fields
+    return (
+      product.name.toLowerCase().includes(searchTermLower) ||
+      product.specs.toLowerCase().includes(searchTermLower) ||
+      priceString.includes(searchTermLower) ||
+      soldString.includes(searchTermLower) ||
+      ratingString.includes(searchTermLower) ||
+      product.label.toLowerCase().includes(searchTermLower)
+    );
+  });
+
   const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
   const currentProducts = filteredProducts.slice(
     (currentPage - 1) * productsPerPage,
     currentPage * productsPerPage
   );
+
+  // Rest of the component remains the same...
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);

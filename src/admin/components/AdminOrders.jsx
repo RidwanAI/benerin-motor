@@ -28,6 +28,14 @@ const AdminOrders = () => {
     fetchOrders();
   }, []);
 
+  // Status priority map for sorting
+  const statusPriority = {
+    Pending: 1,
+    Paid: 2,
+    Shipped: 3,
+    Completed: 4,
+  };
+
   const deleteOrder = async (orderId) => {
     if (window.confirm("Are you sure you want to delete this order?")) {
       try {
@@ -77,18 +85,20 @@ const AdminOrders = () => {
     }
   };
 
-  // Enhanced search and filter function
-  const filteredOrders = orders.filter((order) => {
-    const searchLower = searchQuery.toLowerCase();
-    return (
-      order.user?.name?.toLowerCase().includes(searchLower) ||
-      order.status.toLowerCase().includes(searchLower) ||
-      order.shippingAddress.toLowerCase().includes(searchLower) ||
-      order.id.toString().toLowerCase().includes(searchLower) ||
-      order.orderedProduct?.name?.toLowerCase().includes(searchLower) ||
-      order.customerPhoneNumber?.toLowerCase().includes(searchLower)
-    );
-  });
+  // Enhanced search, filter, and sort function
+  const filteredOrders = orders
+    .filter((order) => {
+      const searchLower = searchQuery.toLowerCase();
+      return (
+        order.user?.name?.toLowerCase().includes(searchLower) ||
+        order.status.toLowerCase().includes(searchLower) ||
+        order.shippingAddress.toLowerCase().includes(searchLower) ||
+        order.id.toString().toLowerCase().includes(searchLower) ||
+        order.orderedProduct?.name?.toLowerCase().includes(searchLower) ||
+        order.customerPhoneNumber?.toLowerCase().includes(searchLower)
+      );
+    })
+    .sort((a, b) => statusPriority[a.status] - statusPriority[b.status]);
 
   const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -96,6 +106,21 @@ const AdminOrders = () => {
     startIndex,
     startIndex + itemsPerPage
   );
+
+  const getRowBackgroundColor = (status) => {
+    switch (status) {
+      case "Completed":
+        return "bg-green-200";
+      case "Shipped":
+        return "bg-yellow-200";
+      case "Paid":
+        return "bg-blue-200";
+      case "Pending":
+        return "bg-red-200";
+      default:
+        return "bg-white";
+    }
+  };
 
   const goToPreviousPage = () => {
     setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
@@ -115,7 +140,7 @@ const AdminOrders = () => {
         <main className="p-3 space-y-3">
           <input
             type="text"
-            placeholder="Search by Customer Name, ID, Status, Product, Phone, or Shipping Address"
+            placeholder="Search by Cust Name, ID, Status, Product, Phone, or Shipping Add"
             value={searchQuery}
             onChange={(e) => {
               setSearchQuery(e.target.value);
@@ -165,7 +190,12 @@ const AdminOrders = () => {
               </thead>
               <tbody>
                 {currentOrders.map((order) => (
-                  <tr key={order.id} className="border-t text-sm">
+                  <tr
+                    key={order.id}
+                    className={`border-t text-sm ${getRowBackgroundColor(
+                      order.status
+                    )} transition-colors duration-200`}
+                  >
                     <td className="px-4 py-3">{order.id}</td>
                     <td className="px-4 py-3">
                       {order.user?.name || "Unknown User"}
