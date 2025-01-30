@@ -300,7 +300,7 @@ const Orders = () => {
                       onClick={() => handleArrival(item.id)}
                       className="bg-orange-500 duration-300 flex gap-2 items-center justify-center mt-2 px-3 py-1.5 rounded-md text-white hover:bg-orange-700 md:px-5 md:py-1.5"
                     >
-                      Item Delivered
+                      Order Received
                     </button>
                   )}
 
@@ -315,7 +315,7 @@ const Orders = () => {
                           onClick={() => handleOpenReviewModal(item.id)}
                           className="bg-orange-500 duration-300 flex gap-2 items-center justify-center mt-2 px-3 py-1.5 rounded-md text-white hover:bg-orange-700 md:px-5 md:py-1.5"
                         >
-                          Feedback
+                          Rate
                         </button>
                       )}
                     </>
