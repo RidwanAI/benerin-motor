@@ -54,7 +54,7 @@ const ServiceBesar = () => {
                 <ul className="text-sm">
                   <li className="flex items-center gap-2">
                     <p>Harga?</p>
-                    <p>Rp.200.000,00 - Rp.500.000,00</p>
+                    <p>Rp200.000,00 - Rp500.000,00</p>
                   </li>
                   <li className="flex items-center gap-2">
                     <p>Layanan Konsultasi?</p>

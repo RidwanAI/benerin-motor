@@ -88,7 +88,9 @@ const NewProduct = () => {
                   {product.specs}
                 </p>
                 <p className="font-semibold text-orange-500 text-md">
-                  {product.price}
+                  {`Rp${parseFloat(product.price).toLocaleString("id-ID", {
+                    minimumFractionDigits: 2,
+                  })}`}
                 </p>
                 <div className="flex items-center justify-between text-xs text-slate-500">
                   <p>{product.sold} Sold</p>

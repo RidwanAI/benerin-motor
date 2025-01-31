@@ -51,7 +51,7 @@ const ServiceGantiOli = () => {
                 <ul className="text-sm">
                   <li className="flex items-center gap-2">
                     <p>Harga?</p>
-                    <p>Rp.50.000,00</p>
+                    <p>Rp50.000,00</p>
                   </li>
                   <li className="flex items-center gap-2">
                     <p>Layanan Konsultasi?</p>

@@ -4,7 +4,7 @@ import Review from "../models/reviewModel.js";
 const ReviewController = {
   createReview: async (req, res) => {
     try {
-      const { orderId, userId, rating, feedback } = req.body;
+      const { orderId, userId, productId, rating, feedback } = req.body;
 
       const existingReview = await Review.findOne({
         where: { orderId },
@@ -19,6 +19,7 @@ const ReviewController = {
       const review = await Review.create({
         orderId,
         userId,
+        productId,
         rating,
         feedback,
       });

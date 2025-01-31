@@ -126,7 +126,7 @@ const OrderController = {
               sold: product.sold + item.quantity,
             },
             {
-              where: { id: item.productId }
+              where: { id: item.productId },
             }
           );
         })
@@ -239,17 +239,26 @@ const OrderController = {
     try {
       const { id } = req.params;
 
-      const deleted = await Order.destroy({ where: { id } });
-
-      if (!deleted) {
+      const order = await Order.findByPk(id);
+      if (!order) {
         return res.status(404).json({ message: "Order not found" });
       }
 
-      res.status(200).json({ message: "Order deleted successfully" });
+      // Cari review terkait dan update orderId menjadi null
+      await Review.update({ orderId: null }, { where: { orderId: id } });
+
+      // Hapus order
+      await order.destroy();
+
+      res.status(200).json({
+        message: "Order deleted successfully",
+      });
     } catch (error) {
-      res
-        .status(500)
-        .json({ message: "Error deleting order", error: error.message });
+      console.error("Error in deleteOrder:", error);
+      res.status(500).json({
+        message: "Error deleting order",
+        error: error.message,
+      });
     }
   },
 

@@ -45,6 +45,9 @@ const Order = db.define(
   },
   {
     timestamps: true,
+    hooks: {
+      beforeDestroy: async (order) => {},
+    },
   }
 );
 

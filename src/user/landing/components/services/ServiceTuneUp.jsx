@@ -52,7 +52,7 @@ const ServiceTuneUp = () => {
                 <ul className="text-sm">
                   <li className="flex items-center gap-2">
                     <p>Harga?</p>
-                    <p>Rp.150.000,00 - Rp.200.000,00</p>
+                    <p>Rp150.000,00 - Rp200.000,00</p>
                   </li>
                   <li className="flex items-center gap-2">
                     <p>Layanan Konsultasi?</p>

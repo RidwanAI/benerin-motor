@@ -159,7 +159,7 @@ const ProductList = ({ searchTerm, category }) => {
             <div className="p-3 space-y-2">
               <p className="font-semibold text-md truncate">{product.name}</p>
               <p className="text-slate-500 text-xs truncate">{product.specs}</p>
-              <p className="font-semibold text-orange-500 text-md">{`Rp.${parseFloat(
+              <p className="font-semibold text-orange-500 text-md">{`Rp${parseFloat(
                 product.price
               ).toLocaleString("id-ID", {
                 minimumFractionDigits: 2,

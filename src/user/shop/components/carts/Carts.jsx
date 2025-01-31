@@ -130,7 +130,9 @@ const Carts = () => {
 
       setCartItems((prev) =>
         prev.map((cartItem) =>
-          cartItem.id === id ? { ...cartItem, quantity: updatedItem.quantity } : cartItem
+          cartItem.id === id
+            ? { ...cartItem, quantity: updatedItem.quantity }
+            : cartItem
         )
       );
     } catch (err) {
@@ -151,7 +153,7 @@ const Carts = () => {
 
       // We pass the current quantity and productId to properly restore stock
       await cartService.removeItem(id, item.quantity, item.productId);
-      
+
       setCartItems((prev) => prev.filter((cartItem) => cartItem.id !== id));
       setSelectedItems((prev) => prev.filter((itemId) => itemId !== id));
     } catch (err) {
@@ -192,7 +194,7 @@ const Carts = () => {
                 <div className="flex flex-col space-y-3 w-1/2">
                   <div className="flex flex-col truncate w-auto">
                     <p className="font-semibold text-md">{item.product.name}</p>
-                    <p className="text-xs md:text-sm text-slate-500">{`Rp.${parseFloat(
+                    <p className="text-xs md:text-sm text-slate-500">{`Rp${parseFloat(
                       item.product.price
                     ).toLocaleString("id-ID", {
                       minimumFractionDigits: 2,
@@ -226,7 +228,10 @@ const Carts = () => {
           {cartItems.length > 0 && (
             <div className="bg-white flex items-center justify-between p-3 rounded-sm">
               <p className="font-semibold text-md md:text-xl">
-                Total: Rp.{calculateTotal().toLocaleString()}
+                Total: Rp
+                {parseFloat(calculateTotal()).toLocaleString("id-ID", {
+                  minimumFractionDigits: 2,
+                })}
               </p>
               <button
                 onClick={handleCheckoutClick}
@@ -246,7 +251,10 @@ const Carts = () => {
             <h2 className="text-lg font-bold mb-4">Complete Your Checkout</h2>
 
             <div className="mb-4">
-              <label className="block font-medium mb-2" htmlFor="shippingAddress">
+              <label
+                className="block font-medium mb-2"
+                htmlFor="shippingAddress"
+              >
                 Shipping Address
               </label>
               <input
@@ -260,7 +268,10 @@ const Carts = () => {
             </div>
 
             <div className="mb-4">
-              <label className="block font-medium mb-2" htmlFor="customerPhoneNumber">
+              <label
+                className="block font-medium mb-2"
+                htmlFor="customerPhoneNumber"
+              >
                 Phone Number
               </label>
               <input
@@ -295,7 +306,7 @@ const Carts = () => {
                 <div className="flex justify-between text-sm">
                   <span>Subtotal:</span>
                   <span>
-                    {`Rp.${calculateSubtotal().toLocaleString("id-ID", {
+                    {`Rp${calculateSubtotal().toLocaleString("id-ID", {
                       minimumFractionDigits: 2,
                     })}`}
                   </span>
@@ -303,7 +314,7 @@ const Carts = () => {
                 <div className="flex justify-between text-sm">
                   <span>Shipping Cost:</span>
                   <span>
-                    {`Rp.${SHIPPING_COST.toLocaleString("id-ID", {
+                    {`Rp${SHIPPING_COST.toLocaleString("id-ID", {
                       minimumFractionDigits: 2,
                     })}`}
                   </span>
@@ -311,7 +322,7 @@ const Carts = () => {
                 <div className="flex justify-between font-bold mt-2">
                   <span>Total:</span>
                   <span>
-                    {`Rp.${calculateTotal().toLocaleString("id-ID", {
+                    {`Rp${calculateTotal().toLocaleString("id-ID", {
                       minimumFractionDigits: 2,
                     })}`}
                   </span>

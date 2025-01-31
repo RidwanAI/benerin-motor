@@ -11,8 +11,9 @@ const Cart = db.define(
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: Product, // Mengacu pada model Product
+        model: Product,
         key: "id",
+        onDelete: "CASCADE",
       },
     },
     quantity: {

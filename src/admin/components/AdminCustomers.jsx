@@ -116,7 +116,7 @@ const AdminCustomers = () => {
           {/* Search Input */}
           <input
             type="text"
-            placeholder="Search by Name or Email"
+            placeholder="Search by User Account..."
             value={searchTerm}
             onChange={(e) => {
               setSearchTerm(e.target.value);
@@ -188,7 +188,7 @@ const AdminCustomers = () => {
                 <thead className="bg-gray-800 text-white">
                   <tr>
                     <th className="px-4 py-3 text-left text-sm font-semibold">
-                      ID
+                      No
                     </th>
                     <th className="px-4 py-3 text-left text-sm font-semibold">
                       Name
@@ -202,32 +202,39 @@ const AdminCustomers = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {currentCustomers.map((customer) => (
-                    <tr
-                      key={customer.id}
-                      className="border-t transition duration-200 text-sm"
-                    >
-                      <td className="px-4 py-3">{customer.id}</td>
-                      <td className="px-4 py-3">{customer.name}</td>
-                      <td className="px-4 py-3">{customer.email}</td>
-                      <td className="px-4 py-3">
-                        <div className="flex gap-2 items-center justify-center">
-                          <button
-                            onClick={() => handleEdit(customer)}
-                            className="flex items-center bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1.5 rounded transition duration-300"
-                          >
-                            Edit
-                          </button>
-                          <button
-                            onClick={() => handleDelete(customer.id)}
-                            className="flex items-center bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded transition duration-300"
-                          >
-                            Delete
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
+                  {currentCustomers.map((customer, index) => {
+                    // Hitung nomor urut berdasarkan halaman saat ini dan indeks
+                    const rowNumber =
+                      (currentPage - 1) * itemsPerPage + index + 1;
+
+                    return (
+                      <tr
+                        key={customer.id}
+                        className="border-t transition duration-200 text-sm"
+                      >
+                        <td className="px-4 py-3">{rowNumber}</td>{" "}
+                        {/* Ganti customer.id dengan rowNumber */}
+                        <td className="px-4 py-3">{customer.name}</td>
+                        <td className="px-4 py-3">{customer.email}</td>
+                        <td className="px-4 py-3">
+                          <div className="flex gap-2 items-center justify-center">
+                            <button
+                              onClick={() => handleEdit(customer)}
+                              className="flex items-center bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1.5 rounded transition duration-300"
+                            >
+                              Edit
+                            </button>
+                            <button
+                              onClick={() => handleDelete(customer.id)}
+                              className="flex items-center bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded transition duration-300"
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             )}

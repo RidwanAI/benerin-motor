@@ -4,10 +4,10 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import db from "./config/database.js";
 import router from "./routes/index.js";
-import User from "./models/userModel.js"; // Import User model
-import Product from "./models/productModel.js"; // Import Product model
-import Cart from "./models/cartModel.js"; // Import Cart model
-import Order from "./models/orderModel.js"; // Import Order model
+import User from "./models/userModel.js";
+import Product from "./models/productModel.js";
+import Cart from "./models/cartModel.js";
+import Order from "./models/orderModel.js";
 import Review from "./models/reviewModel.js";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -30,8 +30,6 @@ const connectDatabase = async () => {
 };
 // Relasi antar model
 const defineModelRelations = () => {
-  // Relasi antara Order dan Product
-  // Relasi di index.js atau file relasi lainnya
   Product.hasMany(Order, { foreignKey: "productId", as: "orders" });
   Order.belongsTo(Product, { foreignKey: "productId", as: "orderedProduct" });
 
@@ -39,21 +37,38 @@ const defineModelRelations = () => {
   Order.belongsTo(User, { foreignKey: "userId", as: "user" });
 
   // Relasi antara Cart dan Product
-  Cart.belongsTo(Product, { foreignKey: "productId", as: "cartProduct" });
-  Product.hasMany(Cart, { foreignKey: "productId", as: "carts" });
+  Cart.belongsTo(Product, { 
+    foreignKey: "productId", 
+    as: "cartProduct",
+    onDelete: 'CASCADE' // Tambahkan ini
+  });
+  Product.hasMany(Cart, { 
+    foreignKey: "productId", 
+    as: "carts",
+    onDelete: 'CASCADE' // Tambahkan ini
+  });
 
-  Order.hasOne(Review, { foreignKey: "orderId" });
-  Review.belongsTo(Order, { foreignKey: "orderId" });
+  Order.hasOne(Review, {
+    foreignKey: "orderId",
+    constraints: false,
+  });
+  Review.belongsTo(Order, {
+    foreignKey: "orderId",
+    constraints: false,
+  });
 
   User.hasMany(Review, { foreignKey: "userId" });
   Review.belongsTo(User, { foreignKey: "userId" });
+
+  Product.hasMany(Review, { foreignKey: "productId", onDelete: "CASCADE" });
+  Review.belongsTo(Product, { foreignKey: "productId" });
 };
 
 // Sync models and relationships
 const syncModels = async () => {
   try {
     defineModelRelations();
-    await db.sync({ alter: true }); // Sinkronisasi semua model
+    await db.sync({ alter: true });
     console.log("All models synced successfully.");
   } catch (error) {
     console.error("Error syncing models:", error);

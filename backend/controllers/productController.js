@@ -103,7 +103,12 @@ const ProductController = {
   updateProductStock: async (req, res) => {
     try {
       const { id } = req.params;
-      const { quantity, increaseSold = false, isRestore = false, updateStockOnCheckout = true } = req.body;
+      const {
+        quantity,
+        increaseSold = false,
+        isRestore = false,
+        updateStockOnCheckout = true,
+      } = req.body;
 
       const product = await Product.findByPk(id);
       if (!product) {
@@ -111,7 +116,7 @@ const ProductController = {
       }
 
       let updates = {};
-      
+
       // Only update sold count if requested during checkout
       if (increaseSold) {
         updates.sold = product.sold + quantity;
@@ -131,7 +136,7 @@ const ProductController = {
 
       if (Object.keys(updates).length > 0) {
         await Product.update(updates, {
-          where: { id }
+          where: { id },
         });
       }
 
@@ -147,18 +152,24 @@ const ProductController = {
   // Delete a product
   deleteProduct: async (req, res) => {
     try {
-      const count = await Product.destroy({
-        where: { id: req.params.id },
-      });
-      if (count > 0) {
-        res.send({ message: "Product deleted successfully" });
-      } else {
-        res.status(404).send({ message: "Product not found" });
+      const { id } = req.params;
+
+      // Cari produk
+      const product = await Product.findByPk(id);
+      if (!product) {
+        return res.status(404).send({ message: "Product not found" });
       }
+
+      // Hapus produk (cart items akan terhapus otomatis karena CASCADE)
+      await product.destroy();
+
+      res.status(200).send({ message: "Product deleted successfully" });
     } catch (error) {
-      res
-        .status(500)
-        .send({ message: "Error deleting the product", error: error.message });
+      console.error("Error deleting product:", error);
+      res.status(500).send({
+        message: "Error deleting the product",
+        error: error.message,
+      });
     }
   },
 

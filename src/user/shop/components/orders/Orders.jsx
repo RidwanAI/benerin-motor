@@ -152,9 +152,12 @@ const Orders = () => {
 
   const handleSubmitReview = async ({ rating, feedback }) => {
     try {
+      const order = orderItems.find((item) => item.id === selectedOrder);
+
       await submitReview({
         orderId: selectedOrder,
         userId: user.id,
+        productId: order.productId, // Tambahkan ini
         rating,
         feedback,
       });
@@ -256,7 +259,7 @@ const Orders = () => {
                         {item.orderedProduct?.name || "Unknown Product"}
                       </p>
                       <p className="font-semibold text-sm">
-                        Total Price: Rp.
+                        Total Price: Rp
                         {parseFloat(item.totalPrice || 0).toLocaleString(
                           "id-ID",
                           {

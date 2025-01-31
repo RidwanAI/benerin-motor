@@ -232,7 +232,7 @@ const ProductDetail = () => {
               {product.name}
             </h2>
             <p className="text-slate-500">{product.specs}</p>
-            <p className="font-semibold text-orange-500 text-xl">{`Rp.${parseFloat(
+            <p className="font-semibold text-orange-500 text-xl">{`Rp${parseFloat(
               product.price
             ).toLocaleString("id-ID", {
               minimumFractionDigits: 2,
@@ -351,19 +351,19 @@ const ProductDetail = () => {
               <div className="mb-4">
                 <div className="flex justify-between text-sm">
                   <span>Subtotal:</span>
-                  <span>{`Rp.${calculateSubtotal().toLocaleString("id-ID", {
+                  <span>{`Rp${calculateSubtotal().toLocaleString("id-ID", {
                     minimumFractionDigits: 2,
                   })}`}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span>Shipping Cost:</span>
-                  <span>{`Rp.${SHIPPING_COST.toLocaleString("id-ID", {
+                  <span>{`Rp${SHIPPING_COST.toLocaleString("id-ID", {
                     minimumFractionDigits: 2,
                   })}`}</span>
                 </div>
                 <div className="flex justify-between font-bold mt-2">
                   <span>Total:</span>
-                  <span>{`Rp.${calculateTotal().toLocaleString("id-ID", {
+                  <span>{`Rp${calculateTotal().toLocaleString("id-ID", {
                     minimumFractionDigits: 2,
                   })}`}</span>
                 </div>

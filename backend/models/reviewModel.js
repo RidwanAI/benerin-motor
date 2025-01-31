@@ -1,3 +1,4 @@
+// reviewModel.js
 import { DataTypes } from "sequelize";
 import db from "../config/database.js";
 
@@ -6,9 +7,13 @@ const Review = db.define(
   {
     orderId: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
     },
     userId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    productId: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },

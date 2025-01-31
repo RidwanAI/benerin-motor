@@ -29,9 +29,18 @@ const AdminProducts = () => {
     fetchProducts();
   }, []);
 
-  const filteredProducts = products.filter((product) =>
-    product.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredProducts = products.filter((product) => {
+    const searchLower = searchQuery.toLowerCase();
+    return (
+      product.name.toLowerCase().includes(searchLower) || // Cari berdasarkan Name
+      product.price.toString().toLowerCase().includes(searchLower) || // Cari berdasarkan Price
+      product.specs.toLowerCase().includes(searchLower) || // Cari berdasarkan Specs
+      product.label.toLowerCase().includes(searchLower) || // Cari berdasarkan Label
+      product.stock.toString().toLowerCase().includes(searchLower) || // Cari berdasarkan Stock
+      product.sold.toString().toLowerCase().includes(searchLower) || // Cari berdasarkan Sold
+      product.rating.toString().toLowerCase().includes(searchLower) // Cari berdasarkan Rating
+    );
+  });
 
   const itemsPerPage = 10;
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
@@ -274,9 +283,12 @@ const AdminProducts = () => {
             {/* Search */}
             <input
               type="text"
-              placeholder="Search by Product Name"
+              placeholder="Search Product..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setCurrentPage(1); // Reset ke halaman pertama saat mencari
+              }}
               className="border p-2 rounded-sm w-full"
             />
 
@@ -286,7 +298,7 @@ const AdminProducts = () => {
                 <thead className="bg-gray-800 text-white">
                   <tr>
                     <th className="px-4 py-3 text-left text-sm font-semibold">
-                      ID
+                      No
                     </th>
                     <th className="px-4 py-3 text-left text-sm font-semibold">
                       Image
@@ -318,51 +330,58 @@ const AdminProducts = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {displayedProducts.map((product) => (
-                    <tr key={product.id} className="text-sm">
-                      <td className="px-4 py-3">{product.id}</td>
-                      <td className="px-4 py-3">
-                        <a
-                          href={product.image}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <img
-                            src={product.image}
-                            alt={product.name}
-                            className="w-16 h-16 object-cover rounded"
-                          />
-                        </a>
-                      </td>
-                      <td className="px-4 py-3">{product.name}</td>
-                      <td className="px-4 py-3">{`Rp.${parseFloat(
-                        product.price
-                      ).toLocaleString("id-ID", {
-                        minimumFractionDigits: 2,
-                      })}`}</td>
-                      <td className="px-4 py-3">{product.specs}</td>
-                      <td className="px-4 py-3">{product.label}</td>
-                      <td className="px-4 py-3">{product.stock}</td>
-                      <td className="px-4 py-3">{product.sold}</td>
-                      <td className="px-4 py-3">{product.rating}</td>
-                      <td className="px-4 py-3">
-                        <div className="flex gap-2 items-center justify-center">
-                          <button
-                            onClick={() => editProduct(product.id)}
-                            className="flex items-center bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1.5 rounded transition duration-300"
+                  {displayedProducts.map((product, index) => {
+                    // Hitung nomor urut berdasarkan halaman saat ini dan indeks
+                    const rowNumber =
+                      (currentPage - 1) * itemsPerPage + index + 1;
+
+                    return (
+                      <tr key={product.id} className="text-sm">
+                        <td className="px-4 py-3">{rowNumber}</td>{" "}
+                        {/* Ganti product.id dengan rowNumber */}
+                        <td className="px-4 py-3">
+                          <a
+                            href={product.image}
+                            target="_blank"
+                            rel="noopener noreferrer"
                           >
-                            Edit
-                          </button>
-                          <button
-                            onClick={() => deleteProduct(product.id)}
-                            className="flex items-center bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded transition duration-300"
-                          >
-                            Delete
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
+                            <img
+                              src={product.image}
+                              alt={product.name}
+                              className="w-16 h-16 object-cover rounded"
+                            />
+                          </a>
+                        </td>
+                        <td className="px-4 py-3">{product.name}</td>
+                        <td className="px-4 py-3">{`Rp${parseFloat(
+                          product.price
+                        ).toLocaleString("id-ID", {
+                          minimumFractionDigits: 2,
+                        })}`}</td>
+                        <td className="px-4 py-3">{product.specs}</td>
+                        <td className="px-4 py-3">{product.label}</td>
+                        <td className="px-4 py-3">{product.stock}</td>
+                        <td className="px-4 py-3">{product.sold}</td>
+                        <td className="px-4 py-3">{product.rating}</td>
+                        <td className="px-4 py-3">
+                          <div className="flex gap-2 items-center justify-center">
+                            <button
+                              onClick={() => editProduct(product.id)}
+                              className="flex items-center bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1.5 rounded transition duration-300"
+                            >
+                              Edit
+                            </button>
+                            <button
+                              onClick={() => deleteProduct(product.id)}
+                              className="flex items-center bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded transition duration-300"
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>

@@ -154,7 +154,7 @@ const AdminOrders = () => {
               <thead className="bg-gray-800 text-white">
                 <tr>
                   <th className="px-4 py-3 text-left text-sm font-semibold">
-                    ID
+                    No
                   </th>
                   <th className="px-4 py-3 text-left text-sm font-semibold">
                     Customer
@@ -189,58 +189,67 @@ const AdminOrders = () => {
                 </tr>
               </thead>
               <tbody>
-                {currentOrders.map((order) => (
-                  <tr
-                    key={order.id}
-                    className={`border-t text-sm ${getRowBackgroundColor(
-                      order.status
-                    )} transition-colors duration-200`}
-                  >
-                    <td className="px-4 py-3">{order.id}</td>
-                    <td className="px-4 py-3">
-                      {order.user?.name || "Unknown User"}
-                    </td>
-                    <td className="px-4 py-3">
-                      {order.orderedProduct?.name || "Unknown Product"}
-                    </td>
-                    <td className="px-4 py-3">{order.quantity}</td>
-                    <td className="px-4 py-3">{`Rp.${parseFloat(
-                      order.totalPrice
-                    ).toLocaleString("id-ID", {
-                      minimumFractionDigits: 2,
-                    })}`}</td>
-                    <td className="px-4 py-3">{order.status}</td>
-                    <td className="px-4 py-3">
-                      {order.paymentProof ? (
+                {currentOrders.map((order, index) => {
+                  // Hitung nomor urut berdasarkan halaman saat ini dan indeks
+                  const rowNumber =
+                    (currentPage - 1) * itemsPerPage + index + 1;
+
+                  return (
+                    <tr
+                      key={order.id}
+                      className={`border-t text-sm ${getRowBackgroundColor(
+                        order.status
+                      )} transition-colors duration-200`}
+                    >
+                      <td className="px-4 py-3">{rowNumber}</td>{" "}
+                      {/* Ganti order.id dengan rowNumber */}
+                      <td className="px-4 py-3">
+                        {order.user?.name || "Unknown User"}
+                      </td>
+                      <td className="px-4 py-3">
+                        {order.orderedProduct?.name || "Unknown Product"}
+                      </td>
+                      <td className="px-4 py-3">{order.quantity}</td>
+                      <td className="px-4 py-3">{`Rp${parseFloat(
+                        order.totalPrice
+                      ).toLocaleString("id-ID", {
+                        minimumFractionDigits: 2,
+                      })}`}</td>
+                      <td className="px-4 py-3">{order.status}</td>
+                      <td className="px-4 py-3">
+                        {order.paymentProof ? (
+                          <button
+                            onClick={() =>
+                              openImageInNewTab(order.paymentProof)
+                            }
+                            className="text-blue-500 hover:text-blue-700"
+                          >
+                            <Eye size={20} />
+                          </button>
+                        ) : (
+                          "None"
+                        )}
+                      </td>
+                      <td className="px-4 py-3">{order.shippingAddress}</td>
+                      <td className="px-4 py-3">{order.customerPhoneNumber}</td>
+                      <td className="px-4 py-3">{order.shippingMethod}</td>
+                      <td className="px-4 py-3 space-x-2">
                         <button
-                          onClick={() => openImageInNewTab(order.paymentProof)}
-                          className="text-blue-500 hover:text-blue-700"
+                          onClick={() => openModal(order)}
+                          className="bg-yellow-500 px-3 py-1.5 text-white rounded hover:bg-yellow-600"
                         >
-                          <Eye size={20} />
+                          Edit Status
                         </button>
-                      ) : (
-                        "None"
-                      )}
-                    </td>
-                    <td className="px-4 py-3">{order.shippingAddress}</td>
-                    <td className="px-4 py-3">{order.customerPhoneNumber}</td>
-                    <td className="px-4 py-3">{order.shippingMethod}</td>
-                    <td className="px-4 py-3 space-x-2">
-                      <button
-                        onClick={() => openModal(order)}
-                        className="bg-yellow-500 px-3 py-1.5 text-white rounded hover:bg-yellow-600"
-                      >
-                        Edit Status
-                      </button>
-                      <button
-                        onClick={() => deleteOrder(order.id)}
-                        className="bg-red-500 px-3 py-1.5 text-white rounded hover:bg-red-600"
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                        <button
+                          onClick={() => deleteOrder(order.id)}
+                          className="bg-red-500 px-3 py-1.5 text-white rounded hover:bg-red-600"
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
                 {currentOrders.length === 0 && (
                   <tr>
                     <td
