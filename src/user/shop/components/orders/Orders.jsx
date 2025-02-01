@@ -277,7 +277,7 @@ const Orders = () => {
                         {item.status === "Paid" &&
                           "Seller has confirmed your payment, please wait for the items to be shipped."}
                         {item.status === "Shipped" &&
-                          "Please wait for your items to arrive at your destination"}
+                          "Please wait for your items to arrive at your destination."}
                         {item.status === "Completed" &&
                           !item.hasReview &&
                           !isOrderReviewed(item.id) &&

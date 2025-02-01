@@ -31,9 +31,13 @@ const AdminProducts = () => {
 
   const filteredProducts = products.filter((product) => {
     const searchLower = searchQuery.toLowerCase();
+    const totalPriceString = parseFloat(product.price)
+      .toLocaleString("id-ID", { minimumFractionDigits: 2 })
+      .toLowerCase(); // Format harga ke string dengan pemisah desimal yang benar
+
     return (
       product.name.toLowerCase().includes(searchLower) || // Cari berdasarkan Name
-      product.price.toString().toLowerCase().includes(searchLower) || // Cari berdasarkan Price
+      totalPriceString.includes(searchLower) || // Cari berdasarkan Price yang sudah diformat
       product.specs.toLowerCase().includes(searchLower) || // Cari berdasarkan Specs
       product.label.toLowerCase().includes(searchLower) || // Cari berdasarkan Label
       product.stock.toString().toLowerCase().includes(searchLower) || // Cari berdasarkan Stock
@@ -204,7 +208,7 @@ const AdminProducts = () => {
                     className="border px-2 py-1 rounded-sm w-full sm:w-1/3"
                   />
                   <input
-                    type="text"
+                    type="number"
                     placeholder="Price"
                     value={newProduct.price}
                     onChange={(e) =>
@@ -430,7 +434,7 @@ const AdminProducts = () => {
                   className="border px-2 py-1 rounded"
                 />
                 <input
-                  type="text"
+                  type="number"
                   placeholder="Price"
                   value={editingProduct.price}
                   onChange={(e) =>

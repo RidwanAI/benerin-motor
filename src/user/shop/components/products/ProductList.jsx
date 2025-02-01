@@ -2,17 +2,34 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { productService } from "../../../../services/productService";
+import { cartService } from "../../../../services/cartService";
+import Carts from "../carts/Carts";
 
 const ProductList = ({ searchTerm, category }) => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [cartItemCount, setCartItemCount] = useState(0);
+  const [showCart, setShowCart] = useState(false);
 
   // Pagination
   const productsPerPage = 8;
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [cart, setCart] = useState([]);
+
+  const navigate = useNavigate();
+
+  // Fungsi untuk mengambil jumlah barang di cart
+  const fetchCartItemCount = async () => {
+    try {
+      const currentUser = await cartService.getCurrentUser();
+      const userId = currentUser.id;
+      const cartItems = await cartService.fetchCartItems(userId);
+      setCartItemCount(cartItems.length);
+    } catch (err) {
+      console.error("Failed to fetch cart items:", err);
+    }
+  };
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -30,22 +47,25 @@ const ProductList = ({ searchTerm, category }) => {
     };
 
     fetchProducts();
+    fetchCartItemCount();
   }, [category]);
+
+  // Fungsi untuk menangani klik pada ikon cart
+  const handleViewCart = () => {
+    setShowCart(!showCart);
+  };
 
   // Enhanced filter function that searches across multiple fields
   const filteredProducts = products.filter((product) => {
     const searchTermLower = searchTerm.toLowerCase();
 
-    // Convert price to string for searching
     const priceString = parseFloat(product.price)
       .toLocaleString("id-ID", { minimumFractionDigits: 2 })
       .toLowerCase();
 
-    // Convert sold and rating to strings for searching
     const soldString = product.sold.toString();
     const ratingString = product.rating.toString();
 
-    // Check if searchTerm matches any of the fields
     return (
       product.name.toLowerCase().includes(searchTermLower) ||
       product.specs.toLowerCase().includes(searchTermLower) ||
@@ -62,7 +82,6 @@ const ProductList = ({ searchTerm, category }) => {
     currentPage * productsPerPage
   );
 
-  // Rest of the component remains the same...
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);
@@ -82,11 +101,6 @@ const ProductList = ({ searchTerm, category }) => {
     }
 
     return range;
-  };
-
-  const navigate = useNavigate();
-  const handleViewCart = () => {
-    navigate("/cart", { state: { cart } });
   };
 
   // Get category title
@@ -132,9 +146,40 @@ const ProductList = ({ searchTerm, category }) => {
           >
             <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .49.598l-1 5a.5.5 0 0 1-.465.401l-9.397.472L4.415 11H13a.5.5 0 0 1 0 1H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5M3.102 4l.84 4.479 9.144-.459L13.89 4zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4m7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4m-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2m7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2" />
           </svg>
-          {cart.length}
+          {cartItemCount}
         </button>
       </div>
+
+      {/* Cart Modal */}
+      {showCart && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+          <div className="bg-white p-4 rounded-lg w-full max-w-2xl max-h-[90vh] overflow-auto">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-semibold">Shopping Cart</h2>
+              <button
+                onClick={() => setShowCart(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+            <Carts />
+          </div>
+        </div>
+      )}
 
       {/* Product Grid */}
       <div className="gap-3 grid grid-cols-2 w-auto md:grid-cols-4">

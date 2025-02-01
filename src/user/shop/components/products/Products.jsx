@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import ProductList from "./ProductList";
+import Footer from "../generals/Footer";
 
 const Product = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -104,6 +105,7 @@ const Product = () => {
         </div>
 
         <ProductList searchTerm={searchTerm} category={activeCategory} />
+        <Footer />
       </div>
     </div>
   );

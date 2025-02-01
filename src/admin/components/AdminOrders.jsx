@@ -89,13 +89,25 @@ const AdminOrders = () => {
   const filteredOrders = orders
     .filter((order) => {
       const searchLower = searchQuery.toLowerCase();
+      const totalPriceString = parseFloat(order.totalPrice)
+        .toLocaleString("id-ID", { minimumFractionDigits: 2 })
+        .toLowerCase();
+
+      // Cek apakah payment proof adalah "None" dan searchLower adalah "n", "no", "non", atau "none"
+      const isPaymentProofNone =
+        (order.paymentProof === null || order.paymentProof === undefined) &&
+        ["n", "no", "non", "none"].includes(searchLower);
+
       return (
         order.user?.name?.toLowerCase().includes(searchLower) ||
+        order.orderedProduct?.name?.toLowerCase().includes(searchLower) ||
+        order.quantity.toString().toLowerCase().includes(searchLower) ||
+        totalPriceString.includes(searchLower) ||
         order.status.toLowerCase().includes(searchLower) ||
         order.shippingAddress.toLowerCase().includes(searchLower) ||
-        order.id.toString().toLowerCase().includes(searchLower) ||
-        order.orderedProduct?.name?.toLowerCase().includes(searchLower) ||
-        order.customerPhoneNumber?.toLowerCase().includes(searchLower)
+        order.customerPhoneNumber?.toLowerCase().includes(searchLower) ||
+        order.shippingMethod?.toLowerCase().includes(searchLower) ||
+        isPaymentProofNone // Tambahkan kondisi untuk payment proof yang berstatus "None"
       );
     })
     .sort((a, b) => statusPriority[a.status] - statusPriority[b.status]);
@@ -140,7 +152,7 @@ const AdminOrders = () => {
         <main className="p-3 space-y-3">
           <input
             type="text"
-            placeholder="Search by Cust Name, ID, Status, Product, Phone, or Shipping Add"
+            placeholder="Search Customer Order..."
             value={searchQuery}
             onChange={(e) => {
               setSearchQuery(e.target.value);

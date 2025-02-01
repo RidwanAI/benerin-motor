@@ -114,7 +114,6 @@ const Carts = () => {
     }
   };
 
-  // Fixed adjustQuantity function to properly handle stock updates
   const adjustQuantity = async (id, delta) => {
     try {
       const item = cartItems.find((item) => item.id === id);
@@ -145,13 +144,11 @@ const Carts = () => {
     }
   };
 
-  // Fixed removeItem function to properly restore stock
   const removeItem = async (id) => {
     try {
       const item = cartItems.find((item) => item.id === id);
       if (!item) return;
 
-      // We pass the current quantity and productId to properly restore stock
       await cartService.removeItem(id, item.quantity, item.productId);
 
       setCartItems((prev) => prev.filter((cartItem) => cartItem.id !== id));
@@ -176,7 +173,10 @@ const Carts = () => {
           )}
 
           {cartItems.map((item) => (
-            <div key={item.id} className="bg-white flex flex-col gap-2 p-3">
+            <div
+              key={item.id}
+              className="bg-white flex flex-col gap-2 p-3 rounded-lg shadow-sm"
+            >
               <div className="flex items-center space-x-2">
                 <div className="flex gap-2 items-center">
                   <input
@@ -203,14 +203,14 @@ const Carts = () => {
                   <div className="flex gap-2 items-center">
                     <button
                       onClick={() => adjustQuantity(item.id, -1)}
-                      className="flex gap-2 items-center"
+                      className="bg-gray-100 hover:bg-gray-200 h-8 w-8 rounded-md flex items-center justify-center"
                     >
                       -
                     </button>
-                    <span>{item.quantity}</span>
+                    <span className="w-8 text-center">{item.quantity}</span>
                     <button
                       onClick={() => adjustQuantity(item.id, 1)}
-                      className="flex gap-2 items-center"
+                      className="bg-gray-100 hover:bg-gray-200 h-8 w-8 rounded-md flex items-center justify-center"
                     >
                       +
                     </button>
@@ -226,7 +226,7 @@ const Carts = () => {
             </div>
           ))}
           {cartItems.length > 0 && (
-            <div className="bg-white flex items-center justify-between p-3 rounded-sm">
+            <div className="bg-white flex items-center justify-between p-3 rounded-lg shadow-sm">
               <p className="font-semibold text-md md:text-xl">
                 Total: Rp
                 {parseFloat(calculateTotal()).toLocaleString("id-ID", {
@@ -235,7 +235,7 @@ const Carts = () => {
               </p>
               <button
                 onClick={handleCheckoutClick}
-                className="bg-orange-500 duration-300 px-3 py-1.5 rounded-md text-white hover:bg-orange-700 md:px-5 md:py-1.5"
+                className="bg-orange-500 duration-300 px-3 py-1.5 rounded-md text-white hover:bg-orange-600 md:px-5 md:py-1.5"
               >
                 Checkout
               </button>
@@ -246,100 +246,121 @@ const Carts = () => {
 
       {/* Checkout Modal */}
       {isModalVisible && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-1/3 shadow-lg">
-            <h2 className="text-lg font-bold mb-4">Complete Your Checkout</h2>
-
-            <div className="mb-4">
-              <label
-                className="block font-medium mb-2"
-                htmlFor="shippingAddress"
-              >
-                Shipping Address
-              </label>
-              <input
-                type="text"
-                id="shippingAddress"
-                value={shippingAddress}
-                onChange={(e) => setShippingAddress(e.target.value)}
-                className="w-full border border-gray-300 p-2 rounded-md"
-                placeholder="Enter your shipping address"
-              />
-            </div>
-
-            <div className="mb-4">
-              <label
-                className="block font-medium mb-2"
-                htmlFor="customerPhoneNumber"
-              >
-                Phone Number
-              </label>
-              <input
-                type="text"
-                id="customerPhoneNumber"
-                value={customerPhoneNumber}
-                onChange={(e) => setCustomerPhoneNumber(e.target.value)}
-                className="w-full border border-gray-300 p-2 rounded-md"
-                placeholder="Enter your phone number"
-              />
-            </div>
-
-            <div className="mb-4">
-              <label className="block font-medium mb-2">Shipping Method</label>
-              <select
-                value={selectedShippingMethod}
-                onChange={(e) => setSelectedShippingMethod(e.target.value)}
-                className="w-full border border-gray-300 p-2 rounded-md"
-              >
-                <option value="" disabled>
-                  Select shipping method
-                </option>
-                <option value="JNE">JNE</option>
-                <option value="JNT">JNT</option>
-                <option value="Shopee Express">Shopee Express</option>
-                <option value="Gojek">Gojek</option>
-              </select>
-            </div>
-
-            {selectedShippingMethod && (
-              <div className="mb-4">
-                <div className="flex justify-between text-sm">
-                  <span>Subtotal:</span>
-                  <span>
-                    {`Rp${calculateSubtotal().toLocaleString("id-ID", {
-                      minimumFractionDigits: 2,
-                    })}`}
-                  </span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span>Shipping Cost:</span>
-                  <span>
-                    {`Rp${SHIPPING_COST.toLocaleString("id-ID", {
-                      minimumFractionDigits: 2,
-                    })}`}
-                  </span>
-                </div>
-                <div className="flex justify-between font-bold mt-2">
-                  <span>Total:</span>
-                  <span>
-                    {`Rp${calculateTotal().toLocaleString("id-ID", {
-                      minimumFractionDigits: 2,
-                    })}`}
-                  </span>
-                </div>
-              </div>
-            )}
-
-            <div className="flex justify-end space-x-4">
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white w-full max-w-md rounded-lg shadow-xl overflow-hidden">
+            <div className="flex justify-between items-center p-4 border-b">
+              <h2 className="text-xl font-semibold">Complete Your Checkout</h2>
               <button
                 onClick={() => setModalVisible(false)}
-                className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700"
+                className="text-gray-500 hover:text-gray-700 transition-colors"
+              >
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            <div className="p-4 space-y-4">
+              {/* Shipping Address */}
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-gray-700">
+                  Shipping Address
+                </label>
+                <textarea
+                  value={shippingAddress}
+                  onChange={(e) => setShippingAddress(e.target.value)}
+                  className="w-full px-3 py-2 border rounded-md focus:ring-1 focus:ring-orange-500 focus:border-orange-500"
+                  rows="3"
+                  placeholder="Enter your shipping address"
+                />
+              </div>
+
+              {/* Phone Number */}
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-gray-700">
+                  Phone Number
+                </label>
+                <input
+                  type="number"
+                  value={customerPhoneNumber}
+                  onChange={(e) => setCustomerPhoneNumber(e.target.value)}
+                  className="w-full px-3 py-2 border rounded-md focus:ring-1 focus:ring-orange-500 focus:border-orange-500"
+                  placeholder="Enter your phone number"
+                />
+              </div>
+
+              {/* Shipping Method */}
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-gray-700">
+                  Shipping Method
+                </label>
+                <select
+                  value={selectedShippingMethod}
+                  onChange={(e) => setSelectedShippingMethod(e.target.value)}
+                  className="w-full px-3 py-2 border rounded-md focus:ring-1 focus:ring-orange-500 focus:border-orange-500"
+                >
+                  <option value="" disabled>
+                    Select shipping method
+                  </option>
+                  <option value="JNE">JNE</option>
+                  <option value="JNT">JNT</option>
+                  <option value="Shopee Express">Shopee Express</option>
+                  <option value="Gojek">Gojek</option>
+                </select>
+              </div>
+
+              {/* Price Summary */}
+              {selectedShippingMethod && (
+                <div className="space-y-2 pt-4 border-t">
+                  <div className="flex justify-between text-sm">
+                    <span>Subtotal:</span>
+                    <span>
+                      {`Rp${calculateSubtotal().toLocaleString("id-ID", {
+                        minimumFractionDigits: 2,
+                      })}`}
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span>Shipping Cost:</span>
+                    <span>
+                      {`Rp${SHIPPING_COST.toLocaleString("id-ID", {
+                        minimumFractionDigits: 2,
+                      })}`}
+                    </span>
+                  </div>
+                  <div className="flex justify-between font-bold pt-2 border-t">
+                    <span>Total:</span>
+                    <span>
+                      {`Rp${calculateTotal().toLocaleString("id-ID", {
+                        minimumFractionDigits: 2,
+                      })}`}
+                    </span>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Actions */}
+            <div className="p-4 border-t flex flex-col sm:flex-row gap-3">
+              <button
+                onClick={() => setModalVisible(false)}
+                className="w-full sm:w-1/2 px-4 py-2 text-sm font-medium text-white bg-red-500 rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
               >
                 Cancel
               </button>
               <button
                 onClick={handleCheckout}
-                className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-700"
+                className="w-full sm:w-1/2 px-4 py-2 text-sm font-medium text-white bg-green-500 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
               >
                 Confirm Checkout
               </button>

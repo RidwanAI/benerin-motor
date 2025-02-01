@@ -116,7 +116,7 @@ const AdminCustomers = () => {
           {/* Search Input */}
           <input
             type="text"
-            placeholder="Search by User Account..."
+            placeholder="Search Customer Account..."
             value={searchTerm}
             onChange={(e) => {
               setSearchTerm(e.target.value);
