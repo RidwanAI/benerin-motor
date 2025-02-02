@@ -71,6 +71,10 @@ router.delete("/carts/:id", verifyToken, CartController.deleteCartItem); // Dele
 
 // Review Routes
 router.post("/reviews", verifyToken, ReviewController.createReview);
+router.get(
+  "/reviews/product/:productId/rating",
+  ReviewController.getProductRating
+);
 
 // Admin router
 router.get("/admin", verifyAdminToken, adminController.getAdmins);

@@ -6,6 +6,7 @@ import {
   updateOrderStatus,
 } from "../../../../services/orderService";
 import { submitReview } from "../../../../services/reviewService";
+import { getProductRating } from "../../../../services/reviewService"; // Tambahkan import ini
 
 // ReviewModal Component
 const ReviewModal = ({ isOpen, onClose, onSubmit }) => {
@@ -99,6 +100,22 @@ const Orders = () => {
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [user, setUser] = useState(null);
+  const [productRatings, setProductRatings] = useState({}); // Tambahkan state untuk menyimpan rating produk
+
+  const fetchProductRating = async (productId) => {
+    try {
+      const ratingData = await getProductRating(productId);
+      setProductRatings((prev) => ({
+        ...prev,
+        [productId]: {
+          averageRating: ratingData.averageRating,
+          totalReviews: ratingData.totalReviews,
+        },
+      }));
+    } catch (error) {
+      console.error(`Error fetching rating for product ${productId}:`, error);
+    }
+  };
 
   const fetchOrders = async () => {
     setLoading(true);
@@ -107,6 +124,13 @@ const Orders = () => {
       setUser(user);
       const orders = await getOrdersByUserId(user.id);
       setOrderItems(orders || []);
+
+      // Fetch ratings for each unique product
+      const uniqueProductIds = [
+        ...new Set(orders.map((order) => order.productId)),
+      ];
+      uniqueProductIds.forEach(fetchProductRating);
+
       setError(null);
     } catch (err) {
       if (err.response && err.response.status === 403) {
@@ -157,16 +181,13 @@ const Orders = () => {
       await submitReview({
         orderId: selectedOrder,
         userId: user.id,
-        productId: order.productId, // Tambahkan ini
+        productId: order.productId,
         rating,
         feedback,
       });
 
-      // Update the orderItems to reflect the review status
-      const updatedOrderItems = orderItems.map((item) =>
-        item.id === selectedOrder ? { ...item, hasReview: true } : item
-      );
-      setOrderItems(updatedOrderItems);
+      // Refresh orders and product rating
+      await fetchOrders();
 
       // Store the review status in localStorage
       const reviewedOrders = JSON.parse(
@@ -205,6 +226,20 @@ const Orders = () => {
     return reviewedOrders[orderId] || false;
   };
 
+  // Fungsi untuk membuat tampilan bintang rating
+  const renderStarRating = (rating) => {
+    return [1, 2, 3, 4, 5].map((star) => (
+      <span
+        key={star}
+        className={`text-lg ${
+          star <= Math.round(rating) ? "text-yellow-400" : "text-gray-300"
+        }`}
+      >
+        ★
+      </span>
+    ));
+  };
+
   return (
     <div className="flex flex-col font-poppins">
       <div className="flex-1">
@@ -241,97 +276,105 @@ const Orders = () => {
           ) : (
             orderItems
               .filter((item) => item.status === selectedCategory)
-              .map((item) => (
-                <div
-                  key={item.id}
-                  className="bg-white flex flex-col items-start gap-2 p-3"
-                >
-                  <div className="flex gap-2 w-full">
-                    <img
-                      src={
-                        item.orderedProduct?.image || "/placeholder-image.png"
-                      }
-                      alt={item.orderedProduct?.name || "Unknown Product"}
-                      className="h-24 w-24 object-cover rounded-md"
-                    />
-                    <div>
-                      <p className="font-semibold text-md truncate">
-                        {item.orderedProduct?.name || "Unknown Product"}
-                      </p>
-                      <p className="font-semibold text-sm">
-                        Total Price: Rp
-                        {parseFloat(item.totalPrice || 0).toLocaleString(
-                          "id-ID",
-                          {
-                            minimumFractionDigits: 2,
-                          }
-                        )}
-                      </p>
-                      <p className="text-sm">
-                        Quantity: {item.quantity || "N/A"}
-                      </p>
+              .map((item) => {
+                // Ambil rating produk dari state
+                const productRating = productRatings[item.productId] || {
+                  averageRating: 0,
+                  totalReviews: 0,
+                };
 
-                      {/* Status-based messages */}
-                      <p className="font-semibold text-sm text-orange-500">
-                        {item.status === "Pending" && "BCA: 51421057"}
-                        {item.status === "Paid" &&
-                          "Seller has confirmed your payment, please wait for the items to be shipped."}
-                        {item.status === "Shipped" &&
-                          "Please wait for your items to arrive at your destination."}
-                        {item.status === "Completed" &&
-                          !item.hasReview &&
-                          !isOrderReviewed(item.id) &&
-                          "Thank you for your order in our store, rate your order."}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Action Buttons */}
-                  {selectedCategory === "Pending" && (
-                    <div className="bg-slate-100 flex flex-col p-3 w-full">
-                      <label
-                        htmlFor={`upload-proof-${item.id}`}
-                        className="bg-orange-500 cursor-pointer duration-300 flex gap-2 items-center justify-center px-3 py-1.5 rounded-md text-white hover:bg-orange-700"
-                      >
-                        Upload Payment Proof
-                      </label>
-                      <input
-                        type="file"
-                        id={`upload-proof-${item.id}`}
-                        accept="image/*"
-                        className="hidden"
-                        onChange={(e) => handleFileUpload(e, item.id)}
+                return (
+                  <div
+                    key={item.id}
+                    className="bg-white flex flex-col items-start gap-2 p-3"
+                  >
+                    <div className="flex gap-2 w-full">
+                      <img
+                        src={
+                          item.orderedProduct?.image || "/placeholder-image.png"
+                        }
+                        alt={item.orderedProduct?.name || "Unknown Product"}
+                        className="h-24 w-24 object-cover rounded-md"
                       />
-                    </div>
-                  )}
-
-                  {selectedCategory === "Shipped" && (
-                    <button
-                      onClick={() => handleArrival(item.id)}
-                      className="bg-orange-500 duration-300 flex gap-2 items-center justify-center mt-2 px-3 py-1.5 rounded-md text-white hover:bg-orange-700 md:px-5 md:py-1.5"
-                    >
-                      Order Received
-                    </button>
-                  )}
-
-                  {selectedCategory === "Completed" && (
-                    <>
-                      {item.hasReview || isOrderReviewed(item.id) ? (
-                        <p className="text-green-600 font-medium mt-2">
-                          Thank you for rating your order.
+                      <div>
+                        <p className="font-semibold text-md truncate">
+                          {item.orderedProduct?.name || "Unknown Product"}
                         </p>
-                      ) : (
-                        <button
-                          onClick={() => handleOpenReviewModal(item.id)}
-                          className="bg-orange-500 duration-300 flex gap-2 items-center justify-center mt-2 px-3 py-1.5 rounded-md text-white hover:bg-orange-700 md:px-5 md:py-1.5"
+                        <p className="font-semibold text-sm">
+                          Total Price: Rp
+                          {parseFloat(item.totalPrice || 0).toLocaleString(
+                            "id-ID",
+                            {
+                              minimumFractionDigits: 2,
+                            }
+                          )}
+                        </p>
+                        <p className="text-sm">
+                          Quantity: {item.quantity || "N/A"}
+                        </p>
+
+                        {/* Status-based messages */}
+                        <p className="font-semibold text-sm text-orange-500">
+                          {item.status === "Pending" && "BCA: 51421057"}
+                          {item.status === "Paid" &&
+                            "Seller has confirmed your payment, please wait for the items to be shipped."}
+                          {item.status === "Shipped" &&
+                            "Please wait for your items to arrive at your destination."}
+                          {item.status === "Completed" &&
+                            !item.hasReview &&
+                            !isOrderReviewed(item.id) &&
+                            "Thank you for your order in our store, rate your order."}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Action Buttons */}
+                    {selectedCategory === "Pending" && (
+                      <div className="bg-slate-100 flex flex-col p-3 w-full">
+                        <label
+                          htmlFor={`upload-proof-${item.id}`}
+                          className="bg-orange-500 cursor-pointer duration-300 flex gap-2 items-center justify-center px-3 py-1.5 rounded-md text-white hover:bg-orange-700"
                         >
-                          Rate
-                        </button>
-                      )}
-                    </>
-                  )}
-                </div>
-              ))
+                          Upload Payment Proof
+                        </label>
+                        <input
+                          type="file"
+                          id={`upload-proof-${item.id}`}
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) => handleFileUpload(e, item.id)}
+                        />
+                      </div>
+                    )}
+
+                    {selectedCategory === "Shipped" && (
+                      <button
+                        onClick={() => handleArrival(item.id)}
+                        className="bg-orange-500 duration-300 flex gap-2 items-center justify-center mt-2 px-3 py-1.5 rounded-md text-white hover:bg-orange-700 md:px-5 md:py-1.5"
+                      >
+                        Order Received
+                      </button>
+                    )}
+
+                    {selectedCategory === "Completed" && (
+                      <>
+                        {item.hasReview || isOrderReviewed(item.id) ? (
+                          <p className="text-green-600 font-medium mt-2">
+                            Thank you for rating your order.
+                          </p>
+                        ) : (
+                          <button
+                            onClick={() => handleOpenReviewModal(item.id)}
+                            className="bg-orange-500 duration-300 flex gap-2 items-center justify-center mt-2 px-3 py-1.5 rounded-md text-white hover:bg-orange-700 md:px-5 md:py-1.5"
+                          >
+                            Rate
+                          </button>
+                        )}
+                      </>
+                    )}
+                  </div>
+                );
+              })
           )}
         </div>
       </div>
